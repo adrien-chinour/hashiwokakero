@@ -13,4 +13,4 @@ libhashi.a: $(OBJETS)
 	ar rcs $@ $^
 
 clean:
-	rm -f *.a *~ 
+	rm -f *.a *~ $(EXEC)
