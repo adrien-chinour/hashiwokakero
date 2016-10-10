@@ -42,6 +42,7 @@ int main(int argc ,char *argv[]) {
 
    	printf("Affichage d'une partie de taille %dx%d:\n",size,size);
 
+	
 	for(int i = 0; i < size; i++){
 
 		for(int j = 0; j < size; j++){
@@ -51,15 +52,16 @@ int main(int argc ,char *argv[]) {
 			for(int k = 0; k < nbnode; k++){
 
 				if(get_y(t[k]) == j && get_x(t[k]) == i){
-					printf(" %d ",get_required_degree(t[k]));
-					nodeOk = true;
+				  
+					printf("*%d*",get_required_degree(t[k]));
+				        nodeOk = true;
+					break;
 				}
 
 			}
 
 			if(!nodeOk)
-				printf("   ");
-
+			    printf("   ");
 		}
 		printf("|\n");
 	}
