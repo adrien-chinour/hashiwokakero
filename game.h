@@ -75,7 +75,7 @@ bool game_over (cgame g);
 /**
  * @brief Test if it is possible to add a bridge to node of index node_num in direction d such that
  *   1) it doesn't degenarate a crossing with another bridge
- *   2) the number of bridges in that direction remains smaller our equal to 2.
+ *   2) the number of bridges in that direction remains smaller or equal to 2.
  **/
 bool can_add_bridge_dir (cgame g, int node_num, dir d);
 
