@@ -1,16 +1,16 @@
-OBJETS = game.o node.o
-CFLAGS = -Wall -std=c99
-LDFLAGS = -L. -lhashi
-EXEC = hashi_text
-CC = gcc
-
-all: hashi_text libhashi.a
-
-hashi_text: hashi_text.c libhashi.a
-	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS) 
+AR=ar
+CC=gcc
+CFLAGS= -Wall -std=c99
+ARFLAGS=rcs
+SRCDIR= ./src/
+OBJETS=src/game.o src/node.o
+EXEC =hashi_text
+all: libhashi.a hashi_text
 
 libhashi.a: $(OBJETS)
-	ar rcs $@ $^
+	$(AR) $(ARFLAGS) $@ $^
 
+hashi_text:./src/hashi_text.c libhashi.a
+	$(CC) -o $@ $(CFLAGS) $< -L. -lhashi
 clean:
-	rm -f *.a *~ $(EXEC)
+	rm -rf *.a *~ $(EXEC)
