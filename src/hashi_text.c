@@ -5,12 +5,12 @@
 
 #include "../include/node.h"
 #include "../include/game.h"
-// commentaire inutile.
+
 //cette fonction vérifie si l'utilisateur lance le programme correctement
 void securise(int *argc, char *argv[], int *size, int *nbnode)
 {
   /*lors du lancement, l'utilisateur doit choisir:
-    > la taille de la grille de jeu (0 à 49)
+    > la taille de la grille de jeu (0 à 19)
     > le nombre de nodes dans la grille
   sinon le jeu ne peut pas commencer*/
   
@@ -33,18 +33,19 @@ void securise(int *argc, char *argv[], int *size, int *nbnode)
   //si l'utilisateur écrit autre chose que des nombres corrects, ça ne marche pas
   if(*size == 0 || *nbnode == 0)
   {
-    printf("Erreur : veuillez entrer la taille entre 1 et 50 et les nodes entre 1 et 250 !\n");
+    printf("Erreur : veuillez entrer la taille entre 1 et 20 et les nodes entre 1 et 400 !\n");
     printf("Synthaxe : ./hashi_text TAILLE NBNODE\n");
     exit(EXIT_FAILURE);
   }
 
-  //si la taille du jeu est hors normes (taille < 0 ou taille > 50), on indique le problème
-  if(*size < 0 || *size > 50)
+  //si la taille du jeu est hors normes (taille < 0 ou taille > 20), on indique le problème
+  if(*size < 0 || *size > 20)
     {
-      printf("Erreur : la grille de jeu choisie ne peut pas etre construite (choisissez de 1 à 50) !\n");
+      printf("Erreur : la grille de jeu choisie ne peut pas etre construite (choisissez de 1 à 20) !\n");
       printf("Synthaxe : ./hashi_text TAILLE NBNODE\n");
       exit(EXIT_FAILURE);
     }
+  *size = 2*(*size)-1;
 }
 
 
@@ -71,17 +72,21 @@ void affichage(int size, int grille[size][size], game jeu)
     {
       for(int x = 0; x < size; x++)
 	{
-		switch (grille[x][y]) {
-			case -2: //affiche un pont
-				printf(" +  ");
-				break;
-			case -1: //affiche une case vide
-				printf(" .  "); 
-				break;
-			default: //affiche le degré d'une île
-				printf(" %d  ", grille[x][y]);
-				break;
-		}
+	  switch (grille[x][y])
+	    {
+	    case -2: //affiche un pont simple
+	      printf(" +  ");
+	      break;
+	    case -3: //affiche un pont double
+	      printf(" #  ");
+	      break;
+	    case -1: //affiche une case vide
+	      printf(" .  "); 
+	      break;
+	    default: //affiche le degré d'une île
+	      printf(" %d  ", grille[x][y]);
+	      break;
+	    }
 	}
       //affiche l'axe des ordonnées
       printf("| %d\n\n", y);
@@ -258,6 +263,7 @@ int main(int argc, char *argv[])
 
   //on vérifie si les réglages au lancement sont corrects
   securise(&(argc), argv, &(size), &(nbnode));
+  printf("%d\n", size);
   
   //on crée un tableau 2D pour contenir toute la "grille" de jeu
   int grille[size][size];
