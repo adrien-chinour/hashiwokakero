@@ -5,7 +5,7 @@
 
 #include "../include/node.h"
 #include "../include/game.h"
-
+// commentaire inutile.
 //cette fonction vérifie si l'utilisateur lance le programme correctement
 void securise(int *argc, char *argv[], int *size, int *nbnode)
 {
