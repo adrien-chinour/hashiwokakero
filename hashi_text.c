@@ -71,17 +71,17 @@ void affichage(int size, int grille[size][size], game jeu)
     {
       for(int x = 0; x < size; x++)
 	{
-	  //affiche une case vide
-	  if(grille[x][y] == -1)
-	    printf(" .  ");
-	  
-	  //affiche un pont
-	  if(grille[x][y] == -2)
-	    printf(" +  ");
-	  
-	  //affiche le degré d'une île
-	  if(grille[x][y] >= 0)
-	    printf(" %d  ", grille[x][y]);
+		switch (grille[x][y]) {
+			case -2: //affiche un pont
+				printf(" +  ");
+				break;
+			case -1: //affiche une case vide
+				printf(" .  "); 
+				break;
+			default: //affiche le degré d'une île
+				printf(" %d  ", grille[x][y]);
+				break;
+		}
 	}
       //affiche l'axe des ordonnées
       printf("| %d\n\n", y);
