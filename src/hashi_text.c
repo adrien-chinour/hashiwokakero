@@ -56,9 +56,13 @@ void affichage(int size, int grille[size][size], game jeu)
   for(int i = 0; i < size; i++)
     {
       if(i < 10)
-	printf(" %d  ", i);
+         if (i%2==0)
+         printf(" %d  ", i/2);
+         else printf("    ");
       else
-	printf(" %d ", i);
+         if (i%2==0)
+         printf(" %d ", i/2);
+         else printf("    ");
     }
   printf("\n");
   for(int i = 0; i < size; i++)
@@ -89,7 +93,9 @@ void affichage(int size, int grille[size][size], game jeu)
 	    }
 	}
       //affiche l'axe des ordonnées
-      printf("| %d\n\n", y);
+      if (y%2==0)
+      printf("| %d\n\n", y/2);
+      else printf("|  \n\n");
     }
   printf("-- fin de la zone de jeu --\n");
 }

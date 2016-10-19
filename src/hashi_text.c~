@@ -56,9 +56,13 @@ void affichage(int size, int grille[size][size], game jeu)
   for(int i = 0; i < size; i++)
     {
       if(i < 10)
-	printf(" %d  ", i);
+         if (i%2==0)
+         printf(" %d  ", i/2);
+         else printf("    ");
       else
-	printf(" %d ", i);
+         if (i%2==0)
+         printf(" %d ", i/2);
+         else printf("    ");
     }
   printf("\n");
   for(int i = 0; i < size; i++)
@@ -89,7 +93,9 @@ void affichage(int size, int grille[size][size], game jeu)
 	    }
 	}
       //affiche l'axe des ordonnées
-      printf("| %d\n\n", y);
+      if (y%2==0)
+      printf("| %d\n\n", y/2);
+      else printf(" ");
     }
   printf("-- fin de la zone de jeu --\n");
 }
@@ -135,7 +141,9 @@ game initialise(int size, int nbnode, int grille[size][size], node t[])
 
   //création du jeu à partir des nodes précédement créées
   game jeu = new_game(nbnode, t);
+  affichage(size, grille, jeu);
 
+  //on cherche à placer aléatoirement des ponts sur chaque node pour leur définir un degré
   for(int i = 0; i < nbnode; i++)
     {
       while(get_degree(jeu, i) == 0)
@@ -149,9 +157,12 @@ game initialise(int size, int nbnode, int grille[size][size], node t[])
 		{
 		  add_bridge_dir(jeu, i, j);
 		  /*
+		    IMPORTANT: les changements de valeurs de la grille sert à vérifier l'affichage
+		    il faudra enlever "grille[x][y] = -2;" quand les problèmes d'initialisation seront réglés !
+		    
 		  int x = get_x(t[i]), y = get_y(t[i]);
 		  
-		  //on affiche les ponts
+		  //on construit les ponts
 		  if(j == NORTH)
 		    {
 		      while(y != get_y(t[voisin])-1)
@@ -189,6 +200,30 @@ game initialise(int size, int nbnode, int grille[size][size], node t[])
 	    }
 	}
     }
+  
+  //on défini le degré de chaque node selon le nombre de ponts dessus
+  for(int i = 0; i < nbnode; i++)
+    {
+      int x = get_x(t[i]), y = get_y(t[i]);
+      grille[x][y] = get_degree(jeu, i);
+    }
+
+  //on enlève tous les ponts de la grille (faut pas donner la solution dès le début :p)
+  for(int i = 0; i < nbnode; i++)
+    {
+      for(int j = 0; j < NB_DIRS; j++)
+	{
+	  if(get_degree_dir(jeu, i, j) == 2)
+	    {
+	      del_bridge_dir(jeu, i, j);
+	    }
+	  if(get_degree_dir(jeu, i, j) == 1)
+	    {
+	      del_bridge_dir (jeu, i, j);
+	    }
+	}
+    }
+  
   return jeu;
 }
 
@@ -247,9 +282,9 @@ void pont(int size, game jeu)
   
   //fgets(direction, sizeof(direction), stdin);
 
-  printf("Veuillez saisir un chiffre pour placer un pont autour de l'ile\n");
-  printf("(NORD : 0 ; SUD : 1 ; EST : 2 ; OUEST : 3)\n");
+  printf("Veuillez entrer une direction (NORD; SUD; EST; OUEST) pour y placer un pont\n");
 
+  lecture_securisee(pose, tailleDePose);
   int dirige = atoi(pose);
 
   can_add_bridge_dir(jeu, base, dirige);
