@@ -55,14 +55,20 @@ void affichage(int size, int grille[size][size], game jeu)
   //affiche l'axe des abscisses
   for(int i = 0; i < size; i++)
     {
-      if(i < 10)
+       if(i < 10){
          if (i%2==0)
-         printf(" %d  ", i/2);
+            printf(" %d  ", i/2);
          else printf("    ");
-      else
-         if (i%2==0)
-         printf(" %d ", i/2);
-         else printf("    ");
+       }
+       else{
+         if (i%2==0){
+            if (i/2 > 10)
+               printf(" %d ", i/2);
+            else
+               printf(" %d  ", i/2);
+         }
+         else  printf("    ");
+       }
     }
   printf("\n");
   for(int i = 0; i < size; i++)
