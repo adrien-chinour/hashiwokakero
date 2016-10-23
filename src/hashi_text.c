@@ -48,6 +48,22 @@ void securise(int *argc, char *argv[], int *size, int *nbnode)
   *size = 2*(*size)-1;
 }
 
+void del_all_bridges(int nbnode, game jeu){
+   for(int i = 0; i < nbnode; i++)
+    {
+      for(int j = 0; j < NB_DIRS; j++)
+	{
+	  if(get_degree_dir(jeu, i, j) == 2)
+	    {
+	      del_bridge_dir(jeu, i, j);
+	    }
+	  if(get_degree_dir(jeu, i, j) == 1)
+	    {
+	      del_bridge_dir (jeu, i, j);
+	    }
+	}
+    }
+  }
 
 //cette fonction affiche l'état actuel du jeu
 void affichage(int size, int grille[size][size], game jeu)
@@ -159,9 +175,18 @@ game initialise(int size, int nbnode, int grille[size][size], node t[])
 	      int voisin = get_neighbour_dir(jeu, i, j), pileFace = rand()%2;
 
 	      //si un voisin est détecté et qu'il n'y a pas d'obstacle on pose un pont ou pas
-	      if(voisin != -1 && pileFace == 0  && can_add_bridge_dir(jeu, i, j))
+	      if(voisin != -1 &&pileFace == 0 &&can_add_bridge_dir(jeu, i, j))
 		{
 		  add_bridge_dir(jeu, i, j);
+                }
+              else{
+                if(get_degree(jeu,i)==0 &&j==3){
+                  del_all_bridges(i,jeu);
+                  //restart loop
+                  i=0;
+                  j=0;
+                }
+              }
 		  /*
 		    IMPORTANT: les changements de valeurs de la grille sert à vérifier l'affichage
 		    il faudra enlever "grille[x][y] = -2;" quand les problèmes d'initialisation seront réglés !
@@ -202,7 +227,7 @@ game initialise(int size, int nbnode, int grille[size][size], node t[])
 			}
 		    }
 		  */
-		}
+		
 	    }
 	}
     }
@@ -215,21 +240,8 @@ game initialise(int size, int nbnode, int grille[size][size], node t[])
     }
 
   //on enlève tous les ponts de la grille (faut pas donner la solution dès le début :p)
-  for(int i = 0; i < nbnode; i++)
-    {
-      for(int j = 0; j < NB_DIRS; j++)
-	{
-	  if(get_degree_dir(jeu, i, j) == 2)
-	    {
-	      del_bridge_dir(jeu, i, j);
-	    }
-	  if(get_degree_dir(jeu, i, j) == 1)
-	    {
-	      del_bridge_dir (jeu, i, j);
-	    }
-	}
-    }
-  
+
+  del_all_bridges(nbnode,jeu);
   return jeu;
 }
 

@@ -12,5 +12,13 @@ libhashi.a: $(OBJETS)
 
 hashi_text:./src/hashi_text.c libhashi.a
 	$(CC) -o $@ $(CFLAGS) $< -L. -lhashi
+
+tests:libtests.a test
+
+libtests.a:./tests/test_toolbox.c
+	$(CC) -o  $@ $(CFLAGS) $< -L. -lhashi
+	$(AR) $(ARFLAGS) $@ $^
+	$(CC) -o  $@ $(CFLAGS) $< -L. -lhashi
+
 clean:
-	rm -rf *.a *~ $(EXEC)
+	rm -Rf *.a ./*~ $(EXEC)
