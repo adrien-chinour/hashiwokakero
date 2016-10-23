@@ -308,6 +308,42 @@ void pont(int size, game jeu)
   can_add_bridge_dir(jeu, base, dirige);
 }
 
+//cette fonction affiche un tableau avec des informations sur chaque noeud
+void printNodesDetail(int nbnode, node t[], int size, cgame jeu){
+	printf("  X:  |  Y:  |  °:  |  OK?\n");
+	
+	//boucles pour tri noeud par x puis par y
+	int x = 0;
+	while(x < size){
+		int y = 0;
+		while(y < size){
+			for(int i = 0; i < nbnode; i++){
+				if(get_x(t[i]) == x && get_y(t[i]) == y){
+					char a;
+
+					//test si nombre de pont egal au degre
+					if (get_required_degree(t[i]) == 0) //test a voir 
+						a = 'V';
+					else
+						a = 'X';
+
+					//test de la longeur de la chaine pour affichage identique
+					if(get_x(t[i]) > 19 && (get_y(t[i]) < 19))
+						printf("  %d  |  %d   |  %d   |  %c\n", get_x(t[i])/2, get_y(t[i])/2, get_required_degree(t[i]), a);
+					else if(get_y(t[i]) > 19 && (get_x(t[i]) < 19))
+						printf("  %d   |  %d  |  %d   |  %c\n", get_x(t[i])/2, get_y(t[i])/2, get_required_degree(t[i]), a);
+					else if(get_x(t[i]) > 19 && (get_y(t[i]) > 19))
+						printf("  %d  |  %d  |  %d   |  %c\n", get_x(t[i])/2, get_y(t[i])/2, get_required_degree(t[i]), a);
+					else
+						printf("  %d   |  %d   |  %d   |  %c\n", get_x(t[i])/2, get_y(t[i])/2, get_required_degree(t[i]), a);
+
+				}
+			}
+			y++;
+		}
+		x++;
+	}
+}
 
 int main(int argc, char *argv[])
 {
@@ -327,12 +363,11 @@ int main(int argc, char *argv[])
   //on crée la grille de départ
   game jeu = initialise(size, nbnode, grille, t);
 
-  //vérification des nodes
-  for(int i = 0; i < nbnode; i++)
-    printf("ile numero %d (degre %d) : (%d; %d) \n", i, get_required_degree(t[i]), get_x(t[i]), get_y(t[i]));
-
   //on affiche la grille au départ
   affichage(size, grille, jeu);
+
+  //vérification des nodes
+  printNodesDetail(nbnode, t, size, jeu);
 
   //on demande où placer le pont
   pont(size, jeu);
