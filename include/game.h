@@ -82,7 +82,7 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d);
 
 /**
  * @brief Add a bridge from node of index node_num in direction d.
- * @pre the addition of the bridge must be possible (i.e. can_add_bridge_dir(g, node_num_d) == 0).
+ * @pre the addition of the bridge must be possible (i.e. can_add_bridge_dir(g, node_num_d) != 0).
  **/
 void add_bridge_dir (game g, int node_num, dir d);
 
@@ -112,7 +112,7 @@ int get_degree (cgame g, int node_num);
 /**
  * @brief Return the index of the neighbour of node node_num in direction d. Such neighbour is the first node found from the node_num in direction d.
  * @return the index of the neighbour if there is one. -1 otherwise.
- **/
+ **//**/
 int get_neighbour_dir (cgame g, int node_num, dir d);
 
 

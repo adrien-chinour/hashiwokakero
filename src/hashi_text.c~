@@ -49,6 +49,22 @@ void securise(int *argc, char *argv[], int *size, int *nbnode)
   *size = 2*(*size)-1;
 }
 
+void del_all_bridges(int nbnode, game jeu){
+   for(int i = 0; i < nbnode; i++)
+    {
+      for(int j = 0; j < NB_DIRS; j++)
+	{
+	  if(get_degree_dir(jeu, i, j) == 2)
+	    {
+	      del_bridge_dir(jeu, i, j);
+	    }
+	  if(get_degree_dir(jeu, i, j) == 1)
+	    {
+	      del_bridge_dir (jeu, i, j);
+	    }
+	}
+    }
+  }
 
 //cette fonction affiche l'état actuel du jeu
 void affichage(int size, int grille[size][size], game jeu)
@@ -56,6 +72,7 @@ void affichage(int size, int grille[size][size], game jeu)
   //affiche l'axe des abscisses
   for(int i = 0; i < size; i++)
     {
+<<<<<<< HEAD
       if(i%2 == 0)
 	{
 	  if(i < 20)
@@ -65,6 +82,22 @@ void affichage(int size, int grille[size][size], game jeu)
 	}
       else
 	printf("    ");
+=======
+       if(i < 10){
+         if (i%2==0)
+            printf(" %d  ", i/2);
+         else printf("    ");
+       }
+       else{
+         if (i%2==0){
+            if (i/2 > 10)
+               printf(" %d ", i/2);
+            else
+               printf(" %d  ", i/2);
+         }
+         else  printf("    ");
+       }
+>>>>>>> 19db24a1b667f8904aaf991a2713dd22e649c455
     }
   printf("\n");
   for(int i = 0; i < size; i++)
@@ -93,10 +126,16 @@ void affichage(int size, int grille[size][size], game jeu)
 	    }
 	}
       //affiche l'axe des ordonnées
+<<<<<<< HEAD
       if(y%2 == 0)
 	printf("| %d\n\n", y/2);
       else
 	printf("|\n\n");
+=======
+      if (y%2==0)
+      printf("| %d\n\n", y/2);
+      else printf("|  \n\n");
+>>>>>>> 19db24a1b667f8904aaf991a2713dd22e649c455
     }
   printf("-- fin de la zone de jeu --\n");
 }
@@ -131,7 +170,7 @@ void reset(game jeu, int nbnode, node t[])
 
 
 //cette fonction enlève tous les ponts de la grille (faut pas donner la solution dès le début :p)
-void del_all_bridges(int nbnode, game jeu)
+void supprime_solution(int nbnode, game jeu)
 {
   for(int i = 0; i < nbnode; i++)
     {
@@ -153,7 +192,9 @@ game initialise(int size, int nbnode, int grille[size][size], node t[])
   for(int i = 0; i < size; i++)
     {
       for(int j = 0; j < size; j++)
-	grille[i][j] = -1;
+	{
+	  grille[i][j] = -1;
+	}
     }
   
   //on crée des nodes aléatoires
@@ -201,9 +242,28 @@ game initialise(int size, int nbnode, int grille[size][size], node t[])
 	    add_bridge_dir(jeu, i, j);
 	  else if(voisin != -1 && can_add_bridge_dir(jeu, i, j) && get_degree_dir(jeu, i, j) == 0)
 	    {
+<<<<<<< HEAD
 	      add_bridge_dir(jeu, i, j);
 	      if(pileFace == 0)
 		add_bridge_dir(jeu, i, j);
+=======
+	      int voisin = get_neighbour_dir(jeu, i, j), pileFace = rand()%2;
+
+	      //si un voisin est détecté et qu'il n'y a pas d'obstacle on pose un pont ou pas
+	      if(voisin != -1 &&pileFace == 0 &&can_add_bridge_dir(jeu, i, j))
+		{
+		  add_bridge_dir(jeu, i, j);
+                }
+              else{
+                if(get_degree(jeu,i)==0 &&j==3){
+                  del_all_bridges(i,jeu);
+                  //restart loop
+                  i=0;
+                  j=0;
+                }
+              }
+		
+>>>>>>> 19db24a1b667f8904aaf991a2713dd22e649c455
 	    }
 	}
     }
@@ -214,7 +274,14 @@ game initialise(int size, int nbnode, int grille[size][size], node t[])
       int x = get_x(t[i]), y = get_y(t[i]);
       grille[x][y] = get_degree(jeu, i);
     }
+<<<<<<< HEAD
   //affichage(size, grille, jeu);
+=======
+
+  //on enlève tous les ponts de la grille (faut pas donner la solution dès le début :p)
+
+  del_all_bridges(nbnode,jeu);
+>>>>>>> 19db24a1b667f8904aaf991a2713dd22e649c455
   return jeu;
 }
 
@@ -291,22 +358,6 @@ void pont(int size, game jeu)
   can_add_bridge_dir(jeu, base, dirige);
 }
 
-
-//cette fonction vérifie la connexité du jeu
-bool connexe(int nbnode, game jeu)
-{
-  for(int i = 1; i < nbnode; i++)
-    {
-      for(int j = 0; j < NB_DIRS; j++)
-	{
-	  if(get_neighbour_dir(jeu, i, j) == i-1 && get_degree_dir(jeu, i, j) == 0)
-	    return false;
-	}
-    }
-  return true;
-}
-
-
 //cette fonction affiche un tableau avec des informations sur chaque noeud
 void printNodesDetail(int nbnode, node t[], int size, cgame jeu){
 	printf("  X:  |  Y:  |  °:  | OK? |  N  \n");
@@ -362,6 +413,20 @@ void printNodesDetail(int nbnode, node t[], int size, cgame jeu){
 	}
 }
 
+//cette fonction vérifie la connexité du jeu
+bool connexe(int nbnode, game jeu)
+{
+  for(int i = 1; i < nbnode; i++)
+    {
+      for(int j = 0; j < NB_DIRS; j++)
+	{
+	  if(get_neighbour_dir(jeu, i, j) == i-1 && get_degree_dir(jeu, i, j) == 0)
+	    return false;
+	}
+    }
+  return true;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -380,19 +445,26 @@ int main(int argc, char *argv[])
   //on crée la grille de départ
   game jeu = initialise(size, nbnode, grille, t);
 
+<<<<<<< HEAD
   //on réinitialise la grille au moindre problème d'initialisation
   while(game_over(jeu) == false && connexe(nbnode, jeu) == false)
     {
       reset(jeu, nbnode, t);
       jeu = initialise(size, nbnode, grille, t);
     }
-  del_all_bridges(nbnode, jeu);
+  supprime_solution(nbnode, jeu);
   
   //vérification des nodes
-  print_nodes_detail(nbnode, t, size, jeu);
+  for(int i = 0; i < nbnode; i++)
+    printf("ile numero %d (degre %d) : (%d; %d) \n", i, get_required_degree(t[i]), get_x(t[i]), get_y(t[i]));
 
+=======
+>>>>>>> 19db24a1b667f8904aaf991a2713dd22e649c455
   //on affiche la grille au départ
   affichage(size, grille, jeu);
+
+  //vérification des nodes
+  printNodesDetail(nbnode, t, size, jeu);
 
   //on demande où placer le pont
   pont(size, jeu);
