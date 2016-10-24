@@ -31,7 +31,3 @@ int get_y (node n){
 int get_required_degree (node n){
 	return n->required_degree;
 }
-
-int main(void){
-	return EXIT_SUCCESS;
-}

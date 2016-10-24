@@ -5,7 +5,13 @@ ARFLAGS=rcs
 SRCDIR= ./src/
 OBJETS=src/game.o src/node.o
 EXEC =hashi_text
-all: libhashi.a hashi_text
+all: src/game.o src/node.o libhashi.a hashi_text
+
+src/game.o : src/game.c
+	$(CC) -c $(CFLAGS) $^ -o $@
+
+src/node.o : src/node.c
+	$(CC) -c $(CFLAGS) $^ -o $@
 
 libhashi.a: $(OBJETS)
 	$(AR) $(ARFLAGS) $@ $^
@@ -13,12 +19,6 @@ libhashi.a: $(OBJETS)
 hashi_text:./src/hashi_text.c libhashi.a
 	$(CC) -o $@ $(CFLAGS) $< -L. -lhashi
 
-tests:libtests.a test
-
-libtests.a:./tests/test_toolbox.c
-	$(CC) -o  $@ $(CFLAGS) $< -L. -lhashi
-	$(AR) $(ARFLAGS) $@ $^
-	$(CC) -o  $@ $(CFLAGS) $< -L. -lhashi
-
 clean:
-	rm -Rf *.a ./*~ $(EXEC)
+	rm -rf src/*~ tests/*~ include/*~ *.a $(EXEC)
+
