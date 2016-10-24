@@ -310,13 +310,11 @@ void pont(int size, game jeu)
 
 //cette fonction affiche un tableau avec des informations sur chaque noeud
 void printNodesDetail(int nbnode, node t[], int size, cgame jeu){
-	printf("  X:  |  Y:  |  °:  |  OK?\n");
+	printf("  X:  |  Y:  |  °:  | OK? |  N  \n");
 	
 	//boucles pour tri noeud par x puis par y
-	int x = 0;
-	while(x < size){
-		int y = 0;
-		while(y < size){
+	for(int x = 0; x < size; x++){
+		for(int y = 0; y < size; y++){
 			for(int i = 0; i < nbnode; i++){
 				if(get_x(t[i]) == x && get_y(t[i]) == y){
 					char a;
@@ -329,19 +327,39 @@ void printNodesDetail(int nbnode, node t[], int size, cgame jeu){
 
 					//test de la longeur de la chaine pour affichage identique
 					if(get_x(t[i]) > 19 && (get_y(t[i]) < 19))
-						printf("  %d  |  %d   |  %d   |  %c\n", get_x(t[i])/2, get_y(t[i])/2, get_required_degree(t[i]), a);
+						printf("  %d  |  %d   |  %d   |  %c  |  %d\n", 
+																get_x(t[i])/2, 
+																get_y(t[i])/2, 
+																get_required_degree(t[i]), 
+																a,
+																i);
+
 					else if(get_y(t[i]) > 19 && (get_x(t[i]) < 19))
-						printf("  %d   |  %d  |  %d   |  %c\n", get_x(t[i])/2, get_y(t[i])/2, get_required_degree(t[i]), a);
+						printf("  %d   |  %d  |  %d   |  %c  |  %d\n", 
+																get_x(t[i])/2, 
+																get_y(t[i])/2, 
+																get_required_degree(t[i]), 
+																a,
+																i);
+
 					else if(get_x(t[i]) > 19 && (get_y(t[i]) > 19))
-						printf("  %d  |  %d  |  %d   |  %c\n", get_x(t[i])/2, get_y(t[i])/2, get_required_degree(t[i]), a);
+						printf("  %d  |  %d  |  %d   |  %c  |  %d\n", 
+																get_x(t[i])/2, 
+																get_y(t[i])/2, 
+																get_required_degree(t[i]), 
+																a,
+																i);
 					else
-						printf("  %d   |  %d   |  %d   |  %c\n", get_x(t[i])/2, get_y(t[i])/2, get_required_degree(t[i]), a);
+						printf("  %d   |  %d   |  %d   |  %c  |  %d\n", 
+																get_x(t[i])/2, 
+																get_y(t[i])/2, 
+																get_required_degree(t[i]), 
+																a,
+																i);
 
 				}
 			}
-			y++;
 		}
-		x++;
 	}
 }
 
