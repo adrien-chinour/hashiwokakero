@@ -187,46 +187,6 @@ game initialise(int size, int nbnode, int grille[size][size], node t[])
                   j=0;
                 }
               }
-		  /*
-		    IMPORTANT: les changements de valeurs de la grille sert à vérifier l'affichage
-		    il faudra enlever "grille[x][y] = -2;" quand les problèmes d'initialisation seront réglés !
-		    
-		  int x = get_x(t[i]), y = get_y(t[i]);
-		  
-		  //on construit les ponts
-		  if(j == NORTH)
-		    {
-		      while(y != get_y(t[voisin])-1)
-			{
-			  y++;
-			  grille[x][y] = -2;
-			}
-		    }
-		  else if(j == WEST)
-		    {
-		      while(x != get_x(t[voisin])+1)
-			{
-			  x--;
-			  grille[x][y] = -2;
-			}
-		    }
-		  else if(j == SOUTH)
-		    {
-		      while(y != get_y(t[voisin])+1)
-			{
-			  y--;
-			  grille[x][y] = -2;
-			}
-		    }
-		  else
-		    {
-		      while(y != get_y(t[voisin])-1)
-			{
-			  y++;
-			  grille[x][y] = -2;
-			}
-		    }
-		  */
 		
 	    }
 	}
