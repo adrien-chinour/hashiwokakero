@@ -16,9 +16,12 @@ src/node.o : src/node.c
 libhashi.a: $(OBJETS)
 	$(AR) $(ARFLAGS) $@ $^
 
-hashi_text:./src/hashi_text.c libhashi.a
+hashi_text : src/hashi_text.c libhashi.a
 	$(CC) -o $@ $(CFLAGS) $< -L. -lhashi
 
+test : tests/test_game1.c tests/test_toolbox.c libhashi.a
+	$(CC) -o $@ $(CFLAGS) $< tests/test_toolbox.c -L. -lhashi
+
 clean:
-	rm -rf src/*~ tests/*~ include/*~ *.a $(EXEC)
+	rm -rf src/*~ test tests/*~ include/*~ *.a $(EXEC)
 

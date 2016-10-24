@@ -1,10 +1,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
-#include "game.h"
+#include "../include/game.h"
 #include "test_toolbox.h"
-
-
 
 /* Defalult configuration
    2     2     3
@@ -17,7 +15,7 @@
 #define EXAMPLE_NB_NODE 7
 int vals[EXAMPLE_NB_NODE][3] = {{0,0,3},{0,1,5},{0,2,2},{1,1,1},{1,2,2},{2,0,2},{2,2,3}};
 
-static game default_game () {
+static game default_game (){
     node nodes[EXAMPLE_NB_NODE];
     for (int i = 0 ; i < EXAMPLE_NB_NODE; i++)
       nodes[i] = new_node(vals[i][0],vals[i][1],vals[i][2]);

@@ -308,7 +308,7 @@ bool connexe(int nbnode, game jeu)
 
 
 //cette fonction affiche un tableau avec des informations sur chaque noeud
-void printNodesDetail(int nbnode, node t[], int size, cgame jeu){
+void print_nodes_detail(int nbnode, node t[], int size, cgame jeu){
 	printf("  X:  |  Y:  |  °:  | OK? |  N  \n");
 	
 	//boucles pour tri noeud par x puis par y
