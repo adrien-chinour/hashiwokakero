@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <stdbool.h>
 
 #include "../include/node.h"
 #include "../include/game.h"
@@ -10,7 +11,7 @@
 void securise(int *argc, char *argv[], int *size, int *nbnode)
 {
   /*lors du lancement, l'utilisateur doit choisir:
-    > la taille de la grille de jeu (0 à 19)
+    > la taille de la grille de jeu (2 à 30)
     > le nombre de nodes dans la grille
   sinon le jeu ne peut pas commencer*/
   
@@ -33,15 +34,15 @@ void securise(int *argc, char *argv[], int *size, int *nbnode)
   //si l'utilisateur écrit autre chose que des nombres corrects, ça ne marche pas
   if(*size == 0 || *nbnode == 0)
   {
-    printf("Erreur : veuillez entrer la taille entre 1 et 20 et les nodes entre 1 et 400 !\n");
+    printf("Erreur : veuillez entrer la taille entre 2 et 30 et les nodes entre 1 et 900 !\n");
     printf("Synthaxe : ./hashi_text TAILLE NBNODE\n");
     exit(EXIT_FAILURE);
   }
 
-  //si la taille du jeu est hors normes (taille < 0 ou taille > 20), on indique le problème
-  if(*size < 0 || *size > 20)
+  //si la taille du jeu est hors normes (taille < 2 ou taille > 30), on indique le problème
+  if(*size < 2 || *size > 30)
     {
-      printf("Erreur : la grille de jeu choisie ne peut pas etre construite (choisissez de 1 à 20) !\n");
+      printf("Erreur : la grille de jeu choisie ne peut pas etre construite (choisissez de 2 à 30) !\n");
       printf("Synthaxe : ./hashi_text TAILLE NBNODE\n");
       exit(EXIT_FAILURE);
     }
@@ -55,16 +56,19 @@ void affichage(int size, int grille[size][size], game jeu)
   //affiche l'axe des abscisses
   for(int i = 0; i < size; i++)
     {
-      if(i < 10)
-	printf(" %d  ", i);
+      if(i%2 == 0)
+	{
+	  if(i < 20)
+	    printf(" %d  ", i/2);
+	  else
+	    printf(" %d ", i/2);
+	}
       else
-	printf(" %d ", i);
+	printf("    ");
     }
   printf("\n");
   for(int i = 0; i < size; i++)
-    {
-      printf("----");
-    }
+    printf("----");
   printf("\n");
 
   //affiche toute la grille
@@ -89,9 +93,56 @@ void affichage(int size, int grille[size][size], game jeu)
 	    }
 	}
       //affiche l'axe des ordonnées
-      printf("| %d\n\n", y);
+      if(y%2 == 0)
+	printf("| %d\n\n", y/2);
+      else
+	printf("|\n\n");
     }
   printf("-- fin de la zone de jeu --\n");
+}
+
+
+//si une coordonnée est impaire, on la rend paire
+int rend_pair(int nombre)
+{
+  if(nombre % 2 != 0)
+    return nombre-1;
+  return nombre;
+}
+
+
+//cette fonction détruit toute la grille et en recrée une à initialiser
+void reset(game jeu, int nbnode, node t[])
+{
+  //on détruit tous les ponts et les nodes
+  for(int i = 0; i < nbnode; i++)
+    {
+      for(int j = 0; j < NB_DIRS; j++)
+	{
+	  if(get_degree_dir(jeu, i, j) == 2)
+	    del_bridge_dir(jeu, i, j);
+	  if(get_degree_dir(jeu, i, j) == 1)
+	    del_bridge_dir (jeu, i, j);
+	}
+      delete_node(t[i]);
+    }
+  delete_game(jeu);
+}
+
+
+//cette fonction enlève tous les ponts de la grille (faut pas donner la solution dès le début :p)
+void supprime_solution(int nbnode, game jeu)
+{
+  for(int i = 0; i < nbnode; i++)
+    {
+      for(int j = 0; j < NB_DIRS; j++)
+	{
+	  if(get_degree_dir(jeu, i, j) == 2)
+	    del_bridge_dir(jeu, i, j);
+	  if(get_degree_dir(jeu, i, j) == 1)
+	    del_bridge_dir (jeu, i, j);
+	}
+    }
 }
 
 
@@ -110,10 +161,12 @@ game initialise(int size, int nbnode, int grille[size][size], node t[])
   //on crée des nodes aléatoires
   srand(time(NULL));
 
-  int x = rand()%size, y = rand()%size;
+  //la node de base (qui permettra de placer les autres comme il faut)
+  int x = rend_pair(rand()%size), y = rend_pair(rand()%size);
   t[0] = new_node(x, y, 0);
   grille[x][y] = 0;
-  
+
+  //on prend une coordonnée de la node précédente et l'autre est aléatoire, puis on place une autre node
   for(int i = 1; i < nbnode; i++)
     {
       int randX = x, randY = y;
@@ -123,9 +176,9 @@ game initialise(int size, int nbnode, int grille[size][size], node t[])
 	  int pileFace = rand()%2;
 	  
 	  if(pileFace == 0)
-	    randX = rand()%size;
+	    randX = rend_pair(rand()%size);
 	  else
-	    randY = rand()%size;
+	    randY = rend_pair(rand()%size);
 	}
       x = randX;
       y = randY;
@@ -135,90 +188,45 @@ game initialise(int size, int nbnode, int grille[size][size], node t[])
 
   //création du jeu à partir des nodes précédement créées
   game jeu = new_game(nbnode, t);
-  affichage(size, grille, jeu);
-
+  
+  //affichage(size, grille, jeu);
+  
   //on cherche à placer aléatoirement des ponts sur chaque node pour leur définir un degré
   for(int i = 0; i < nbnode; i++)
     {
-      while(get_degree(jeu, i) == 0)
+      for(int j = 0; j < NB_DIRS; j++)
 	{
-	  for(int j = 0; j < NB_DIRS; j++)
+	  int voisin = get_neighbour_dir(jeu, i, j), pileFace = rand()%2;
+	  
+	  //si un voisin est détecté et qu'il n'y a pas d'obstacle on pose un pont ou pas
+	  if(pileFace == 0 && voisin != -1 && can_add_bridge_dir(jeu, i, j))
+	    add_bridge_dir(jeu, i, j);
+	  else if(voisin != -1 && can_add_bridge_dir(jeu, i, j) && get_degree_dir(jeu, i, j) == 0)
 	    {
-	      int voisin = get_neighbour_dir(jeu, i, j), pileFace = rand()%2;
-
-	      //si un voisin est détecté et qu'il n'y a pas d'obstacle on pose un pont ou pas
-	      if(voisin != -1 && pileFace == 0  && can_add_bridge_dir(jeu, i, j))
-		{
-		  add_bridge_dir(jeu, i, j);
-		  /*
-		    IMPORTANT: les changements de valeurs de la grille sert à vérifier l'affichage
-		    il faudra enlever "grille[x][y] = -2;" quand les problèmes d'initialisation seront réglés !
-		    
-		  int x = get_x(t[i]), y = get_y(t[i]);
-		  
-		  //on construit les ponts
-		  if(j == NORTH)
-		    {
-		      while(y != get_y(t[voisin])-1)
-			{
-			  y++;
-			  grille[x][y] = -2;
-			}
-		    }
-		  else if(j == WEST)
-		    {
-		      while(x != get_x(t[voisin])+1)
-			{
-			  x--;
-			  grille[x][y] = -2;
-			}
-		    }
-		  else if(j == SOUTH)
-		    {
-		      while(y != get_y(t[voisin])+1)
-			{
-			  y--;
-			  grille[x][y] = -2;
-			}
-		    }
-		  else
-		    {
-		      while(y != get_y(t[voisin])-1)
-			{
-			  y++;
-			  grille[x][y] = -2;
-			}
-		    }
-		  */
-		}
+	      add_bridge_dir(jeu, i, j);
+	      if(pileFace == 0)
+		add_bridge_dir(jeu, i, j);
 	    }
 	}
     }
-  
+
   //on défini le degré de chaque node selon le nombre de ponts dessus
   for(int i = 0; i < nbnode; i++)
     {
       int x = get_x(t[i]), y = get_y(t[i]);
       grille[x][y] = get_degree(jeu, i);
     }
-
-  //on enlève tous les ponts de la grille (faut pas donner la solution dès le début :p)
-  for(int i = 0; i < nbnode; i++)
-    {
-      for(int j = 0; j < NB_DIRS; j++)
-	{
-	  if(get_degree_dir(jeu, i, j) == 2)
-	    {
-	      del_bridge_dir(jeu, i, j);
-	    }
-	  if(get_degree_dir(jeu, i, j) == 1)
-	    {
-	      del_bridge_dir (jeu, i, j);
-	    }
-	}
-    }
-  
+  //affichage(size, grille, jeu);
   return jeu;
+}
+
+
+//cette fonction analyse une commande du joueur pour faire une action
+void commande(char faire[], int n)
+{
+  //char posePont = "place", retirePont = "prend", afficheNode = "stats", reset = "reset", commande = "commande";
+
+  //switch
 }
 
 
@@ -253,6 +261,7 @@ void lecture_securisee(char chaine[], int longueur)
       while (c != '\n' && c != EOF)
 	c = getchar();
     }
+  commande(chaine, longueur);
 }
 
 
@@ -285,6 +294,21 @@ void pont(int size, game jeu)
 }
 
 
+//cette fonction vérifie la connexité du jeu
+bool connexe(int nbnode, game jeu)
+{
+  for(int i = 1; i < nbnode; i++)
+    {
+      for(int j = 0; j < NB_DIRS; j++)
+	{
+	  if(get_neighbour_dir(jeu, i, j) == i-1 && get_degree_dir(jeu, i, j) == 0)
+	    return false;
+	}
+    }
+  return true;
+}
+
+
 int main(int argc, char *argv[])
 {
   //size sera la taille de la grille et nbnode le nombre de nodes
@@ -292,7 +316,6 @@ int main(int argc, char *argv[])
 
   //on vérifie si les réglages au lancement sont corrects
   securise(&(argc), argv, &(size), &(nbnode));
-  printf("%d\n", size);
   
   //on crée un tableau 2D pour contenir toute la "grille" de jeu
   int grille[size][size];
@@ -303,6 +326,14 @@ int main(int argc, char *argv[])
   //on crée la grille de départ
   game jeu = initialise(size, nbnode, grille, t);
 
+  //on réinitialise la grille au moindre problème d'initialisation
+  while(game_over(jeu) == false && connexe(nbnode, jeu) == false)
+    {
+      reset(jeu, nbnode, t);
+      jeu = initialise(size, nbnode, grille, t);
+    }
+  supprime_solution(nbnode, jeu);
+  
   //vérification des nodes
   for(int i = 0; i < nbnode; i++)
     printf("ile numero %d (degre %d) : (%d; %d) \n", i, get_required_degree(t[i]), get_x(t[i]), get_y(t[i]));
