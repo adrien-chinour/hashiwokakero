@@ -131,7 +131,7 @@ void reset(game jeu, int nbnode, node t[])
 
 
 //cette fonction enlève tous les ponts de la grille (faut pas donner la solution dès le début :p)
-void supprime_solution(int nbnode, game jeu)
+void del_all_bridges(int nbnode, game jeu)
 {
   for(int i = 0; i < nbnode; i++)
     {
@@ -153,9 +153,7 @@ game initialise(int size, int nbnode, int grille[size][size], node t[])
   for(int i = 0; i < size; i++)
     {
       for(int j = 0; j < size; j++)
-	{
-	  grille[i][j] = -1;
-	}
+	grille[i][j] = -1;
     }
   
   //on crée des nodes aléatoires
@@ -309,6 +307,62 @@ bool connexe(int nbnode, game jeu)
 }
 
 
+//cette fonction affiche un tableau avec des informations sur chaque noeud
+void printNodesDetail(int nbnode, node t[], int size, cgame jeu){
+	printf("  X:  |  Y:  |  °:  | OK? |  N  \n");
+	
+	//boucles pour tri noeud par x puis par y
+	for(int x = 0; x < size; x++){
+		for(int y = 0; y < size; y++){
+			for(int i = 0; i < nbnode; i++){
+				if(get_x(t[i]) == x && get_y(t[i]) == y){
+					char a;
+
+					//test si nombre de pont egal au degre
+					if (get_required_degree(t[i]) == 0) //test a voir 
+						a = 'V';
+					else
+						a = 'X';
+
+					//test de la longeur de la chaine pour affichage identique
+					if(get_x(t[i]) > 19 && (get_y(t[i]) < 19))
+						printf("  %d  |  %d   |  %d   |  %c  |  %d\n", 
+																get_x(t[i])/2, 
+																get_y(t[i])/2, 
+																get_required_degree(t[i]), 
+																a,
+																i);
+
+					else if(get_y(t[i]) > 19 && (get_x(t[i]) < 19))
+						printf("  %d   |  %d  |  %d   |  %c  |  %d\n", 
+																get_x(t[i])/2, 
+																get_y(t[i])/2, 
+																get_required_degree(t[i]), 
+																a,
+																i);
+
+					else if(get_x(t[i]) > 19 && (get_y(t[i]) > 19))
+						printf("  %d  |  %d  |  %d   |  %c  |  %d\n", 
+																get_x(t[i])/2, 
+																get_y(t[i])/2, 
+																get_required_degree(t[i]), 
+																a,
+																i);
+					else
+						printf("  %d   |  %d   |  %d   |  %c  |  %d\n", 
+																get_x(t[i])/2, 
+																get_y(t[i])/2, 
+																get_required_degree(t[i]), 
+																a,
+																i);
+
+				}
+			}
+		}
+	}
+}
+
+
 int main(int argc, char *argv[])
 {
   //size sera la taille de la grille et nbnode le nombre de nodes
@@ -332,11 +386,10 @@ int main(int argc, char *argv[])
       reset(jeu, nbnode, t);
       jeu = initialise(size, nbnode, grille, t);
     }
-  supprime_solution(nbnode, jeu);
+  del_all_bridges(nbnode, jeu);
   
   //vérification des nodes
-  for(int i = 0; i < nbnode; i++)
-    printf("ile numero %d (degre %d) : (%d; %d) \n", i, get_required_degree(t[i]), get_x(t[i]), get_y(t[i]));
+  print_nodes_detail(nbnode, t, size, jeu);
 
   //on affiche la grille au départ
   affichage(size, grille, jeu);
