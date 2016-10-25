@@ -387,12 +387,12 @@ int main(int argc, char *argv[])
       jeu = initialise(size, nbnode, grille, t);
     }
   del_all_bridges(nbnode, jeu);
-  
-  //vérification des nodes
-  print_nodes_detail(nbnode, t, size, jeu);
 
   //on affiche la grille au départ
   affichage(size, grille, jeu);
+
+  //vérification des nodes
+  print_nodes_detail(nbnode, t, size, jeu);
 
   //on demande où placer le pont
   pont(size, jeu);

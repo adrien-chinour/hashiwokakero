@@ -83,7 +83,10 @@ bool game_over (cgame g){
    return true;
 }
 
-int get_neighbour_dir (cgame g, int node_num, dir d){
+int get_neighbour_dir (cgame g, int node_num, dir d){ 
+
+   // BUG : RECUPÈRE UN NODE DANS LA DIRECTION SOUHAITÉ MAIS PAS FORCÉMENT LE PLUS PROCHE 
+
    node n = game_node(g, node_num);
    switch (d){
       case 0: //NORTH
