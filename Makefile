@@ -17,11 +17,11 @@ libhashi.a: $(OBJETS)
 	$(AR) $(ARFLAGS) $@ $^
 
 hashi_text : src/hashi_text.c libhashi.a
-	$(CC) -o $@ $(CFLAGS) $< -L. -lhashi
+	$(CC) -g -o $@ $(CFLAGS) $< -L. -lhashi
 
 test : tests/test_game1.c tests/test_toolbox.c libhashi.a
 	$(CC) -o $@ $(CFLAGS) $< tests/test_toolbox.c -L. -lhashi
 
 clean:
-	rm -rf src/*~ test tests/*~ include/*~ *.a $(EXEC)
+	rm -rf src/*.o src/*~ test tests/*~ include/*~ *.a $(EXEC)
 
