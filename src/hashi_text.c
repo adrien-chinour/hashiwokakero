@@ -163,7 +163,7 @@ game initialise(int size, int nbnode, int grille[size][size], node t[])
   int x = rend_pair(rand()%size), y = rend_pair(rand()%size);
   t[0] = new_node(x, y, 0);
   grille[x][y] = 0;
-
+  
   //on prend une coordonnée de la node précédente et l'autre est aléatoire, puis on place une autre node
   for(int i = 1; i < nbnode; i++)
     {
@@ -183,11 +183,9 @@ game initialise(int size, int nbnode, int grille[size][size], node t[])
       t[i] = new_node(x, y, 0);
       grille[x][y] = 0;
     }
-
+  
   //création du jeu à partir des nodes précédement créées
   game jeu = new_game(nbnode, t);
-  
-  //affichage(size, grille, jeu);
   
   //on cherche à placer aléatoirement des ponts sur chaque node pour leur définir un degré
   for(int i = 0; i < nbnode; i++)

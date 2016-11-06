@@ -6,7 +6,7 @@
 /**
  * @file game.h
  *
- * @brief This file describes the board of a  hashiwokakero game, the state of a game and all functions needed to manipulate it.
+ * @brief This file describes the board of a hashiwokakero game, the state of a game and all functions needed to manipulate it.
  **/
 
 /**
