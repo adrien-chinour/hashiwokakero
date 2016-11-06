@@ -212,7 +212,6 @@ game initialise(int size, int nbnode, int grille[size][size], node t[])
       int x = get_x(t[i]), y = get_y(t[i]);
       grille[x][y] = get_degree(jeu, i);
     }
-  //affichage(size, grille, jeu);
   return jeu;
 }
 

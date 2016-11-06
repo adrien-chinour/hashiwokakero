@@ -62,7 +62,13 @@ bool game_over (cgame g);
 bool can_add_bridge_dir (cgame g, int node_num, dir d);
 
 void add_bridge_dir (game g, int node_num, dir d){
-   g->bridges[node_num][d]++;
+  if(can_add_bridge_dir (g, node_num, d))
+    g->bridges[node_num][d]++;
+  else
+    {
+      printf("Erreur: can_add_bridge_dir (g, node_num, d) n'est pas valide.\n");
+      exit(EXIT_FAILURE);
+    }
 }
 
 void del_bridge_dir (game g, int node_num, dir d){
@@ -77,7 +83,8 @@ int get_degree_dir (game g, int node_num, dir d){
 int get_degree(cgame g, int node_num){
    int k = 0;
    for(int i = 0; i < NB_DIRS; i++){
-      k += g->bridges[node_num][i];
+     if(g->bridges[node_num][i] == 1)
+       k++;
    }
    return k;
 }
@@ -88,8 +95,7 @@ int game_get_node_number (cgame g, int x, int y);
 int get_neighbour_dir (cgame g, int node_num, dir d){
 
    node n = game_node(g, node_num);
-   int x = get_x(n), y = get_y(n);
-   int xc = 0, yc = 0;
+   int x = get_x(n), y = get_y(n), xc = 0, yc = 0;
    
    switch (d){
       case NORTH:
@@ -184,7 +190,7 @@ bool game_over (cgame g){
 }
 
 bool can_add_bridge_dir (cgame g, int node_num, dir d){
-   if( g->bridges[node_num][d] < 2){
+   if(g->bridges[node_num][d] < 2){
       switch (d){
 
                //    C
@@ -197,14 +203,14 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
             for(int i = 0; i < g->nb_nodes; i++){
                node n = game_node(g, i);
 
-               if(g->bridges[i][3] > 0 // bridge A -> B
+               if(g->bridges[i][EAST] > 0 // bridge A -> B
                   && get_x(n) > get_x(game_node(g, node_num)) // xA > xD
                   && get_x(n) < get_x(game_node(g, get_neighbour_dir(g, node_num, NORTH))) // xA < xC
                   && get_y(n) < get_y(game_node(g, node_num)) // yA < yD
                   && get_y(game_node(g, get_neighbour_dir(g, i, EAST))) > get_y(game_node(g, node_num)) ) // yB > yD
                   return false;
 
-               if(g->bridges[i][1] > 0 // bridge B -> A
+               if(g->bridges[i][WEST] > 0 // bridge B -> A
                   && get_x(n) > get_x(game_node(g, node_num)) // xB > xD
                   && get_x(n) < get_x(game_node(g, get_neighbour_dir(g, node_num, NORTH))) //xB < xC
                   && get_y(n) > get_y(game_node(g, node_num)) // yB > yD
@@ -218,14 +224,14 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
             for(int i = 0; i < g->nb_nodes; i++){
                node n = game_node(g, i);
 
-               if(g->bridges[i][2] > 0 // bridge C -> D
+               if(g->bridges[i][SOUTH] > 0 // bridge C -> D
                   && get_x(n) > get_x(game_node(g, node_num)) // xC > xA
                   && get_x(game_node(g ,get_neighbour_dir(g, i, SOUTH))) < get_x(game_node(g, node_num)) // xD < xA
                   && get_y(n) > get_y(game_node(g, node_num)) // yC > yA
                   && get_y(n) < get_y(game_node(g, get_neighbour_dir(g, node_num, WEST))) ) // yC < yB
                   return false;
 
-               if(g->bridges[i][0] > 0 // bridge D -> C
+               if(g->bridges[i][NORTH] > 0 // bridge D -> C
                   && get_x(n) < get_x(game_node(g, node_num)) // xD < xA
                   && get_x(game_node(g, get_neighbour_dir(g, i, NORTH))) < get_x(game_node(g, node_num)) //xC > xA
                   && get_y(n) > get_y(game_node(g, node_num)) // yD > yA
@@ -239,14 +245,14 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
             for(int i = 0; i < g->nb_nodes; i++){
                node n = game_node(g, i);
 
-               if(g->bridges[i][3] > 0 // bridge A -> B
+               if(g->bridges[i][EAST] > 0 // bridge A -> B
                   && get_x(n) < get_x(game_node(g, node_num)) // xA < xC
                   && get_x(n) > get_x(game_node(g, get_neighbour_dir(g, node_num, SOUTH))) // xA > xD
                   && get_y(n) < get_y(game_node(g, node_num)) // yA < yC
                   && get_y(game_node(g, get_neighbour_dir(g, i, EAST))) > get_y(game_node(g, node_num)) ) // yB > yC
                   return false;
 
-               if(g->bridges[i][1] > 0 // bridge B -> A
+               if(g->bridges[i][WEST] > 0 // bridge B -> A
                   && get_x(n) < get_x(game_node(g, node_num)) // xB < xC
                   && get_x(n) > get_x(game_node(g, get_neighbour_dir(g, node_num, SOUTH))) //xB > xD
                   && get_y(n) > get_y(game_node(g, node_num)) // yB > yC
@@ -260,14 +266,14 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
             for(int i = 0; i < g->nb_nodes; i++){
                node n = game_node(g, i);
 
-               if(g->bridges[i][2] > 0 // bridge C -> D
+               if(g->bridges[i][SOUTH] > 0 // bridge C -> D
                   && get_x(n) > get_x(game_node(g, node_num)) // xC > xB
                   && get_x(game_node(g ,get_neighbour_dir(g, i, SOUTH))) < get_x(game_node(g, node_num)) // xD < xC
                   && get_y(n) < get_y(game_node(g, node_num)) // yC < yB
                   && get_y(n) > get_y(game_node(g, get_neighbour_dir(g, node_num, WEST))) ) // yC > yA
                   return false;
 
-               if(g->bridges[i][0] > 0 // bridge D -> C
+               if(g->bridges[i][NORTH] > 0 // bridge D -> C
                   && get_x(n) < get_x(game_node(g, node_num)) // xD < xB
                   && get_x(game_node(g, get_neighbour_dir(g, i, NORTH))) < get_x(game_node(g, node_num)) //xC > xB
                   && get_y(n) < get_y(game_node(g, node_num)) // yD < yA
