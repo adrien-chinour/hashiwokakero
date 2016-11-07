@@ -30,7 +30,6 @@ void delete_game (game g){
 game copy_game (cgame g_src){
    node *nodes = g_src->nodes;
    int nb_nodes = g_src->nb_nodes;
-   int bridges[nb_nodes][NB_DIRS];
    game ngame = new_game(nb_nodes, nodes);
    for(int i = 0; i < nb_nodes; i++){
       for(int j = 0; j < NB_DIRS; j++){

@@ -19,8 +19,8 @@ libhashi.a: $(OBJETS)
 hashi_text : src/hashi_text.c libhashi.a
 	$(CC) -g -o $@ $(CFLAGS) $< -L. -lhashi
 
-test :test1 test2
-	./test1 | ./test2
+test :test1 test2 test3
+	./test1 | ./test2 | ./test3
 
 
 test1: tests/test_game1.c tests/test_toolbox.c libhashi.a
@@ -29,7 +29,9 @@ test1: tests/test_game1.c tests/test_toolbox.c libhashi.a
 test2: tests/test_game4.c tests/test_toolbox.c libhashi.a
 	$(CC) -o $@ $(CFLAGS) $< tests/test_toolbox.c -L. -lhashi
 
+test3: tests/test_game3.c tests/test_toolbox.c libhashi.a
+	$(CC) -o $@ $(CFLAGS) $< tests/test_toolbox.c -L. -lhashi
 
 clean:
-	rm -rf src/*.o src/*~ test1 test2 tests/*~ include/*~ *.a $(EXEC)
+	rm -rf src/*.o src/*~ test1 test2 test3 tests/*~ include/*~ *.a $(EXEC)
 
