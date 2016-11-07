@@ -12,7 +12,7 @@
    2     4     1
 */
 
-#define EXAMPLE_NB_NODE 7
+#define EXAMPLE_NB_NODE 8
 int vals[EXAMPLE_NB_NODE][3] = {{0,0,2},{0,1,3},{0,2,1},{1,0,4},{1,1,7},{1,2,2},{2,0,1},{2,1,2}};
 
 static game default_game (){
@@ -36,8 +36,8 @@ bool test_get_node_number() {
       node n = game_node(g, num);
       r = r && test_equality_int(vals[i][2], get_required_degree(n), "Pb with degrees");
     }
-    r = r && test_equality_int(-1, game_get_node_number (g, 1, 0), "Pb game_node_number");
-    r = r && test_equality_int(-1, game_get_node_number (g, 2, 1), "Pb game_node_number");
+    r = r && test_equality_int(3, game_get_node_number (g, 1, 0), "Pb game_node_number");
+    r = r && test_equality_int(7, game_get_node_number (g, 2, 1), "Pb game_node_number");
     delete_game(g);
     return r;
 }
@@ -59,8 +59,8 @@ bool test_can_add_bridge_dir() {
 bool test_get_neighbour() {
     game g = default_game();
     bool r = true;
-    r = r && test_equality_int(5, get_neighbour_dir(g,0,EAST), "pb neighbour 0 EAST");
-    r = r && test_equality_int(4, get_neighbour_dir(g,2,EAST), "pb neighbour 2 EAST");
+    r = r && test_equality_int(3, get_neighbour_dir(g,0,EAST), "pb neighbour 0 EAST");
+    r = r && test_equality_int(5, get_neighbour_dir(g,2,EAST), "pb neighbour 2 EAST");
     r = r && test_equality_int(0, get_neighbour_dir(g,1,SOUTH), "pb neighbour 1 SOUTH");
     r = r && test_equality_int(2, get_neighbour_dir(g,1,NORTH), "pb neighbour 1 NORTH");
 

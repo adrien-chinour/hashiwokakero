@@ -9,10 +9,10 @@ typedef struct node_s {
 } *node;
 
 node new_node (int x, int y, int required_degree){
-	node n = (node) malloc(sizeof(node));
+	node n = malloc(sizeof(node));
 	n->x = x;
 	n->y = y;
-	n->required_degree = required_degree;
+        n->required_degree = required_degree;
 	return n;
 }
 

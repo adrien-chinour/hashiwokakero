@@ -24,8 +24,7 @@ game new_game(int nb_nodes, node *nodes){
 }
 
 void delete_game (game g){
-   free(g->nodes);
-   free(g);
+  free(g);
 }
 
 game copy_game (cgame g_src){
