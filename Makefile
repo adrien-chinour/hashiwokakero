@@ -26,13 +26,13 @@ test :test1 test2 test3 test4
 test1: tests/test_game1.c tests/test_toolbox.c libhashi.a
 	$(CC) -o $@ $(CFLAGS) $< tests/test_toolbox.c -L. -lhashi
 
-test2: tests/test_game4.c tests/test_toolbox.c libhashi.a
+test2: tests/test_game2.c tests/test_toolbox.c libhashi.a
 	$(CC) -o $@ $(CFLAGS) $< tests/test_toolbox.c -L. -lhashi
 
 test3: tests/test_game3.c tests/test_toolbox.c libhashi.a
 	$(CC) -o $@ $(CFLAGS) $< tests/test_toolbox.c -L. -lhashi
 
-test4: tests/test_game5.c tests/test_toolbox.c libhashi.a
+test4: tests/test_game4.c tests/test_toolbox.c libhashi.a
 	$(CC) -o $@ $(CFLAGS) $< tests/test_toolbox.c -L. -lhashi
 
 

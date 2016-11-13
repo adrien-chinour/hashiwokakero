@@ -63,7 +63,6 @@ bool test_get_neighbour() {
     r = r && test_equality_int(5, get_neighbour_dir(g,2,EAST), "pb neighbour 2 EAST");
     r = r && test_equality_int(0, get_neighbour_dir(g,1,SOUTH), "pb neighbour 1 SOUTH");
     r = r && test_equality_int(2, get_neighbour_dir(g,1,NORTH), "pb neighbour 1 NORTH");
-
     delete_game(g);
     return r;
 }

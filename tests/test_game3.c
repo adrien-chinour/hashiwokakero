@@ -27,17 +27,17 @@ bool test_game_over(){
    game g =default_game();
    bool r = true;
    add_bridge_dir(g,0,EAST);
-   r = r && test_equality_bool(false, game_over(g),"pas de game over");
+   r = r && test_equality_bool(false, game_over(g),"Pb game_over");
    add_bridge_dir(g,0,EAST);
    add_bridge_dir(g,1,EAST);
    add_bridge_dir(g,1,EAST);
-   //faux le .o donné
-   r = r && test_equality_bool(true, game_over(g),"pas de game over");
+   r = r && test_equality_bool(false, game_over(g),"Pb game_over");
    del_bridge_dir(g, 0, EAST);
    del_bridge_dir(g, 1, EAST);
    add_bridge_dir(g, 0, NORTH);
    add_bridge_dir(g, 3, SOUTH);
-   r = r && test_equality_bool(true, game_over(g),"game over pour rien");
+   r = r && test_equality_bool(true, game_over(g),"Pb game_over");
+   delete_game(g);
    return r;
 }
 
