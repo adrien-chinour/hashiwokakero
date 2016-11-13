@@ -57,14 +57,14 @@ void affichage(int size, int grille[size][size], game jeu)
   for(int i = 0; i < size; i++)
     {
       if(i%2 == 0)
-	{
-	  if(i < 20)
-	    printf(" %d  ", i/2);
-	  else
-	    printf(" %d ", i/2);
-	}
+  {
+    if(i < 20)
+      printf(" %d  ", i/2);
+    else
+      printf(" %d ", i/2);
+  }
       else
-	printf("    ");
+  printf("    ");
     }
   printf("\n");
   for(int i = 0; i < size; i++)
@@ -75,28 +75,28 @@ void affichage(int size, int grille[size][size], game jeu)
   for(int y = size-1; y >= 0; y--)
     {
       for(int x = 0; x < size; x++)
-	{
-	  switch (grille[x][y])
-	    {
-	    case -2: //affiche un pont simple
-	      printf(" +  ");
-	      break;
-	    case -3: //affiche un pont double
-	      printf(" #  ");
-	      break;
-	    case -1: //affiche une case vide
-	      printf(" .  "); 
-	      break;
-	    default: //affiche le degré d'une île
-	      printf(" %d  ", grille[x][y]);
-	      break;
-	    }
-	}
+  {
+    switch (grille[x][y])
+      {
+      case -2: //affiche un pont simple
+        printf(" +  ");
+        break;
+      case -3: //affiche un pont double
+        printf(" #  ");
+        break;
+      case -1: //affiche une case vide
+        printf(" .  "); 
+        break;
+      default: //affiche le degré d'une île
+        printf(" %d  ", grille[x][y]);
+        break;
+      }
+  }
       //affiche l'axe des ordonnées
       if(y%2 == 0)
-	printf("| %d\n\n", y/2);
+  printf("| %d\n\n", y/2);
       else
-	printf("|\n\n");
+  printf("|\n\n");
     }
   printf("-- fin de la zone de jeu --\n");
 }
@@ -118,12 +118,12 @@ void reset(game jeu, int nbnode, node t[])
   for(int i = 0; i < nbnode; i++)
     {
       for(int j = 0; j < NB_DIRS; j++)
-	{
-	  if(get_degree_dir(jeu, i, j) == 2)
-	    del_bridge_dir(jeu, i, j);
-	  if(get_degree_dir(jeu, i, j) == 1)
-	    del_bridge_dir (jeu, i, j);
-	}
+  {
+    if(get_degree_dir(jeu, i, j) == 2)
+      del_bridge_dir(jeu, i, j);
+    if(get_degree_dir(jeu, i, j) == 1)
+      del_bridge_dir (jeu, i, j);
+  }
       delete_node(t[i]);
     }
   delete_game(jeu);
@@ -136,12 +136,12 @@ void del_all_bridges(int nbnode, game jeu)
   for(int i = 0; i < nbnode; i++)
     {
       for(int j = 0; j < NB_DIRS; j++)
-	{
-	  if(get_degree_dir(jeu, i, j) == 2)
-	    del_bridge_dir(jeu, i, j);
-	  if(get_degree_dir(jeu, i, j) == 1)
-	    del_bridge_dir (jeu, i, j);
-	}
+  {
+    if(get_degree_dir(jeu, i, j) == 2)
+      del_bridge_dir(jeu, i, j);
+    if(get_degree_dir(jeu, i, j) == 1)
+      del_bridge_dir (jeu, i, j);
+  }
     }
 }
 
@@ -153,7 +153,7 @@ game initialise(int size, int nbnode, int grille[size][size], node t[])
   for(int i = 0; i < size; i++)
     {
       for(int j = 0; j < size; j++)
-	grille[i][j] = -1;
+  grille[i][j] = -1;
     }
   
   //on crée des nodes aléatoires
@@ -170,14 +170,14 @@ game initialise(int size, int nbnode, int grille[size][size], node t[])
       int randX = x, randY = y;
 
       while(grille[randX][randY] == 0)
-	{
-	  int pileFace = rand()%2;
-	  
-	  if(pileFace == 0)
-	    randX = rend_pair(rand()%size);
-	  else
-	    randY = rend_pair(rand()%size);
-	}
+  {
+    int pileFace = rand()%2;
+    
+    if(pileFace == 0)
+      randX = rend_pair(rand()%size);
+    else
+      randY = rend_pair(rand()%size);
+  }
       x = randX;
       y = randY;
       t[i] = new_node(x, y, 0);
@@ -191,19 +191,19 @@ game initialise(int size, int nbnode, int grille[size][size], node t[])
   for(int i = 0; i < nbnode; i++)
     {
       for(int j = 0; j < NB_DIRS; j++)
-	{
-	  int voisin = get_neighbour_dir(jeu, i, j), pileFace = rand()%2;
-	  
-	  //si un voisin est détecté et qu'il n'y a pas d'obstacle on pose un pont ou pas
-	  if(pileFace == 0 && voisin != -1 && can_add_bridge_dir(jeu, i, j))
-	    add_bridge_dir(jeu, i, j);
-	  else if(voisin != -1 && can_add_bridge_dir(jeu, i, j) && get_degree_dir(jeu, i, j) == 0)
-	    {
-	      add_bridge_dir(jeu, i, j);
-	      if(pileFace == 0)
-		add_bridge_dir(jeu, i, j);
-	    }
-	}
+  {
+    int voisin = get_neighbour_dir(jeu, i, j), pileFace = rand()%2;
+    
+    //si un voisin est détecté et qu'il n'y a pas d'obstacle on pose un pont ou pas
+    if(pileFace == 0 && voisin != -1 && can_add_bridge_dir(jeu, i, j))
+      add_bridge_dir(jeu, i, j);
+    else if(voisin != -1 && can_add_bridge_dir(jeu, i, j) && get_degree_dir(jeu, i, j) == 0)
+      {
+        add_bridge_dir(jeu, i, j);
+        if(pileFace == 0)
+    add_bridge_dir(jeu, i, j);
+      }
+  }
     }
 
   //on défini le degré de chaque node selon le nombre de ponts dessus
@@ -239,22 +239,22 @@ void lecture_securisee(char chaine[], int longueur)
 
       //il on a trouvé '\n', on le remplace par \0 (fin de chaine) pour sécuriser
       if(positionEntree != NULL)
-	*positionEntree = '\0';
+  *positionEntree = '\0';
       
       //si on a pas trouvé, il est dans le buffer, on va donc le vider
       else
-	{
-	  int c = 0;
-	  //EOF signifie "fin de fichier": tant qu'on a pas trouvé /n, on cherche
-	  while (c != '\n' && c != EOF)
-	    c = getchar();
-	}
+  {
+    int c = 0;
+    //EOF signifie "fin de fichier": tant qu'on a pas trouvé /n, on cherche
+    while (c != '\n' && c != EOF)
+      c = getchar();
+  }
     }
   else
     {
       int c = 0;
       while (c != '\n' && c != EOF)
-	c = getchar();
+  c = getchar();
     }
   commande(chaine, longueur);
 }
@@ -290,31 +290,31 @@ void pont(int size, game jeu, node t[], int grille[size][size])
     {
     case NORTH:
       while(y != get_y(t[voisin])-1 && voisin != -1)
-	{
-	  y++;
-	  grille[x][y] = -2;
-	}
+  {
+    y++;
+    grille[x][y] = -2;
+  }
       break;
     case WEST:
       while(x != get_x(t[voisin])+1 && voisin != -1)
-	{
-	  x--;
-	  grille[x][y] = -2;
-	}
+  {
+    x--;
+    grille[x][y] = -2;
+  }
       break;
     case SOUTH:
       while(y != get_y(t[voisin])+1 && voisin != -1)
-	{
-	  y--;
-	  grille[x][y] = -2;
-	}
+  {
+    y--;
+    grille[x][y] = -2;
+  }
       break;
     case EAST:
       while(x != get_x(t[voisin])-1 && voisin != -1)
-	{
-	  x++;
-	  grille[x][y] = -2;
-	}
+  {
+    x++;
+    grille[x][y] = -2;
+  }
       break;
       
       can_add_bridge_dir(jeu, base, dirige);
@@ -328,10 +328,10 @@ bool connexe(int nbnode, game jeu)
   for(int i = 1; i < nbnode; i++)
     {
       for(int j = 0; j < NB_DIRS; j++)
-	{
-	  if(get_neighbour_dir(jeu, i, j) == i-1 && get_degree_dir(jeu, i, j) == 0)
-	    return false;
-	}
+  {
+    if(get_neighbour_dir(jeu, i, j) == i-1 && get_degree_dir(jeu, i, j) == 0)
+      return false;
+  }
     }
   return true;
 }
@@ -345,48 +345,48 @@ void print_nodes_detail(int nbnode, node t[], int size, cgame jeu){
   for(int x = 0; x < size; x++){
     for(int y = 0; y < size; y++){
       for(int i = 0; i < nbnode; i++){
-	if(get_x(t[i]) == x && get_y(t[i]) == y){
-	  char a;
-	  
-	  //test si nombre de pont egal au degre
-	  if (get_required_degree(t[i]) == 0) //test a voir 
-	    a = 'V';
-	  else
-	    a = 'X';
-	  
-	  //test de la longeur de la chaine pour affichage identique
-	  if(get_x(t[i]) > 19 && (get_y(t[i]) < 19))
-	    printf("  %d  |  %d   |  %d   |  %c  |  %d\n", 
-		   get_x(t[i])/2, 
-		   get_y(t[i])/2, 
-		   get_required_degree(t[i]), 
-		   a, 
-		   i);
-	  
-	  else if(get_y(t[i]) > 19 && (get_x(t[i]) < 19))
-	    printf("  %d   |  %d  |  %d   |  %c  |  %d\n", 
-		   get_x(t[i])/2, 
-		   get_y(t[i])/2, 
-		   get_required_degree(t[i]), 
-		   a,
-		   i);
-	  
-	  else if(get_x(t[i]) > 19 && (get_y(t[i]) > 19))
-	    printf("  %d  |  %d  |  %d   |  %c  |  %d\n", 
-		   get_x(t[i])/2, 
-		   get_y(t[i])/2, 
-		   get_required_degree(t[i]), 
-		   a,
-		   i);
-	  else
-	    printf("  %d   |  %d   |  %d   |  %c  |  %d\n", 
-		   get_x(t[i])/2, 
-		   get_y(t[i])/2, 
-		   get_required_degree(t[i]), 
-		   a,
-		   i);
-	  
-	}
+  if(get_x(t[i]) == x && get_y(t[i]) == y){
+    char a;
+    
+    //test si nombre de pont egal au degre
+    if (get_required_degree(t[i]) == 0) //test a voir 
+      a = 'V';
+    else
+      a = 'X';
+    
+    //test de la longeur de la chaine pour affichage identique
+    if(get_x(t[i]) > 19 && (get_y(t[i]) < 19))
+      printf("  %d  |  %d   |  %d   |  %c  |  %d\n", 
+       get_x(t[i])/2, 
+       get_y(t[i])/2, 
+       get_required_degree(t[i]), 
+       a, 
+       i);
+    
+    else if(get_y(t[i]) > 19 && (get_x(t[i]) < 19))
+      printf("  %d   |  %d  |  %d   |  %c  |  %d\n", 
+       get_x(t[i])/2, 
+       get_y(t[i])/2, 
+       get_required_degree(t[i]), 
+       a,
+       i);
+    
+    else if(get_x(t[i]) > 19 && (get_y(t[i]) > 19))
+      printf("  %d  |  %d  |  %d   |  %c  |  %d\n", 
+       get_x(t[i])/2, 
+       get_y(t[i])/2, 
+       get_required_degree(t[i]), 
+       a,
+       i);
+    else
+      printf("  %d   |  %d   |  %d   |  %c  |  %d\n", 
+       get_x(t[i])/2, 
+       get_y(t[i])/2, 
+       get_required_degree(t[i]), 
+       a,
+       i);
+    
+  }
       }
     }
   }

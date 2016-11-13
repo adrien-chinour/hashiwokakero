@@ -214,12 +214,37 @@ int game_get_node_number (cgame g, int x, int y){
    return -1;
 }
 
-bool game_over (cgame g){
-  for(int i = 0; i < g->nb_nodes; i++){
-    if(get_degree(g, i) != get_required_degree(g->nodes[i]))
-      return false;
+
+ //this function prepare to verify if the game is connexe
+void recursive(cgame g, int number, int mark[])
+{
+  if(mark[number] != 1) 
+  {
+    mark[number] = 1;
+    for(int i = 0; i < NB_DIRS; i++)
+    {
+      int neighbour = get_neighbour_dir(g, number, i);
+      if(neighbour != -1)
+        recursive(g, neighbour, mark);
+    }
   }
-  return true;  
+}
+
+bool game_over (cgame g){
+
+//initialize mark[] (which will mark all the nodes linked) to 0
+  int mark[g->nb_nodes];
+  for(int i = 0; i < g->nb_nodes; i++)
+    mark[i] = 0;
+
+    //mark all the nodes linked by the same group of bridges
+    recursive(g, 0, mark);
+
+    for(int i = 0; i < g->nb_nodes; i++){
+      if(mark[i] != 1)
+        return false;
+    }
+  return true;
 }
 
 bool can_add_bridge_dir (cgame g, int node_num, dir d){
