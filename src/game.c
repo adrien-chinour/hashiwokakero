@@ -47,13 +47,13 @@ game new_game (int nb_nodes, node *nodes){
 }
 
 void delete_game (game g){
-	for(int i = 0; i < g->nb_nodes; i++){
-		delete_node(g->nodes[i]);
-    free(g->bridges[i]);
-	}
+   for(int i = 0; i < g->nb_nodes; i++){
+      delete_node(g->nodes[i]);
+      free(g->bridges[i]);
+   }
   free(g->nodes);
   free(g->bridges);
-	free(g);
+  free(g);
   g = NULL;
 }
 
@@ -236,14 +236,13 @@ bool game_over (cgame g){
   int mark[g->nb_nodes];
   for(int i = 0; i < g->nb_nodes; i++)
     mark[i] = 0;
-
-    //mark all the nodes linked by the same group of bridges
-    recursive(g, 0, mark);
-
-    for(int i = 0; i < g->nb_nodes; i++){
-      if(mark[i] != 1)
+  
+  //mark all the nodes linked by the same group of bridges
+  recursive(g, 0, mark);
+  for(int i = 0; i < g->nb_nodes; i++){
+     if(mark[i] != 1)
         return true;
-    }
+  }
   return false;
 }
 

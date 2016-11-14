@@ -222,7 +222,17 @@ int get_choice(){
 }
 
 void reset_game(game g){
-  printf("Non disponible :(\n");
+//on détruit tous les ponts
+  for(int i = 0; i < game_nb_nodes(g); i++)
+    {
+      for(int j = 0; j < NB_DIRS; j++)
+  {
+    if(get_degree_dir(g, i, j) == 2)
+      del_bridge_dir(g, i, j);
+    if(get_degree_dir(g, i, j) == 1)
+      del_bridge_dir (g, i, j);
+  }
+    }
 }
 
 void test_game_over(game g){
