@@ -27,16 +27,16 @@ bool test_game_over(){
    game g =default_game();
    bool r = true;
    add_bridge_dir(g,0,EAST);
-   r = r && test_equality_bool(false, game_over(g),"Pb game_over");
+   r = r && test_equality_bool(false, game_over(g),"Pb game_over degree");
    add_bridge_dir(g,0,EAST);
    add_bridge_dir(g,1,EAST);
    add_bridge_dir(g,1,EAST);
-   r = r && test_equality_bool(false, game_over(g),"Pb game_over");
+   r = r && test_equality_bool(false, game_over(g),"Pb game_over connexité");
    del_bridge_dir(g, 0, EAST);
    del_bridge_dir(g, 1, EAST);
    add_bridge_dir(g, 0, NORTH);
-   add_bridge_dir(g, 3, SOUTH);
-   r = r && test_equality_bool(true, game_over(g),"Pb game_over");
+   add_bridge_dir(g, 4, SOUTH);
+   r = r && test_equality_bool(true, game_over(g),"Pb game_over autre");
    delete_game(g);
    return r;
 }
