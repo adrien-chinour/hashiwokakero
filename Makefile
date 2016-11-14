@@ -20,7 +20,7 @@ hashi_text : src/hashi_text.c libhashi.a
 # node.c et game.c puis les lances
 
 test :test1 test2 test3 test4
-	./test1 |./test2 | ./test3 |./test4
+	./test1 ; ./test2 ; ./test3 ; ./test4
 
 test%: tests/test_game%.c tests/test_toolbox.c libhashi.a
 	$(CC) -o $@ $(CFLAGS) $< tests/test_toolbox.c -L. -lhashi
