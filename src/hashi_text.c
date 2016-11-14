@@ -196,15 +196,47 @@ void del_bridge(game g){
 
   if(direction == 1){
     del_bridge_dir(g, node_num, NORTH);
+    int i = get_y(game_node(g, node_num))*2+1;
+    while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, NORTH)))*2){
+      if(get_degree_dir(g, node_num, NORTH) == 0)
+        matrix[i][get_x(game_node(g, node_num))*2] = 0;
+      else 
+        matrix[i][get_x(game_node(g, node_num))*2] = 2;
+      i++;
+    }
   }
   else if(direction == 2){
     del_bridge_dir(g, node_num, SOUTH);
+    int i = get_y(game_node(g, node_num))*2-1;
+    while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, SOUTH)))*2){
+      if(get_degree_dir(g, node_num, SOUTH) == 0)
+        matrix[i][get_x(game_node(g, node_num))*2] = 0;
+      else 
+        matrix[i][get_x(game_node(g, node_num))*2] = 2;
+      i++;
+    }
   }
   else if(direction == 3){
     del_bridge_dir(g, node_num, EAST);
+    int i = get_x(game_node(g, node_num))*2+1;
+    while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, EAST)))*2){
+      if(get_degree_dir(g, node_num, EAST) == 0)
+        matrix[get_y(game_node(g, node_num))*2][i] = 0;
+      else 
+        matrix[get_y(game_node(g, node_num))*2][i] = 2;
+      i++;
+    }
   }
   else if(direction == 4){
     del_bridge_dir(g, node_num, WEST);
+    int i = get_x(game_node(g, node_num))*2-1;
+    while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, WEST)))*2){
+      if(get_degree_dir(g, node_num, WEST) == 0)
+        matrix[get_y(game_node(g, node_num))*2][i] = 0;
+      else 
+        matrix[get_y(game_node(g, node_num))*2][i] = 2;
+      i++;
+    }
   }
 }
 
@@ -222,7 +254,21 @@ int get_choice(){
 }
 
 void reset_game(game g){
-  printf("Non disponible :(\n");
+  for(int i = 0; i < game_nb_nodes(g); i++){
+    for(int j = 0; j < 4; j++){
+      if(get_degree_dir(g, i, j) == 2)
+        del_bridge_dir(g,i,j);
+      if(get_degree_dir(g, i, j) == 1)
+        del_bridge_dir(g,i,j);
+    }
+  }
+
+  for(int i = 0; i < SIZE*2-1; i++){
+    for(int j = 0 ; j < SIZE*2-1 ; j++){
+      if(matrix[i][j] != 1)
+        matrix[i][j] = 0;
+    }
+  }
 }
 
 void test_game_over(game g){
