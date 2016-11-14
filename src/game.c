@@ -92,13 +92,12 @@ int game_nb_nodes (cgame g){
 }
 
 node game_node (cgame g, int node_num){
-   if(node_num >= 0 && node_num < game_nb_nodes(g)){
-      return *((g->nodes)+node_num);
-   }
-   else{
-     printf("il n'y a pas de node correspondant au numero %d\n", node_num);
-     exit(EXIT_FAILURE);
-   }
+  if(node_num >= 0 && node_num < game_nb_nodes(g))
+    return g->nodes[node_num];
+  else{
+    printf("Erreur : il n'y a pas de node %d \n", node_num);
+    exit(EXIT_FAILURE);
+  }
 }
 
 //la fonction game_over est à la fin, je la signale ici
@@ -122,8 +121,10 @@ void add_bridge_dir (game g, int node_num, dir d){
 }
 
 void del_bridge_dir (game g, int node_num, dir d){
-   if(g->bridges[node_num][d] != 0)
+   if(g->bridges[node_num][d] != 0){
+      g->bridges[get_neighbour_dir(g,node_num,d)][d]--;
       g->bridges[node_num][d]--;
+   }
 }
 
 int get_degree_dir (game g, int node_num, dir d){
@@ -133,8 +134,7 @@ int get_degree_dir (game g, int node_num, dir d){
 int get_degree(cgame g, int node_num){
    int k = 0;
    for(int i = 0; i < NB_DIRS; i++){
-     if(g->bridges[node_num][i] == 1)
-       k++;
+     k = k + g->bridges[node_num][i];
    }
    return k;
 }
@@ -215,7 +215,7 @@ int game_get_node_number (cgame g, int x, int y){
 }
 
 
- //this function prepare to verify if the game is connexe
+//this function prepare to verify if the game is connexe
 void recursive(cgame g, int number, int mark[])
 {
   if(mark[number] != 1) 
@@ -242,9 +242,9 @@ bool game_over (cgame g){
 
     for(int i = 0; i < g->nb_nodes; i++){
       if(mark[i] != 1)
-        return false;
+        return true;
     }
-  return true;
+  return false;
 }
 
 bool can_add_bridge_dir (cgame g, int node_num, dir d){
