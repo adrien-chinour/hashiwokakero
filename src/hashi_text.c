@@ -52,6 +52,20 @@ void create_matrix(cgame g){
 }
 
 void print_matrix(cgame g){
+   for(int i = 0; i <= SIZE; i++)
+   {
+     if(i%2 == 0)
+  {
+     printf("%d ", i/2);
+  }
+  else
+     printf("    ");
+  }
+   printf("2\n");
+  for(int i = 0; i < SIZE; i++)
+     printf("----");
+  printf("\n");
+  
   for(int i = SIZE*2-2; i >= 0; i--){
     for(int j = 0 ; j < SIZE*2-1 ; j++){
       switch(matrix[i][j]){
@@ -72,7 +86,7 @@ void print_matrix(cgame g){
           printf("+  ");
           break;
 
-        case 3: // two bridges
+        case 3: // two bridges 
           printf("#  ");
           break;
 
@@ -81,9 +95,16 @@ void print_matrix(cgame g){
           break;
       }
     }
-    printf("\n\n");
+    if (i%2==0){
+         printf ("| %d\n\n", i/2);}
+    else{
+       printf("|\n\n");
+    }
+    
   }  
-}
+  }
+
+
 
 void print_game(cgame g){
   for(int i = 0; i < game_nb_nodes(g); i++){

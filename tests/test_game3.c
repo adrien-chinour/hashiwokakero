@@ -35,7 +35,7 @@ bool test_game_over(){
    del_bridge_dir(g, 0, EAST);
    del_bridge_dir(g, 1, EAST);
    add_bridge_dir(g, 0, NORTH);
-   add_bridge_dir(g, 3, SOUTH);
+   add_bridge_dir(g, 2, NORTH);
    r = r && test_equality_bool(true, game_over(g),"Pb game_over autre");
    delete_game(g);
    return r;
