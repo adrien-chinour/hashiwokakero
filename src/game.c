@@ -10,8 +10,8 @@ typedef enum dir_e {NORTH, WEST, SOUTH, EAST} dir;
 
 typedef struct game_s {
 	int nb_nodes;
-	node *nodes;
-	int **bridges;
+	node *nodes; 
+  int **bridges;
 } *game;
 
 typedef const struct game_s* cgame;
@@ -22,24 +22,24 @@ game new_game (int nb_nodes, node *nodes){
 	
 	g->nb_nodes = nb_nodes;
 	
+  // allocation et initialisation de nodes[nb_nodes]
 	node *new_nodes = (node*) malloc(nb_nodes*sizeof(node)); 
 	for(int i = 0; i < nb_nodes; i++){
     new_nodes[i] = new_node(get_x(nodes[i]), get_y(nodes[i]), get_required_degree(nodes[i]));
   }
 	g->nodes = new_nodes;
 
+  // allocation et initialisation de bridges[nb_nodes][nb_dir]
 	int **bridges;
 	bridges = (int**) malloc(nb_nodes*sizeof(int*)); 
 	for(int i = 0; i < nb_nodes; i++){
 		bridges[i] = (int*) malloc(NB_DIRS*sizeof(int)); 
 	}
-
 	for(int i = 0; i < nb_nodes; i++){
 		for(int j = 0; j < NB_DIRS; j++){
 			bridges[i][j] = 0;
 		}
 	}
-
 	g->bridges = bridges;
 
 	return g;
@@ -63,12 +63,14 @@ game copy_game (cgame g_src){
 	
 	g->nb_nodes = nb_nodes;
 	
+  // allocation et initialisation de nodes[nb_nodes]
 	node *new_nodes = (node*) malloc(nb_nodes*sizeof(node));
   for(int i = 0; i < nb_nodes; i++){
     new_nodes[i] = new_node(get_x(g_src->nodes[i]), get_y(g_src->nodes[i]), get_required_degree(g_src->nodes[i]));
   }
 	g->nodes = new_nodes;
 
+  // allocation et initialisation de bridges[nb_nodes][nb_dir]
   int **bridges;
   bridges = malloc(nb_nodes*sizeof(int*)); 
   for(int i = 0; i < nb_nodes; i++){
@@ -79,7 +81,6 @@ game copy_game (cgame g_src){
 			bridges[i][j] = g_src->bridges[i][j];
 		}
 	}
-
 	g->bridges = bridges;
 
 	return g;
@@ -238,32 +239,33 @@ int game_get_node_number (cgame g, int x, int y){
    return -1;
 }
 
-// Algorithme de parcours en profondeur :
-void explore(cgame g, int node_num, bool connected[]){
-  connected[node_num] = true;
-
-  if(get_degree_dir(g, node_num, SOUTH) != 0){
-    if(connected[get_neighbour_dir(g, node_num, SOUTH)] == false)
-      explore(g, get_neighbour_dir(g, node_num, SOUTH), connected);
-  }
-
-  if(get_degree_dir(g, node_num, NORTH) != 0){
-    if(connected[get_neighbour_dir(g, node_num, NORTH)] == false)
-      explore(g, get_neighbour_dir(g, node_num, NORTH), connected);
-  }
-
-  if(get_degree_dir(g, node_num, EAST) != 0){
-    if(connected[get_neighbour_dir(g, node_num, EAST)] == false)
-      explore(g, get_neighbour_dir(g, node_num, EAST), connected);
-  }
-
-  if(get_degree_dir(g, node_num, WEST) != 0){
-    if(connected[get_neighbour_dir(g, node_num, WEST)] == false)
-      explore(g, get_neighbour_dir(g, node_num, WEST), connected);
-  }
-}
 
 bool game_over (cgame g){
+
+  // Fonction déclaré a l'intérieur car elle n'ai utilisé que par game_over
+  void explore(cgame g, int node_num, bool connected[]){
+    connected[node_num] = true;
+
+    if(get_degree_dir(g, node_num, SOUTH) != 0){
+      if(connected[get_neighbour_dir(g, node_num, SOUTH)] == false)
+        explore(g, get_neighbour_dir(g, node_num, SOUTH), connected);
+    }
+
+    if(get_degree_dir(g, node_num, NORTH) != 0){
+      if(connected[get_neighbour_dir(g, node_num, NORTH)] == false)
+        explore(g, get_neighbour_dir(g, node_num, NORTH), connected);
+    }
+
+    if(get_degree_dir(g, node_num, EAST) != 0){
+      if(connected[get_neighbour_dir(g, node_num, EAST)] == false)
+        explore(g, get_neighbour_dir(g, node_num, EAST), connected);
+    }
+
+    if(get_degree_dir(g, node_num, WEST) != 0){
+      if(connected[get_neighbour_dir(g, node_num, WEST)] == false)
+        explore(g, get_neighbour_dir(g, node_num, WEST), connected);
+    }
+  }
 
   //verification des degrées
   for(int i = 0; i < game_nb_nodes(g); i++){

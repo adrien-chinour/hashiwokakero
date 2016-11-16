@@ -52,25 +52,28 @@ void create_matrix(cgame g){
 }
 
 void print_matrix(cgame g){
-   for(int i = 0; i <= SIZE; i++)
-   {
-     if(i%2 == 0)
-  {
-     printf("%d ", i/2);
+  
+  // affichage coordonnées abscisses
+  for(int i = 0; i < SIZE*2-1; i++){
+    if(i%2 == 0)
+      printf("%d  ", i/2);
+    else
+      printf("   ");
   }
-  else
-     printf("    ");
-  }
-   printf("2\n");
-  for(int i = 0; i < SIZE; i++)
-     printf("----");
   printf("\n");
   
+  // affichage ligne abscisses
+  for(int i = 0; i < SIZE*2-1; i++){
+    printf("---");
+  }
+  printf("\n");
+  
+  //affichage de matrix
   for(int i = SIZE*2-2; i >= 0; i--){
     for(int j = 0 ; j < SIZE*2-1 ; j++){
       switch(matrix[i][j]){
 
-        case 0: // null
+        case 0: // vide
           printf(".  ");
           break;
 
@@ -90,19 +93,19 @@ void print_matrix(cgame g){
           printf("#  ");
           break;
 
-        default: // erreur
+        default: // error
           printf("ERR");
           break;
       }
     }
-    if (i%2==0){
-         printf ("| %d\n\n", i/2);}
-    else{
+
+    //affichage ligne et coordonnées ordonnées
+    if (i%2==0)
+      printf ("| %d\n\n", i/2);
+    else
        printf("|\n\n");
-    }
-    
   }  
-  }
+}
 
 
 
@@ -125,6 +128,7 @@ void print_game(cgame g){
   }
   printf("\033[00m\n");
 }
+
 
 void add_bridge(game g){
   int node_num = -1;
@@ -275,6 +279,7 @@ int get_choice(){
 }
 
 void reset_game(game g){
+  //supression des ponts
   for(int i = 0; i < game_nb_nodes(g); i++){
     for(int j = 0; j < 4; j++){
       if(get_degree_dir(g, i, j) == 2)
@@ -284,6 +289,7 @@ void reset_game(game g){
     }
   }
 
+  // reinitialisation de matrix
   for(int i = 0; i < SIZE*2-1; i++){
     for(int j = 0 ; j < SIZE*2-1 ; j++){
       if(matrix[i][j] != 1)
