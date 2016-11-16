@@ -241,9 +241,9 @@ bool game_over (cgame g){
   recursive(g, 0, mark);
   for(int i = 0; i < g->nb_nodes; i++){
      if(mark[i] != 1)
-        return true;
+        return false;
   }
-  return false;
+  return true;
 }
 
 bool can_add_bridge_dir (cgame g, int node_num, dir d){
