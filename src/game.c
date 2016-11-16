@@ -28,7 +28,6 @@ game new_game (int nb_nodes, node *nodes){
   }
 	g->nodes = new_nodes;
 
-	// http://www.commentcamarche.net/forum/affich-4931713-tableau-dynamique-a-2-dimensions
 	int **bridges;
 	bridges = (int**) malloc(nb_nodes*sizeof(int*)); 
 	for(int i = 0; i < nb_nodes; i++){
@@ -59,7 +58,7 @@ void delete_game (game g){
 
 game copy_game (cgame g_src){
 
-   int nb_nodes = g_src->nb_nodes;
+  int nb_nodes = g_src->nb_nodes;
 	game g = (game) malloc(sizeof(struct game_s));
 	
 	g->nb_nodes = nb_nodes;
@@ -70,12 +69,11 @@ game copy_game (cgame g_src){
   }
 	g->nodes = new_nodes;
 
-	// http://www.commentcamarche.net/forum/affich-4931713-tableau-dynamique-a-2-dimensions
-   int **bridges;
-   bridges = malloc(nb_nodes*sizeof(int*)); 
-   for(int i = 0; i < nb_nodes; i++){
-      bridges[i] = malloc(NB_DIRS*sizeof(int)); 
-   }
+  int **bridges;
+  bridges = malloc(nb_nodes*sizeof(int*)); 
+  for(int i = 0; i < nb_nodes; i++){
+    bridges[i] = malloc(NB_DIRS*sizeof(int)); 
+  }
 	for(int i = 0; i < nb_nodes; i++){
 		for(int j = 0; j < NB_DIRS; j++){
 			bridges[i][j] = g_src->bridges[i][j];
@@ -88,7 +86,7 @@ game copy_game (cgame g_src){
 }
 
 int game_nb_nodes (cgame g){
-   return g->nb_nodes;
+  return g->nb_nodes;
 }
 
 node game_node (cgame g, int node_num){
@@ -100,13 +98,13 @@ node game_node (cgame g, int node_num){
   }
 }
 
-//la fonction game_over est à la fin, je la signale ici
+//cette fonction est écrite plus bas, elle est référencée ici
 bool game_over (cgame g);
 
-//la fonction can_add_bridge_dir est à la fin, je le signale ici
+//cette fonction est écrite plus bas, elle est référencée ici
 bool can_add_bridge_dir (cgame g, int node_num, dir d);
 
-//idem
+//cette fonction est écrite plus bas, elle est référencée ici
 int get_neighbour_dir (cgame g, int node_num, dir d);
 
 void add_bridge_dir (game g, int node_num, dir d){
@@ -153,7 +151,7 @@ void del_bridge_dir (game g, int node_num, dir d){
    }
 }
 
-int get_degree_dir (game g, int node_num, dir d){
+int get_degree_dir (cgame g, int node_num, dir d){
    return g->bridges[node_num][d];
 }
 
@@ -240,35 +238,52 @@ int game_get_node_number (cgame g, int x, int y){
    return -1;
 }
 
+// Algorithme de parcours en profondeur :
+void explore(cgame g, int node_num, bool connected[]){
+  connected[node_num] = true;
 
-//this function prepare to verify if the game is connexe
-void recursive(cgame g, int number, int mark[])
-{
-  if(mark[number] != 1) 
-  {
-    mark[number] = 1;
-    for(int i = 0; i < NB_DIRS; i++)
-    {
-      int neighbour = get_neighbour_dir(g, number, i);
-      if(neighbour != -1)
-        recursive(g, neighbour, mark);
-    }
+  if(get_degree_dir(g, node_num, SOUTH) != 0){
+    if(connected[get_neighbour_dir(g, node_num, SOUTH)] == false)
+      explore(g, get_neighbour_dir(g, node_num, SOUTH), connected);
+  }
+
+  if(get_degree_dir(g, node_num, NORTH) != 0){
+    if(connected[get_neighbour_dir(g, node_num, NORTH)] == false)
+      explore(g, get_neighbour_dir(g, node_num, NORTH), connected);
+  }
+
+  if(get_degree_dir(g, node_num, EAST) != 0){
+    if(connected[get_neighbour_dir(g, node_num, EAST)] == false)
+      explore(g, get_neighbour_dir(g, node_num, EAST), connected);
+  }
+
+  if(get_degree_dir(g, node_num, WEST) != 0){
+    if(connected[get_neighbour_dir(g, node_num, WEST)] == false)
+      explore(g, get_neighbour_dir(g, node_num, WEST), connected);
   }
 }
 
 bool game_over (cgame g){
 
-//initialize mark[] (which will mark all the nodes linked) to 0
-  int mark[g->nb_nodes];
-  for(int i = 0; i < g->nb_nodes; i++)
-    mark[i] = 0;
-  
-  //mark all the nodes linked by the same group of bridges
-  recursive(g, 0, mark);
-  for(int i = 0; i < g->nb_nodes; i++){
-     if(mark[i] != 1)
-        return false;
+  //verification des degrées
+  for(int i = 0; i < game_nb_nodes(g); i++){
+    if(get_degree(g, i) != get_required_degree(game_node(g, i)))
+      return false;
   }
+
+  // verification de la connexité
+  bool connected[game_nb_nodes(g)];
+  for(int i = 0; i < game_nb_nodes(g); i++){
+    connected[i] = false;
+  }
+  
+  explore(g, 0, connected);
+
+  for(int i = 0; i < game_nb_nodes(g); i++){
+    if(connected[i] == false)
+      return false;
+  }
+
   return true;
 }
 
