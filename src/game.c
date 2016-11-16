@@ -47,10 +47,10 @@ game new_game (int nb_nodes, node *nodes){
 }
 
 void delete_game (game g){
-   for(int i = 0; i < g->nb_nodes; i++){
+    for(int i = 0; i < g->nb_nodes; i++){
       delete_node(g->nodes[i]);
       free(g->bridges[i]);
-   }
+    }
   free(g->nodes);
   free(g->bridges);
   free(g);
@@ -112,7 +112,20 @@ int get_neighbour_dir (cgame g, int node_num, dir d);
 void add_bridge_dir (game g, int node_num, dir d){
   if(can_add_bridge_dir (g, node_num, d)){
     g->bridges[node_num][d]++;
-    g->bridges[get_neighbour_dir(g, node_num, d)][d]++;
+    switch(d){
+    case SOUTH:
+      g->bridges[get_neighbour_dir(g, node_num, d)][NORTH]++;
+      break;
+    case NORTH:
+      g->bridges[get_neighbour_dir(g, node_num, d)][SOUTH]++;
+      break;
+    case EAST:
+      g->bridges[get_neighbour_dir(g, node_num, d)][WEST]++;
+      break;
+    case WEST:
+      g->bridges[get_neighbour_dir(g, node_num, d)][EAST]++;
+      break;
+    }
   }
   else {
       printf("Erreur: can_add_bridge_dir (g, node_num, d) n'est pas valide.\n");
@@ -122,8 +135,21 @@ void add_bridge_dir (game g, int node_num, dir d){
 
 void del_bridge_dir (game g, int node_num, dir d){
    if(g->bridges[node_num][d] != 0){
-      g->bridges[get_neighbour_dir(g,node_num,d)][d]--;
-      g->bridges[node_num][d]--;
+    switch(d){
+      case SOUTH:
+        g->bridges[get_neighbour_dir(g, node_num, d)][NORTH]--;
+        break;
+      case NORTH:
+        g->bridges[get_neighbour_dir(g, node_num, d)][SOUTH]--;
+        break;
+      case EAST:
+        g->bridges[get_neighbour_dir(g, node_num, d)][WEST]--;
+        break;
+      case WEST:
+        g->bridges[get_neighbour_dir(g, node_num, d)][EAST]--;
+        break;
+    }
+    g->bridges[node_num][d]--;
    }
 }
 
