@@ -28,15 +28,19 @@ static game default_game (){
 bool test_copy_game(){
    game g=default_game();
    bool r=true;
+   add_bridge_dir(g,1,NORTH);
+   add_bridge_dir(g,1,NORTH);
+   add_bridge_dir(g,3,NORTH);
    game g_copy = copy_game(g);
-   r = r && test_equality_int((game_get_node_number(g, 0, 0)),game_get_node_number(g_copy, 0, 0),"les nodes ne correspondent pas");
+   r = r && test_equality_int((game_get_node_number(g, 0, 0)),game_get_node_number(g_copy, 0, 0),"nodes doesn't match copy");
    dir d;
    int c;
    for(int i=0;i<EXAMPLE_NB_NODE;i++){
       c=0;
+      r = r && test_equality_int(get_degree(g,i),get_degree(g_copy,i),"pb degree copy");
       while(c<5){
          d=c;
-         r = r && test_equality_int(get_neighbour_dir(g,i,d ),get_neighbour_dir(g_copy,i,d),"");
+         r = r && test_equality_int(get_neighbour_dir(g,i,d ),get_neighbour_dir(g_copy,i,d),"pb neighbour copy");
          c = c+1;
       }
     }
