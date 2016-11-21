@@ -140,7 +140,7 @@ void del_bridge_dir (game g, int node_num, dir d){
    }
 }
 
-int get_degree_dir (game g, int node_num, dir d){
+int get_degree_dir (cgame g, int node_num, dir d){
    return g->bridges[node_num][d];
 }
 
