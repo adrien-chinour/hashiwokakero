@@ -7,8 +7,8 @@
 typedef enum dir_e {NORTH, WEST, SOUTH, EAST, NW, SW, SE, NE} dir;
 
 typedef struct game_s {
-	int nb_nodes;
-	node *nodes; 
+  int nb_nodes;
+  node *nodes; 
   int **bridges;
   int nb_dir;
   int nb_max_bridges;
@@ -17,15 +17,15 @@ typedef struct game_s {
 typedef const struct game_s* cgame;
 
 game new_game (int nb_nodes, node *nodes, int nb_max_bridges, int nb_dir){
-
-	game g = (game) malloc(sizeof(struct game_s));
+  
+  game g = (game) malloc(sizeof(struct game_s));
 	
   g->nb_dir = nb_dir;
   g->nb_max_bridges = nb_max_bridges;
-	g->nb_nodes = nb_nodes;
+  g->nb_nodes = nb_nodes;
 	
-	node *new_nodes = (node*) malloc(nb_nodes*sizeof(node)); 
-	for(int i = 0; i < nb_nodes; i++){
+  node *new_nodes = (node*) malloc(nb_nodes*sizeof(node));
+  for(int i = 0; i < nb_nodes; i++){
     new_nodes[i] = new_node(get_x(nodes[i]), get_y(nodes[i]), get_required_degree(nodes[i]));
   }
 	g->nodes = new_nodes;
@@ -158,14 +158,14 @@ int game_get_node_number (cgame g, int x, int y);
 int get_neighbour_dir (cgame g, int node_num, dir d){
   node n = game_node(g, node_num);
   switch(d){
-    case NORTH: 
+  case NORTH: 
     {
       int max_y = 0;
       for(int i = 0; i < g->nb_nodes; i++){
         if(get_y(g->nodes[i]) > max_y)
           max_y = get_y(g->nodes[i]);
       }
-
+      
       int y = get_y(n)+1;
       while (game_get_node_number(g,get_x(n),y) == -1 && y <= max_y){
         y++;  
@@ -174,8 +174,13 @@ int get_neighbour_dir (cgame g, int node_num, dir d){
         return game_get_node_number(g,get_x(n),y);
       break; 
     }
-
-    case EAST: 
+    
+  case NE:
+    {
+      break;
+    }
+    
+  case EAST: 
     {
       int max_x = 0;
       for(int i = 0; i < g->nb_nodes; i++){
@@ -192,7 +197,12 @@ int get_neighbour_dir (cgame g, int node_num, dir d){
       break; 
     }
 
-    case SOUTH:
+  case SE:
+    {
+      break;
+    }
+
+  case SOUTH:
     {
       int y = get_y(n)-1;
       while(game_get_node_number(g,get_x(n),y) == -1 && y >= 0){
@@ -203,7 +213,12 @@ int get_neighbour_dir (cgame g, int node_num, dir d){
       break;
     }
 
-    case WEST:
+  case SW:
+    {
+      break;
+    }
+
+  case WEST:
     {
       int x = get_x(n)-1;
       while(game_get_node_number(g,x,get_y(n)) == -1 && x >= 0){
@@ -213,7 +228,10 @@ int get_neighbour_dir (cgame g, int node_num, dir d){
         return game_get_node_number(g,x,get_y(n));
       break;
     }
-  
+  case NW:
+    {
+      break;
+    }
   }
   return -1;
 }
@@ -230,25 +248,27 @@ int game_get_node_number (cgame g, int x, int y){
 
  bool game_over (cgame g){
  
-  // Fonction déclaré a l'intérieur car elle n'ai utilisé que par game_over
+  // Fonction déclarée a l'intérieur car elle n'est utilisée que par game_over
   void explore(cgame g, int node_num, bool connected[]){
+    
+    //initialise un tableau qui est a true si le node est lié aux autres
     connected[node_num] = true;
-
+    
     if(get_degree_dir(g, node_num, SOUTH) != 0){
       if(connected[get_neighbour_dir(g, node_num, SOUTH)] == false)
         explore(g, get_neighbour_dir(g, node_num, SOUTH), connected);
     }
-
+    
     if(get_degree_dir(g, node_num, NORTH) != 0){
       if(connected[get_neighbour_dir(g, node_num, NORTH)] == false)
         explore(g, get_neighbour_dir(g, node_num, NORTH), connected);
     }
-
+    
     if(get_degree_dir(g, node_num, EAST) != 0){
       if(connected[get_neighbour_dir(g, node_num, EAST)] == false)
         explore(g, get_neighbour_dir(g, node_num, EAST), connected);
     }
-
+    
     if(get_degree_dir(g, node_num, WEST) != 0){
       if(connected[get_neighbour_dir(g, node_num, WEST)] == false)
         explore(g, get_neighbour_dir(g, node_num, WEST), connected);
@@ -309,6 +329,9 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
 	}
 	return true;
 	break;
+
+      case NW:
+	break;
 	
       case WEST:
 	for(int i = 0; i < g->nb_nodes; i++){
@@ -326,6 +349,9 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
 	     return false;
 	}
 	return true;
+	break;
+
+      case SW:
 	break;
 	
       case SOUTH:
@@ -345,6 +371,9 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
 	}
 	return true;
 	break;
+
+      case SE:
+	break;
 	
       case EAST:
 	for(int i = 0; i < g->nb_nodes; i++){
@@ -362,6 +391,9 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
 	     return false;
 	}
 	return true;
+	break;
+
+      case NE:
 	break;
       }
   }
