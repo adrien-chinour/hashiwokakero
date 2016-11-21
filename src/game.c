@@ -4,22 +4,24 @@
 
 #include "../include/node.h"
 
-typedef enum dir_e {NORTH, WEST, SOUTH, EAST} dir;
-
-#define NB_DIRS 4
+typedef enum dir_e {NORTH, WEST, SOUTH, EAST, NW, SW, SE, NE} dir;
 
 typedef struct game_s {
 	int nb_nodes;
 	node *nodes; 
   int **bridges;
+  int nb_dir;
+  int nb_max_bridges;
 } *game;
 
 typedef const struct game_s* cgame;
 
-game new_game (int nb_nodes, node *nodes){
+game new_game (int nb_nodes, node *nodes, int nb_max_bridges, int nb_dir){
 
 	game g = (game) malloc(sizeof(struct game_s));
 	
+  g->nb_dir = nb_dir;
+  g->nb_max_bridges = nb_max_bridges;
 	g->nb_nodes = nb_nodes;
 	
   // allocation et initialisation de nodes[nb_nodes]
@@ -33,10 +35,10 @@ game new_game (int nb_nodes, node *nodes){
 	int **bridges;
 	bridges = (int**) malloc(nb_nodes*sizeof(int*)); 
 	for(int i = 0; i < nb_nodes; i++){
-		bridges[i] = (int*) malloc(NB_DIRS*sizeof(int)); 
+		bridges[i] = (int*) malloc(game_nb_dir(g)*sizeof(int)); 
 	}
 	for(int i = 0; i < nb_nodes; i++){
-		for(int j = 0; j < NB_DIRS; j++){
+		for(int j = 0; j < game_nb_dir(g); j++){
 			bridges[i][j] = 0;
 		}
 	}
@@ -57,27 +59,28 @@ void delete_game (game g){
 }
 
 game copy_game (cgame g_src){
-
-  int nb_nodes = g_src->nb_nodes;
 	game g = (game) malloc(sizeof(struct game_s));
 	
-	g->nb_nodes = nb_nodes;
+	g->nb_nodes = g_src->nb_nodes;
+  g->nb_dir = g_src->nb_dir;
+  g->nb_max_bridges = g_src->nb_max_bridges;
+
 	
   // allocation et initialisation de nodes[nb_nodes]
-	node *new_nodes = (node*) malloc(nb_nodes*sizeof(node));
-  for(int i = 0; i < nb_nodes; i++){
+	node *new_nodes = (node*) malloc(game_nb_nodes(g)*sizeof(node));
+  for(int i = 0; i < game_nb_nodes(g); i++){
     new_nodes[i] = new_node(get_x(g_src->nodes[i]), get_y(g_src->nodes[i]), get_required_degree(g_src->nodes[i]));
   }
 	g->nodes = new_nodes;
 
   // allocation et initialisation de bridges[nb_nodes][nb_dir]
   int **bridges;
-  bridges = malloc(nb_nodes*sizeof(int*)); 
-  for(int i = 0; i < nb_nodes; i++){
-    bridges[i] = malloc(NB_DIRS*sizeof(int)); 
+  bridges = malloc(game_nb_nodes(g)*sizeof(int*)); 
+  for(int i = 0; i < game_nb_nodes(g); i++){
+    bridges[i] = malloc(game_nb_dir(g)*sizeof(int)); 
   }
-	for(int i = 0; i < nb_nodes; i++){
-		for(int j = 0; j < NB_DIRS; j++){
+	for(int i = 0; i < game_nb_nodes(g); i++){
+		for(int j = 0; j < game_nb_dir(g); j++){
 			bridges[i][j] = g_src->bridges[i][j];
 		}
 	}
@@ -88,6 +91,14 @@ game copy_game (cgame g_src){
 
 int game_nb_nodes (cgame g){
   return g->nb_nodes;
+}
+
+int game_nb_dir (cgame g){
+  return g->nb_dir;
+}
+
+int game_nb_max_bridges (cgame g){
+  return g->nb_max_bridges;
 }
 
 node game_node (cgame g, int node_num){
@@ -158,7 +169,7 @@ int get_degree_dir (cgame g, int node_num, dir d){
 
 int get_degree(cgame g, int node_num){
    int k = 0;
-   for(int i = 0; i < NB_DIRS; i++){
+   for(int i = 0; i < game_nb_dir(g); i++){
      k = k + g->bridges[node_num][i];
    }
    return k;
