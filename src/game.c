@@ -34,11 +34,11 @@ game new_game (int nb_nodes, node *nodes, int nb_max_bridges, int nb_dir){
 	int **bridges;
 	bridges = (int**) malloc(nb_nodes*sizeof(int*)); 
 	for(int i = 0; i < nb_nodes; i++){
-		bridges[i] = (int*) malloc(game_nb_dir(g)*sizeof(int)); 
+		bridges[i] = (int*) malloc(nb_dir*sizeof(int)); 
 	}
 
 	for(int i = 0; i < nb_nodes; i++){
-		for(int j = 0; j < game_nb_dir(g); j++){
+		for(int j = 0; j < nb_dir; j++){
 			bridges[i][j] = 0;
 		}
 	}
@@ -46,6 +46,18 @@ game new_game (int nb_nodes, node *nodes, int nb_max_bridges, int nb_dir){
 	g->bridges = bridges;
 
 	return g;
+}
+
+int game_nb_nodes (cgame g){
+   return g->nb_nodes;
+}
+
+int game_nb_dir (cgame g){
+  return g->nb_dir;
+}
+
+int game_nb_max_bridges (cgame g){
+  return g->nb_max_bridges;
 }
 
 void delete_game (game g){
@@ -60,8 +72,6 @@ void delete_game (game g){
 }
 
 game copy_game (cgame g_src){
-
-  int nb_nodes = g_src->nb_nodes;
 
 	game g = (game) malloc(sizeof(struct game_s));
 	
@@ -92,18 +102,6 @@ game copy_game (cgame g_src){
 	g->bridges = bridges;
 
 	return g;
-}
-
-int game_nb_nodes (cgame g){
-   return g->nb_nodes;
-}
-
-int game_nb_dir (cgame g){
-  return g->nb_dir;
-}
-
-int game_nb_max_bridges (cgame g){
-  return g->nb_max_bridges;
 }
 
 node game_node (cgame g, int node_num){
@@ -230,39 +228,52 @@ int game_get_node_number (cgame g, int x, int y){
 }
 
 
-//cette fonction récursive prépare la vérification de la connexité
-void recursive(cgame g, int number, int mark[])
-{
-  if(mark[number] != 1) 
-  {
-    mark[number] = 1;
-    for(int i = 0; i < NB_DIRS; i++)
-    {
-      int neighbour = get_neighbour_dir(g, number, i);
-      if(neighbour != -1)
-        recursive(g, neighbour, mark);
+ bool game_over (cgame g){
+ 
+  // Fonction déclaré a l'intérieur car elle n'ai utilisé que par game_over
+  void explore(cgame g, int node_num, bool connected[]){
+    connected[node_num] = true;
+
+    if(get_degree_dir(g, node_num, SOUTH) != 0){
+      if(connected[get_neighbour_dir(g, node_num, SOUTH)] == false)
+        explore(g, get_neighbour_dir(g, node_num, SOUTH), connected);
+    }
+
+    if(get_degree_dir(g, node_num, NORTH) != 0){
+      if(connected[get_neighbour_dir(g, node_num, NORTH)] == false)
+        explore(g, get_neighbour_dir(g, node_num, NORTH), connected);
+    }
+
+    if(get_degree_dir(g, node_num, EAST) != 0){
+      if(connected[get_neighbour_dir(g, node_num, EAST)] == false)
+        explore(g, get_neighbour_dir(g, node_num, EAST), connected);
+    }
+
+    if(get_degree_dir(g, node_num, WEST) != 0){
+      if(connected[get_neighbour_dir(g, node_num, WEST)] == false)
+        explore(g, get_neighbour_dir(g, node_num, WEST), connected);
     }
   }
-}
 
-bool game_over (cgame g){
-
-//initialise mark[] (qui marquera tout node lié par un même groupe pont) à 0
-  int mark[g->nb_nodes];
-  for(int i = 0; i < g->nb_nodes; i++)
-    mark[i] = 0;
-  
-  //marque tout node lié par un même groupe de ponts
-  recursive(g, 0, mark);
-  for(int i = 0; i < g->nb_nodes; i++){
-    printf("mark[%d] = %d\n", i, mark[i]);
-    printf("d = %d, r_d = %d\n", get_degree(g, i), get_required_degree(game_node(g, i)));
-
-    if(mark[i] != 1)
-      return false;
+  //verification des degrées
+  for(int i = 0; i < game_nb_nodes(g); i++){
     if(get_degree(g, i) != get_required_degree(game_node(g, i)))
       return false;
   }
+
+  // verification de la connexité
+  bool connected[game_nb_nodes(g)];
+  for(int i = 0; i < game_nb_nodes(g); i++){
+    connected[i] = false;
+  } 
+
+  explore(g, 0, connected);
+  
+  for(int i = 0; i < game_nb_nodes(g); i++){
+    if(connected[i] == false)
+      return false;
+  } 
+
   return true;
 }
 
