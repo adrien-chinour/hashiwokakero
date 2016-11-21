@@ -157,40 +157,62 @@ int game_get_node_number (cgame g, int x, int y);
 
 int get_neighbour_dir (cgame g, int node_num, dir d){
   node n = game_node(g, node_num);
+  
   switch(d){
   case NORTH: 
     {
       int max_y = 0;
+      
       for(int i = 0; i < g->nb_nodes; i++){
         if(get_y(g->nodes[i]) > max_y)
           max_y = get_y(g->nodes[i]);
       }
       
       int y = get_y(n)+1;
-      while (game_get_node_number(g,get_x(n),y) == -1 && y <= max_y){
+      
+      while (y <= max_y && game_get_node_number(g,get_x(n),y) == -1){
         y++;  
       }
       if(game_get_node_number(g,get_x(n),y) != -1)
         return game_get_node_number(g,get_x(n),y);
-      break; 
+      break;
     }
     
   case NE:
     {
+      int max_y = 0, max_x = 0;
+      
+      for(int i = 0; i < g->nb_nodes; i++){
+        if(get_y(g->nodes[i]) > max_y)
+          max_y = get_y(g->nodes[i]);
+	if(get_x(g->nodes[i]) > max_x)
+          max_x = get_x(g->nodes[i]);
+      }
+      
+      int y = get_y(n)+1, x = get_x(n)+1;
+      
+      while (x <= max_x && y <= max_y && game_get_node_number(g,x,y) == -1){
+	x++;
+	y++;  
+      }
+      if(game_get_node_number(g,x,y) != -1)
+        return game_get_node_number(g,x,y);
       break;
     }
     
   case EAST: 
     {
       int max_x = 0;
+      
       for(int i = 0; i < g->nb_nodes; i++){
         if(get_x(g->nodes[i]) > max_x)
           max_x = get_x(g->nodes[i]);
       }
 
       int x = get_x(n)+1;
-      while (game_get_node_number(g,x,get_y(n)) == -1 && x <= max_x){
-        x++;  
+      
+      while (x <= max_x && game_get_node_number(g,x,get_y(n)) == -1){
+        x++;
       }
       if(game_get_node_number(g,x,get_y(n)) != -1)
         return game_get_node_number(g,x,get_y(n));
@@ -199,13 +221,29 @@ int get_neighbour_dir (cgame g, int node_num, dir d){
 
   case SE:
     {
+      int max_x = 0;
+      
+      for(int i = 0; i < g->nb_nodes; i++){
+	if(get_x(g->nodes[i]) > max_x)
+          max_x = get_x(g->nodes[i]);
+      }
+      
+      int x = get_x(n)+1, y = get_y(n)-1;
+      
+      while (x <= max_x && y >= 0 && game_get_node_number(g,x,y) == -1){
+	x++;
+	y--;  
+      }
+      if(game_get_node_number(g,x,y) != -1)
+        return game_get_node_number(g,x,y);
       break;
     }
 
   case SOUTH:
     {
       int y = get_y(n)-1;
-      while(game_get_node_number(g,get_x(n),y) == -1 && y >= 0){
+      
+      while(y >= 0 && game_get_node_number(g,get_x(n),y) == -1){
         y--;
       }
       if(game_get_node_number(g,get_x(n),y) != -1)
@@ -215,21 +253,46 @@ int get_neighbour_dir (cgame g, int node_num, dir d){
 
   case SW:
     {
+      int x = get_x(n)-1, y = get_y(n)-1;
+      
+      while (x >= 0 && y >= 0 && game_get_node_number(g,x,y) == -1){
+	x--;
+	y--;  
+      }
+      if(game_get_node_number(g,x,y) != -1)
+        return game_get_node_number(g,x,y);
       break;
     }
 
   case WEST:
     {
       int x = get_x(n)-1;
-      while(game_get_node_number(g,x,get_y(n)) == -1 && x >= 0){
+      
+      while(x >= 0 && game_get_node_number(g,x,get_y(n)) == -1){
         x--;
       }
       if(game_get_node_number(g,x,get_y(n)) != -1)
         return game_get_node_number(g,x,get_y(n));
       break;
     }
+    
   case NW:
     {
+      int max_y = 0;
+      
+      for(int i = 0; i < g->nb_nodes; i++){
+	if(get_y(g->nodes[i]) > max_y)
+          max_y = get_y(g->nodes[i]);
+      }
+      
+      int x = get_x(n)+1, y = get_y(n)-1;
+      
+      while (x >= 0 && y <= max_y && game_get_node_number(g,x,y) == -1){
+	x--;
+	y++;  
+      }
+      if(game_get_node_number(g,x,y) != -1)
+        return game_get_node_number(g,x,y);
       break;
     }
   }
