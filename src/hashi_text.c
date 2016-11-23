@@ -229,6 +229,54 @@ void add_bridge(game g){
     else
       printf("Impossible d'ajouter un pont\n");
   }
+  else if(direction == 5){
+    if(can_add_bridge_dir(g, node_num, NW)){
+      add_bridge_dir(g, node_num, NW);
+      int i = get_y(game_node(g, node_num))*2+1;
+      while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, NW)))*2){
+        matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, NW)+1;
+        i++;
+      }
+    }
+    else
+      printf("Impossible d'ajouter un pont\n");
+  }
+  else  if(direction == 6){
+    if(can_add_bridge_dir(g, node_num, SW)){
+      add_bridge_dir(g, node_num, SW);
+      int i = get_y(game_node(g, node_num))*2+1;
+      while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, SW)))*2){
+        matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, SW)+1;
+        i++;
+      }
+    }
+    else
+      printf("Impossible d'ajouter un pont\n");
+  }
+  else  if(direction == 7){
+    if(can_add_bridge_dir(g, node_num, SE)){
+      add_bridge_dir(g, node_num, SE);
+      int i = get_y(game_node(g, node_num))*2+1;
+      while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, SE)))*2){
+        matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, SE)+1;
+        i++;
+      }
+    }
+    else
+      printf("Impossible d'ajouter un pont\n");
+  }
+  else  if(direction == 8){
+    if(can_add_bridge_dir(g, node_num, NE)){
+      add_bridge_dir(g, node_num, NE);
+      int i = get_y(game_node(g, node_num))*2+1;
+      while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, NE)))*2){
+        matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, NE)+1;
+        i++;
+      }
+    }
+    else
+      printf("Impossible d'ajouter un pont\n");
+  }
 
 }
 
@@ -289,6 +337,50 @@ void del_bridge(game g){
     int i = get_x(game_node(g, node_num))*2-1;
     while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, WEST)))*2){
       if(get_degree_dir(g, node_num, WEST) == 0)
+        matrix[get_y(game_node(g, node_num))*2][i] = 0;
+      else 
+        matrix[get_y(game_node(g, node_num))*2][i] = 2;
+      i++;
+    }
+  }
+  else if(direction == 5){
+    del_bridge_dir(g, node_num, NW);
+    int i = get_x(game_node(g, node_num))*2-1;
+    while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, NW)))*2){
+      if(get_degree_dir(g, node_num, NW) == 0)
+        matrix[get_y(game_node(g, node_num))*2][i] = 0;
+      else 
+        matrix[get_y(game_node(g, node_num))*2][i] = 2;
+      i++;
+    }
+  }
+  else if(direction == 6){
+    del_bridge_dir(g, node_num, SW);
+    int i = get_x(game_node(g, node_num))*2-1;
+    while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, SW)))*2){
+      if(get_degree_dir(g, node_num, SW) == 0)
+        matrix[get_y(game_node(g, node_num))*2][i] = 0;
+      else 
+        matrix[get_y(game_node(g, node_num))*2][i] = 2;
+      i++;
+    }
+  }
+  else if(direction == 7){
+    del_bridge_dir(g, node_num, SE);
+    int i = get_x(game_node(g, node_num))*2-1;
+    while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, SE)))*2){
+      if(get_degree_dir(g, node_num, SE) == 0)
+        matrix[get_y(game_node(g, node_num))*2][i] = 0;
+      else 
+        matrix[get_y(game_node(g, node_num))*2][i] = 2;
+      i++;
+    }
+  }
+  else if(direction == 8){
+    del_bridge_dir(g, node_num, NE);
+    int i = get_x(game_node(g, node_num))*2-1;
+    while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, NE)))*2){
+      if(get_degree_dir(g, node_num, NE) == 0)
         matrix[get_y(game_node(g, node_num))*2][i] = 0;
       else 
         matrix[get_y(game_node(g, node_num))*2][i] = 2;
