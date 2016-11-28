@@ -1,5 +1,4 @@
-################################################################
-############################ TESTS #############################
+~~~~~~~~~~~~~~~~~~~~~~~~~ TESTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 + Message de réussite / échec sur les tests 		// Camille
 + Modification tests V1								// Camille
@@ -8,12 +7,8 @@
 ________________________________________________________________
 / Commentaires :
 
-- blabla
 
-
-
-################################################################
-########################## GAME.C ##############################
+~~~~~~~~~~~~~~~~~~~~~~~~~~~ GAME.C ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 + Modification can_add_bridges_dir 					// Louis-Gabriel
 + Modification game_over 							// Tanguy
@@ -23,11 +18,17 @@ ________________________________________________________________
 / Commentaires :
 
 
-
-################################################################
-########################### HASHI_TEXT.C #######################
-
-+ Modification diverses 							//Adrien	
+~~~~~~~~~~~~~~~~~~~~~~ HASHI_TEXT.C ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ Modification diverse								//Adrien	
 
 ________________________________________________________________
 / Commentaires : 
+
+Adrien : j'ai ajouté generate.c et interface.c histoire d'avoir un hashi_text.c
+plus lisible et qui permet de retrouver les fonctions facilement avec les autres .c
+
+
+~~~~~~~~~~~~~~~~~~~ GENERATE.C & INTERFACE.C ~~~~~~~~~~~~~~~~~~~~
+
++ Créer plusieurs game jouable						// Tanguy
++ Simplification des fonctions de interface 		// Adrien		

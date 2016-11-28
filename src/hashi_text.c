@@ -8,34 +8,25 @@
 #include "../include/game.h"
 #include "../include/interface.h"
 
-/* Defalult configuration
-   2     2     3
+// /* DECLARATION GAME */
 
-   5     1
-
-   3           2
-*/
-
-/* DECLARATION GAME */
-
-#define EXAMPLE_NB_NODE 7
-#define SIZE 3
-#define NB_DIR 4
-#define NB_MAX_BRIDGES 2
+// #define EXAMPLE_NB_NODE 7
+// #define NB_DIR 4
+// #define NB_MAX_BRIDGES 2
 
 
-int vals[EXAMPLE_NB_NODE][3] = {{0,0,3},{0,1,5},{0,2,2},{1,1,1},{1,2,2},{2,0,2},{2,2,3}};
+// int vals[EXAMPLE_NB_NODE][3] = {{0,0,3},{0,2,5},{0,4,2},{2,2,1},{2,4,2},{4,0,2},{4,4,3}};
 
-static game default_game (){
-    node nodes[EXAMPLE_NB_NODE];
-    for (int i = 0 ; i < EXAMPLE_NB_NODE; i++)
-      nodes[i] = new_node(vals[i][0],vals[i][1],vals[i][2]);
-    game g = new_game(EXAMPLE_NB_NODE, nodes, NB_MAX_BRIDGES, NB_DIR);
-    for (int i = 0 ; i < EXAMPLE_NB_NODE; i++)
-      delete_node(nodes[i]);
-    return g;
-}
-/* FIN DECLARATION GAME */
+// static game default_game (){
+//     node nodes[EXAMPLE_NB_NODE];
+//     for (int i = 0 ; i < EXAMPLE_NB_NODE; i++)
+//       nodes[i] = new_node(vals[i][0],vals[i][1],vals[i][2]);
+//     game g = new_game(EXAMPLE_NB_NODE, nodes, NB_MAX_BRIDGES, NB_DIR);
+//     for (int i = 0 ; i < EXAMPLE_NB_NODE; i++)
+//       delete_node(nodes[i]);
+//     return g;
+// }
+// /* FIN DECLARATION GAME */
 
 int get_choice(){
   int choice = -1;
@@ -87,7 +78,7 @@ int main() {
 
   starting(); 
 
-  game g = default_game();
+  game g = game_select();
 
   create_matrix(g);
 

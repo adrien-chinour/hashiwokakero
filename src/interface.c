@@ -6,10 +6,11 @@
 
 #include "../include/node.h"
 #include "../include/game.h"
+#include "../include/generate.h"
 
 /* GLOBAL DEF */
 
-#define SIZE 3
+#define SIZE 5
 int matrix[SIZE*2-1][SIZE*2-1];
 
 /*FIN GLOBAL DEF */
@@ -390,5 +391,22 @@ void reset_game(game g){
       if(matrix[i][j] != 1)
         matrix[i][j] = 0;
     }
+  }
+}
+
+game game_select(){
+  int choice = 0;
+  while(choice < 1 || choice > 2){
+    char *value = (char*) malloc(sizeof(char));
+    printf("Selectionnez votre partie :\n");
+    printf("1 : FACILE - 4DIRS / 2 : FACILE - 8DIRS / 3 : MOYEN - 4DIRS / 4 : MOYEN - 8DIRS / 5 : DIFFICILE - 4DIRS / 6 : DIFFICILE - 8DIRS\n");
+    scanf("%s", value);
+    choice = atoi(value);
+    free(value);
+  }
+
+  switch(choice){
+    case 1: return generate_game(1,2,4);
+    default: return NULL;
   }
 }

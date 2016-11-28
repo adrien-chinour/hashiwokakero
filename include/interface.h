@@ -9,6 +9,7 @@
 
 #include "node.h"
 #include "game.h"
+#include "generate.h"
 
 void starting(void);
 
@@ -25,5 +26,7 @@ void create_matrix(cgame g);
 void test_game_over(game g);
 
 void reset_game(game g);
+
+game game_select();
 
 #endif // _INTERFACE_H_
