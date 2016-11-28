@@ -1,0 +1,30 @@
+### GIT ###
+
+* activité git moyenne sauf pour "tcubilier" avec 4 commits / 51 ???
+* commentaires : ok
+
+### Makefile ###
+
+* compilation : ok 
+* makefile : bien
+
+### Tests ###
+
+* 5 tests implantés (il en manque !!!)
+* test_game5 ne sert à rien selon moi 	?
+* faire un vrai bilan des tests !
+
+### Code (lisibilité / commentaires) ###
+
+* commentaires : peut mieux faire
+* utiliser assert() pour renforcer le code
+
+### Code (Implem.) ###
+
+* structures : ok
+* new_game() : ok
+* game_over() : test connexité recursif
+* can_add_bridge_dir() : test croisement...
+* hashi_text : gros effort sur l'interface texte, mais je n'arrive pas à ajouter un pont !!!!
+* valgrind : bien :-)
+
