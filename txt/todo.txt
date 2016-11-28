@@ -1,0 +1,33 @@
+################################################################
+############################ TESTS #############################
+
++ Message de réussite / échec sur les tests 		// Camille
++ Modification tests V1								// Camille
++ Ajout tests pour V2 								// Camille
+
+________________________________________________________________
+/ Commentaires :
+
+- blabla
+
+
+
+################################################################
+########################## GAME.C ##############################
+
++ Modification can_add_bridges_dir 					// Louis-Gabriel
++ Modification game_over 							// Tanguy
++ Modification get_neighbour_dir 					// Louis-Gabriel
+
+________________________________________________________________
+/ Commentaires :
+
+
+
+################################################################
+########################### HASHI_TEXT.C #######################
+
++ Modification diverses 							//Adrien	
+
+________________________________________________________________
+/ Commentaires : 

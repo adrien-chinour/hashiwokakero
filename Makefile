@@ -2,7 +2,7 @@ AR=ar
 CC=gcc
 CFLAGS= -Wall -std=c99
 ARFLAGS=rcs
-OBJETS=src/game.o src/node.o
+OBJETS=src/game.o src/node.o src/interface.o
 EXEC =hashi_text
 
 all: $(OBJETS) libhashi.a hashi_text

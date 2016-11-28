@@ -1,0 +1,79 @@
+diff --git a/include/game.h b/include/game.h
+index 2461526..da36a33 100644
+--- a/include/game.h
++++ b/include/game.h
+@@ -6,16 +6,14 @@
+ /**
+  * @file game.h
+  *
+- * @brief This file describes the board of a hashiwokakero game, the state of a game and all functions needed to manipulate it.
++ * @brief This file describes the board of a  hashiwokakero game, the state of a game and all functions needed to manipulate it.
+  **/
+ 
+ /**
+  * @enum dir_e
+  * @brief The enumeration of possible directions of an edge
+  **/
+-typedef enum dir_e {NORTH, WEST, SOUTH, EAST} dir;
+-
+-#define NB_DIRS 4
++typedef enum dir_e {NORTH, WEST, SOUTH, EAST, NW, SW, SE, NE} dir;
+ 
+ 
+ /**
+@@ -37,9 +35,11 @@ typedef const struct game_s* cgame;
+  * The nodes of the created game are copies of the ones given as argument.
+  * @param nb_nodes number of nodes of g
+  * @param nodes array of nodes. T
++ * @param maximal number of bridges allowed between two nodes of the game
++ * @param number of directions allowed in the game. The possible values for this parameter are 4 or 8.
+  * @return a pointer toward the generated game
+  **/
+-game new_game (int nb_nodes, node *nodes);
++game new_game (int nb_nodes, node *nodes, int nb_max_bridges, int nb_dir);
+ 
+ /**
+  * @brief Destroy the game and free allocated memory
+@@ -59,6 +59,16 @@ game copy_game (cgame g_src);
+  */
+ int game_nb_nodes (cgame g);
+ 
++/**
++ * @brief Return the number direction of the game g
++ */
++int game_nb_dir (cgame g);
++
++/**
++ * @brief Return the number max of bridges in the game g
++ */
++int game_nb_max_bridges (cgame g);
++
+ 
+ /**
+  * @brief Return the node of g with number num
+@@ -75,14 +85,14 @@ bool game_over (cgame g);
+ /**
+  * @brief Test if it is possible to add a bridge to node of index node_num in direction d such that
+  *   1) it doesn't degenarate a crossing with another bridge
+- *   2) the number of bridges in that direction remains smaller or equal to 2.
++ *   2) the number of bridges in that direction remains smaller our equal to 2.
+  **/
+ bool can_add_bridge_dir (cgame g, int node_num, dir d);
+ 
+ 
+ /**
+  * @brief Add a bridge from node of index node_num in direction d.
+- * @pre the addition of the bridge must be possible (i.e. can_add_bridge_dir(g, node_num_d) != 0).
++ * @pre the addition of the bridge must be possible (i.e. can_add_bridge_dir(g, node_num_d) == 0).
+  **/
+ void add_bridge_dir (game g, int node_num, dir d);
+ 
+@@ -112,7 +122,7 @@ int get_degree (cgame g, int node_num);
+ /**
+  * @brief Return the index of the neighbour of node node_num in direction d. Such neighbour is the first node found from the node_num in direction d.
+  * @return the index of the neighbour if there is one. -1 otherwise.
+- **//**/
++ **/
+ int get_neighbour_dir (cgame g, int node_num, dir d);
+ 
+ 
