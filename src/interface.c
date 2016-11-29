@@ -3,17 +3,17 @@
 #include <string.h>
 #include <time.h>
 #include <stdbool.h>
+#include <assert.h>
 
 #include "../include/node.h"
 #include "../include/game.h"
 #include "../include/generate.h"
 
-/* GLOBAL DEF */
+typedef struct s_map {
+  int size;
+  int** matrix;
+} *hashiMap;
 
-#define SIZE 5
-int matrix[SIZE*2-1][SIZE*2-1];
-
-/*FIN GLOBAL DEF */
 
 void starting(void){
 
@@ -45,10 +45,10 @@ void starting(void){
   printf("\033[0;m \n"); 
 }
 
-void print_matrix(cgame g){
+void draw_hashiMap(cgame g, hashiMap m){
   
   // affichage coordonnées abscisses
-  for(int i = 0; i < SIZE*2-1; i++){
+  for(int i = 0; i < m->size; i++){
     if(i%2 == 0)
       printf("%d  ", i/2);
     else
@@ -57,15 +57,15 @@ void print_matrix(cgame g){
   printf("\n");
   
   // affichage ligne abscisses
-  for(int i = 0; i < SIZE*2-1; i++){
+  for(int i = 0; i < m->size; i++){
     printf("---");
   }
   printf("\n");
   
   //affichage de matrix
-  for(int i = SIZE*2-2; i >= 0; i--){
-    for(int j = 0 ; j < SIZE*2-1 ; j++){
-      switch(matrix[i][j]){
+  for(int i = m->size-1; i >= 0; i--){
+    for(int j = 0 ; j < m->size ; j++){
+      switch(m->matrix[i][j]){
 
         case 0: // vide
           printf(".  ");
@@ -121,7 +121,7 @@ void print_game(cgame g){
   printf("\033[00m\n");
 }
 
-void add_bridge(game g){
+void add_bridge(game g, hashiMap m){
   int node_num = -1;
   while(node_num < 0 || node_num >= game_nb_nodes(g)){
     char *value = (char*) malloc(sizeof(char));
@@ -145,7 +145,7 @@ void add_bridge(game g){
       add_bridge_dir(g, node_num, NORTH);
       int i = get_y(game_node(g, node_num))*2+1;
       while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, NORTH)))*2){
-        matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, NORTH)+1;
+        m->matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, NORTH)+1;
         i++;
       }
     }
@@ -157,7 +157,7 @@ void add_bridge(game g){
       add_bridge_dir(g, node_num, SOUTH);
       int i = get_y(game_node(g, node_num))*2-1;
       while(i > get_y(game_node(g, get_neighbour_dir(g, node_num, SOUTH)))*2){
-        matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, SOUTH)+1;
+        m->matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, SOUTH)+1;
         i--;
       }
     }
@@ -169,7 +169,7 @@ void add_bridge(game g){
       add_bridge_dir(g, node_num, EAST);
       int i = get_x(game_node(g, node_num))*2+1;
       while(i < get_x(game_node(g, get_neighbour_dir(g, node_num, EAST)))*2){
-        matrix[get_y(game_node(g, node_num))*2][i] = get_degree_dir(g, node_num, EAST)+1;
+        m->matrix[get_y(game_node(g, node_num))*2][i] = get_degree_dir(g, node_num, EAST)+1;
         i++;
       }
     }
@@ -181,7 +181,7 @@ void add_bridge(game g){
       add_bridge_dir(g, node_num, WEST);
       int i = get_x(game_node(g, node_num))*2-1;
       while(i > get_x(game_node(g, get_neighbour_dir(g, node_num, WEST)))*2){
-        matrix[get_y(game_node(g, node_num))*2][i] = get_degree_dir(g, node_num, WEST)+1;
+        m->matrix[get_y(game_node(g, node_num))*2][i] = get_degree_dir(g, node_num, WEST)+1;
         i--;
       }
     }
@@ -193,7 +193,7 @@ void add_bridge(game g){
       add_bridge_dir(g, node_num, NW);
       int i = get_y(game_node(g, node_num))*2+1;
       while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, NW)))*2){
-        matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, NW)+1;
+        m->matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, NW)+1;
         i++;
       }
     }
@@ -205,7 +205,7 @@ void add_bridge(game g){
       add_bridge_dir(g, node_num, SW);
       int i = get_y(game_node(g, node_num))*2+1;
       while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, SW)))*2){
-        matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, SW)+1;
+        m->matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, SW)+1;
         i++;
       }
     }
@@ -217,7 +217,7 @@ void add_bridge(game g){
       add_bridge_dir(g, node_num, SE);
       int i = get_y(game_node(g, node_num))*2+1;
       while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, SE)))*2){
-        matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, SE)+1;
+        m->matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, SE)+1;
         i++;
       }
     }
@@ -229,7 +229,7 @@ void add_bridge(game g){
       add_bridge_dir(g, node_num, NE);
       int i = get_y(game_node(g, node_num))*2+1;
       while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, NE)))*2){
-        matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, NE)+1;
+        m->matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, NE)+1;
         i++;
       }
     }
@@ -238,7 +238,7 @@ void add_bridge(game g){
   }
 }
 
-void del_bridge(game g){
+void del_bridge(game g, hashiMap m){
   int node_num = -1;
   while(node_num < 0 || node_num >= game_nb_nodes(g)){
     char *value = (char*) malloc(sizeof(char));
@@ -262,9 +262,9 @@ void del_bridge(game g){
     int i = get_y(game_node(g, node_num))*2+1;
     while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, NORTH)))*2){
       if(get_degree_dir(g, node_num, NORTH) == 0)
-        matrix[i][get_x(game_node(g, node_num))*2] = 0;
+        m->matrix[i][get_x(game_node(g, node_num))*2] = 0;
       else 
-        matrix[i][get_x(game_node(g, node_num))*2] = 2;
+        m->matrix[i][get_x(game_node(g, node_num))*2] = 2;
       i++;
     }
   }
@@ -273,9 +273,9 @@ void del_bridge(game g){
     int i = get_y(game_node(g, node_num))*2-1;
     while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, SOUTH)))*2){
       if(get_degree_dir(g, node_num, SOUTH) == 0)
-        matrix[i][get_x(game_node(g, node_num))*2] = 0;
+        m->matrix[i][get_x(game_node(g, node_num))*2] = 0;
       else 
-        matrix[i][get_x(game_node(g, node_num))*2] = 2;
+        m->matrix[i][get_x(game_node(g, node_num))*2] = 2;
       i++;
     }
   }
@@ -284,9 +284,9 @@ void del_bridge(game g){
     int i = get_x(game_node(g, node_num))*2+1;
     while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, EAST)))*2){
       if(get_degree_dir(g, node_num, EAST) == 0)
-        matrix[get_y(game_node(g, node_num))*2][i] = 0;
+        m->matrix[get_y(game_node(g, node_num))*2][i] = 0;
       else 
-        matrix[get_y(game_node(g, node_num))*2][i] = 2;
+        m->matrix[get_y(game_node(g, node_num))*2][i] = 2;
       i++;
     }
   }
@@ -295,9 +295,9 @@ void del_bridge(game g){
     int i = get_x(game_node(g, node_num))*2-1;
     while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, WEST)))*2){
       if(get_degree_dir(g, node_num, WEST) == 0)
-        matrix[get_y(game_node(g, node_num))*2][i] = 0;
+        m->matrix[get_y(game_node(g, node_num))*2][i] = 0;
       else 
-        matrix[get_y(game_node(g, node_num))*2][i] = 2;
+        m->matrix[get_y(game_node(g, node_num))*2][i] = 2;
       i++;
     }
   }
@@ -306,9 +306,9 @@ void del_bridge(game g){
     int i = get_x(game_node(g, node_num))*2-1;
     while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, NW)))*2){
       if(get_degree_dir(g, node_num, NW) == 0)
-        matrix[get_y(game_node(g, node_num))*2][i] = 0;
+        m->matrix[get_y(game_node(g, node_num))*2][i] = 0;
       else 
-        matrix[get_y(game_node(g, node_num))*2][i] = 2;
+        m->matrix[get_y(game_node(g, node_num))*2][i] = 2;
       i++;
     }
   }
@@ -317,9 +317,9 @@ void del_bridge(game g){
     int i = get_x(game_node(g, node_num))*2-1;
     while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, SW)))*2){
       if(get_degree_dir(g, node_num, SW) == 0)
-        matrix[get_y(game_node(g, node_num))*2][i] = 0;
+        m->matrix[get_y(game_node(g, node_num))*2][i] = 0;
       else 
-        matrix[get_y(game_node(g, node_num))*2][i] = 2;
+        m->matrix[get_y(game_node(g, node_num))*2][i] = 2;
       i++;
     }
   }
@@ -328,9 +328,9 @@ void del_bridge(game g){
     int i = get_x(game_node(g, node_num))*2-1;
     while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, SE)))*2){
       if(get_degree_dir(g, node_num, SE) == 0)
-        matrix[get_y(game_node(g, node_num))*2][i] = 0;
+        m->matrix[get_y(game_node(g, node_num))*2][i] = 0;
       else 
-        matrix[get_y(game_node(g, node_num))*2][i] = 2;
+        m->matrix[get_y(game_node(g, node_num))*2][i] = 2;
       i++;
     }
   }
@@ -339,18 +339,38 @@ void del_bridge(game g){
     int i = get_x(game_node(g, node_num))*2-1;
     while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, NE)))*2){
       if(get_degree_dir(g, node_num, NE) == 0)
-        matrix[get_y(game_node(g, node_num))*2][i] = 0;
+        m->matrix[get_y(game_node(g, node_num))*2][i] = 0;
       else 
-        matrix[get_y(game_node(g, node_num))*2][i] = 2;
+        m->matrix[get_y(game_node(g, node_num))*2][i] = 2;
       i++;
     }
   }
 }
 
-void create_matrix(cgame g){
-  //Initialisation de matrix 
-  for(int i = 0; i < SIZE*2-1; i++){
-    for(int j = 0 ; j < SIZE*2-1 ; j++){
+hashiMap create_hashiMap(cgame g){
+  
+  //récupération de size en fonction des coordonnées des nodes
+  int size = 0;
+  for(int i = 0; i < game_nb_nodes(g); i++){
+    if((get_x(game_node(g, i))+1)*2 > size) size = (get_x(game_node(g, i))+1)*2;
+    if((get_y(game_node(g, i))+1)*2 > size) size = (get_y(game_node(g, i))+1)*2;
+    printf("%d; %d; %d\n", size, get_x(game_node(g, i)), get_y(game_node(g, i)));
+  }
+
+  //allocation de la map
+  hashiMap m = (hashiMap) malloc(sizeof(struct s_map));
+  assert(m != NULL);
+  
+  //ajout de size
+  m->size = size;
+
+  //allocation de matrix
+  int ** matrix = (int**) malloc(sizeof(int*)*size);
+  assert(matrix != NULL);
+  for(int i = 0; i < size; i++){
+    matrix[i] = (int*) malloc(sizeof(int)*size);
+    assert(matrix[i] != NULL);
+    for(int j = 0; j < size; j++){
       matrix[i][j] = 0;
     }
   }
@@ -361,20 +381,31 @@ void create_matrix(cgame g){
     int y = get_y(game_node(g, i));
     matrix[y*2][x*2] = 1;
   }
+
+  //ajout du pointeur sur matrix dans la struct map
+  m->matrix = matrix;
+
+  return m;
+}
+
+void delete_hashiMap(hashiMap m){
+  for(int i = 0; i < m->size; i++){
+    free(m->matrix[i]);
+  }
+  free(m->matrix);
+  free(m);
 }
 
 void test_game_over(game g){
   if(game_over(g)){
     printf("BRAVO, VOUS AVEZ GAGNÉ ! \n");
-    print_matrix(g);
-    print_game(g);
     exit(EXIT_SUCCESS);
   }
   else
     printf("Vous n'avez pas encore fini...\n");
 }
 
-void reset_game(game g){
+void reset_game(game g, hashiMap m){
   //supression des ponts
   for(int i = 0; i < game_nb_nodes(g); i++){
     for(int j = 0; j < 4; j++){
@@ -385,11 +416,11 @@ void reset_game(game g){
     }
   }
 
-  // reinitialisation de matrix
-  for(int i = 0; i < SIZE*2-1; i++){
-    for(int j = 0 ; j < SIZE*2-1 ; j++){
-      if(matrix[i][j] != 1)
-        matrix[i][j] = 0;
+  // reinitialisation de map
+  for(int i = 0; i < m->size; i++){
+    for(int j = 0 ; j < m->size ; j++){
+      if(m->matrix[i][j] != 1)
+        m->matrix[i][j] = 0;
     }
   }
 }
@@ -399,14 +430,19 @@ game game_select(){
   while(choice < 1 || choice > 2){
     char *value = (char*) malloc(sizeof(char));
     printf("Selectionnez votre partie :\n");
-    printf("1 : FACILE - 4DIRS / 2 : FACILE - 8DIRS / 3 : MOYEN - 4DIRS / 4 : MOYEN - 8DIRS / 5 : DIFFICILE - 4DIRS / 6 : DIFFICILE - 8DIRS\n");
+    printf("-> 1 : FACILE - 4DIRS \n-> 2 : FACILE - 8DIRS \n-> 3 : MOYEN - 4DIRS \n-> 4 : MOYEN - 8DIRS \n-> 5 : DIFFICILE - 4DIRS \n-> 6 : DIFFICILE - 8DIRS\n");
     scanf("%s", value);
     choice = atoi(value);
     free(value);
   }
 
   switch(choice){
-    case 1: return generate_game(1,2,4);
-    default: return NULL;
+    case 1: return generate_game(1,2,4,7);
+    case 2: printf("pas encore dispo.\n"); return generate_game(1,2,4,7);
+    case 3: printf("pas encore dispo.\n"); return generate_game(1,2,4,7);
+    case 4: printf("pas encore dispo.\n"); return generate_game(1,2,4,7);
+    case 5: printf("pas encore dispo.\n"); return generate_game(1,2,4,7);
+    case 6: printf("pas encore dispo.\n"); return generate_game(1,2,4,7);
+    default: printf("Erreur dans game_select\n"); exit(EXIT_FAILURE); break;
   }
 }
