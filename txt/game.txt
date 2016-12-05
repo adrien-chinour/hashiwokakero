@@ -12,12 +12,17 @@ INFO : Tous les game sont de taille 5 pour le moment.
 
    2  .  .  .  2
    .  .  .  .  .
-   2  .  6  .  1
-   .  2  .  2  .
-   3  .  2  .  .
+   2  .  5  .  1
+   .  .  .  .  .
+   3  .  2  .  1
 
 -> GAME 3 : (max bridges = 3; nb dir = 4)
 
+   1  .  .  1  .
+   .  .  .  .  .
+   2  3  .  6  .
+   .  .  .  .  .
+   4  .  .  5  .
 
 -> GAME 4 : (max bridges = 3; nb dir = 8)
 
