@@ -9,6 +9,6 @@
 #include "node.h"
 #include "game.h"
 
-game generate_game(int game, int nb_max_bridges, int nb_dir);
+game generate_game(int game, int nb_max_bridges, int nb_dir, int nb_nodes);
 
 #endif // _GENERATE_H_

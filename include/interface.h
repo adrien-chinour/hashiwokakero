@@ -6,26 +6,35 @@
 #include <string.h>
 #include <time.h>
 #include <stdbool.h>
+#include <assert.h>
 
 #include "node.h"
 #include "game.h"
 #include "generate.h"
 
+typedef struct s_map {
+  int size;
+  int** matrix;
+} *hashiMap;
+
+
 void starting(void);
 
-void print_matrix(cgame g);
+void draw_hashiMap(cgame g, hashiMap m);
 
 void print_game(cgame g);
 
-void add_bridge(game g);
+void add_bridge(game g, hashiMap m);
 
-void del_bridge(game g);
+void del_bridge(game g, hashiMap m);
 
-void create_matrix(cgame g);
+hashiMap create_hashiMap(cgame g);
+
+void delete_hashiMap(hashiMap m);
 
 void test_game_over(game g);
 
-void reset_game(game g);
+void reset_game(game g, hashiMap m);
 
 game game_select();
 

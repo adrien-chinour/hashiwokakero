@@ -5,25 +5,29 @@
 #include "../include/node.h"
 #include "../include/game.h"
 
-#define NB_NODES 7
+// Les tabeaux utilisés pour généré les games sont déclarés ici.
+int game1[7][3] = {{0,0,3},{0,2,5},{0,4,2},{2,2,1},{2,4,2},{4,0,2},{4,4,3}};
 
-game generate_game(int nb_game, int nb_max_bridges, int nb_dir){
+
+// fin déclaration des tableaux.
+
+game generate_game(int nb_game, int nb_max_bridges, int nb_dir, int nb_nodes){
 	
-	int game_un[NB_NODES][3] = {{0,0,3},{0,2,5},{0,4,2},{2,2,1},{2,4,2},{4,0,2},{4,4,3}};
-
-	node nodes[NB_NODES];
-    for (int i = 0 ; i < NB_NODES; i++){
+    node nodes[nb_nodes];
+    for (int i = 0 ; i < nb_nodes; i++){
     	switch(nb_game){
-    		case 1: 
-                nodes[i] = new_node(game_un[i][0],game_un[i][1],game_un[i][2]);
-                break;
-    	}
+    	   case 1: nodes[i] = new_node(game1[i][0],game1[i][1],game1[i][2]); break;
+    	   /*
+           case 2: nodes[i] = new_node(game2[i][0],game2[i][1],game2[i][2]); break;
+           ...
+           case 6: nodes[i] = new_node(game6[i][0],game6[i][1],game6[i][3]); break; 
+           */
+        }
     }
-
-    game g = new_game(NB_NODES, nodes, nb_max_bridges, nb_dir);
     
-    for (int i = 0 ; i < NB_NODES; i++)
-      delete_node(nodes[i]);
+    game g = new_game(nb_nodes, nodes, nb_max_bridges, nb_dir);
+
+    for (int i = 0 ; i < nb_nodes; i++) delete_node(nodes[i]);
     
     return g;
 }
