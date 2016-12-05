@@ -122,6 +122,7 @@ void print_game(cgame g){
 }
 
 void add_bridge(game g, hashiMap m){
+  // selection du noeud
   int node_num = -1;
   while(node_num < 0 || node_num >= game_nb_nodes(g)){
     char *value = (char*) malloc(sizeof(char));
@@ -131,111 +132,91 @@ void add_bridge(game g, hashiMap m){
     free(value);
   }
 
+  //selection de la direction
   int direction = 0;
   while(direction < 1 || direction > 4){
     char *value = (char*) malloc(sizeof(char));
-    printf("Dans quelle direction ?\n  1 = NORD / 2 = SUD / 3 = EST / 4 = OUEST\n");
+    if(game_nb_dir(g) == 4) 
+      printf("Dans quelle direction ?\n  1 = NORD / 2 = SUD / 3 = EST / 4 = OUEST\n");
+    else 
+      printf("Dans quelle direction ?\n  1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n 5 = NW / 6 = SW / 7 = SE / 8 = NE\n");
     scanf("%s", value);
     direction = atoi(value);
     free(value);
   }
 
-  if(direction == 1){
-    if(can_add_bridge_dir(g, node_num, NORTH)){
-      add_bridge_dir(g, node_num, NORTH);
-      int i = get_y(game_node(g, node_num))*2+1;
-      while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, NORTH)))*2){
-        m->matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, NORTH)+1;
-        i++;
-      }
+  //switch en fonction de la direction
+  int i, j;
+  if(can_add_bridge_dir(g, node_num, direction-1)){
+    add_bridge_dir(g, node_num, direction-1);
+    switch(direction){
+      case 1: //NORTH
+        i = get_y(game_node(g, node_num))*2+1;
+        while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, NORTH)))*2){
+          m->matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, NORTH)+1;
+          i++;
+        }
+        break;
+      case 2: //WEST
+        i = get_x(game_node(g, node_num))*2-1;
+        while(i > get_x(game_node(g, get_neighbour_dir(g, node_num, WEST)))*2){
+          m->matrix[get_y(game_node(g, node_num))*2][i] = get_degree_dir(g, node_num, WEST)+1;
+          i--;
+        }
+        break;
+      case 3: //SOUTH
+        i = get_y(game_node(g, node_num))*2-1;
+        while(i > get_y(game_node(g, get_neighbour_dir(g, node_num, SOUTH)))*2){
+          m->matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, SOUTH)+1;
+          i--;
+        }
+        break;
+      case 4: //EAST
+        i = get_x(game_node(g, node_num))*2+1;
+        while(i < get_x(game_node(g, get_neighbour_dir(g, node_num, EAST)))*2){
+          m->matrix[get_y(game_node(g, node_num))*2][i] = get_degree_dir(g, node_num, EAST)+1;
+          i++;
+        }
+        break;
+      case 5: //NW
+        i = get_x(game_node(g, node_num))*2+1;
+        j = get_y(game_node(g, node_num))*2+1;
+        while (j < get_y(game_node(g, get_neighbour_dir(g, node_num, NW)))*2){
+          m->matrix[j][i] = get_degree_dir(g, node_num,NW)+1;
+          j++;
+          i--;
+        }
+        break;
+      case 6: //SW
+        i = get_x(game_node(g, node_num))*2+1;
+        j = get_y(game_node(g, node_num))*2+1;
+        while (j > get_y(game_node(g, get_neighbour_dir(g, node_num, SW)))*2){
+          m->matrix[j][i] = get_degree_dir(g, node_num,SW)+1;
+          j--;
+          i--;
+        }
+        break;
+      case 7: //SE
+        i = get_x(game_node(g, node_num))*2+1;
+        j = get_y(game_node(g, node_num))*2+1;
+        while (j > get_y(game_node(g, get_neighbour_dir(g, node_num, SE)))*2){
+          m->matrix[j][i] = get_degree_dir(g, node_num,SE)+1;
+          j--;
+          i++;
+        }
+        break;
+      case 8: //NE
+        i = get_x(game_node(g, node_num))*2+1;
+        j = get_y(game_node(g, node_num))*2+1;
+        while (j < get_y(game_node(g, get_neighbour_dir(g, node_num, NE)))*2){
+          m->matrix[j][i] = get_degree_dir(g, node_num,NE)+1;
+          j++;
+          i++;
+        }
+        break;
     }
-    else
-      printf("Impossible d'ajouter un pont\n");
   }
-  else if(direction == 2){
-    if(can_add_bridge_dir(g, node_num, SOUTH)){
-      add_bridge_dir(g, node_num, SOUTH);
-      int i = get_y(game_node(g, node_num))*2-1;
-      while(i > get_y(game_node(g, get_neighbour_dir(g, node_num, SOUTH)))*2){
-        m->matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, SOUTH)+1;
-        i--;
-      }
-    }
-    else
-      printf("Impossible d'ajouter un pont\n");
-  }
-  else if(direction == 3){
-    if(can_add_bridge_dir(g, node_num, EAST)){
-      add_bridge_dir(g, node_num, EAST);
-      int i = get_x(game_node(g, node_num))*2+1;
-      while(i < get_x(game_node(g, get_neighbour_dir(g, node_num, EAST)))*2){
-        m->matrix[get_y(game_node(g, node_num))*2][i] = get_degree_dir(g, node_num, EAST)+1;
-        i++;
-      }
-    }
-    else
-      printf("Impossible d'ajouter un pont\n");
-  }
-  else if(direction == 4){
-    if(can_add_bridge_dir(g, node_num, WEST)){
-      add_bridge_dir(g, node_num, WEST);
-      int i = get_x(game_node(g, node_num))*2-1;
-      while(i > get_x(game_node(g, get_neighbour_dir(g, node_num, WEST)))*2){
-        m->matrix[get_y(game_node(g, node_num))*2][i] = get_degree_dir(g, node_num, WEST)+1;
-        i--;
-      }
-    }
-    else
-      printf("Impossible d'ajouter un pont\n");
-  }
-  else if(direction == 5){
-    if(can_add_bridge_dir(g, node_num, NW)){
-      add_bridge_dir(g, node_num, NW);
-      int i = get_y(game_node(g, node_num))*2+1;
-      while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, NW)))*2){
-        m->matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, NW)+1;
-        i++;
-      }
-    }
-    else
-      printf("Impossible d'ajouter un pont\n");
-  }
-  else  if(direction == 6){
-    if(can_add_bridge_dir(g, node_num, SW)){
-      add_bridge_dir(g, node_num, SW);
-      int i = get_y(game_node(g, node_num))*2+1;
-      while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, SW)))*2){
-        m->matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, SW)+1;
-        i++;
-      }
-    }
-    else
-      printf("Impossible d'ajouter un pont\n");
-  }
-  else  if(direction == 7){
-    if(can_add_bridge_dir(g, node_num, SE)){
-      add_bridge_dir(g, node_num, SE);
-      int i = get_y(game_node(g, node_num))*2+1;
-      while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, SE)))*2){
-        m->matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, SE)+1;
-        i++;
-      }
-    }
-    else
-      printf("Impossible d'ajouter un pont\n");
-  }
-  else  if(direction == 8){
-    if(can_add_bridge_dir(g, node_num, NE)){
-      add_bridge_dir(g, node_num, NE);
-      int i = get_y(game_node(g, node_num))*2+1;
-      while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, NE)))*2){
-        m->matrix[i][get_x(game_node(g, node_num))*2] = get_degree_dir(g, node_num, NE)+1;
-        i++;
-      }
-    }
-    else
-      printf("Impossible d'ajouter un pont\n");
-  }
+  else printf("Impossible d'ajouter un pont\n");
 }
 
 void del_bridge(game g, hashiMap m){
@@ -354,7 +335,6 @@ hashiMap create_hashiMap(cgame g){
   for(int i = 0; i < game_nb_nodes(g); i++){
     if((get_x(game_node(g, i))+1)*2 > size) size = (get_x(game_node(g, i))+1)*2;
     if((get_y(game_node(g, i))+1)*2 > size) size = (get_y(game_node(g, i))+1)*2;
-    printf("%d; %d; %d\n", size, get_x(game_node(g, i)), get_y(game_node(g, i)));
   }
 
   //allocation de la map
