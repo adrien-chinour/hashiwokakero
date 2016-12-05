@@ -125,7 +125,37 @@ int get_neighbour_dir (cgame g, int node_num, dir d);
 void add_bridge_dir (game g, int node_num, dir d){
   if(can_add_bridge_dir (g, node_num, d)){
     g->bridges[node_num][d]++;
-    g->bridges[get_neighbour_dir(g, node_num, d)][d]++;
+
+    int back;
+    switch(d)
+      {
+      case NORTH:
+	back = SOUTH;
+	break;
+	case SOUTH:
+	back = NORTH;
+	break;
+	case EAST:
+	back = WEST;
+	break;
+	case WEST:
+	back = EAST;
+	break;
+	case NW:
+	back = SE;
+	break;
+	case SW:
+	back = NE;
+	break;
+	case SE:
+	back = NW;
+	break;
+	case NE:
+	back = SW;
+	break;
+      }
+    
+    g->bridges[get_neighbour_dir(g, node_num, d)][back]++;
   }
   else {
       printf("Erreur: can_add_bridge_dir (g, node_num, d) n'est pas valide.\n");
@@ -417,7 +447,7 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
       {
 	for(int j = 0; j < g->nb_dir; j++)
 	  {
-	    if(get_neighbour_dir(g, i, j) != -1)
+	    if(g->bridges[i][j] > 0)
 	      {
 		node n = game_node(g, i), nv = game_node(g, get_neighbour_dir(g, i, j));
 		int xn = get_x(n), yn = get_y(n), xv = get_x(nv), yv = get_y(nv), ai;
@@ -440,101 +470,6 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
 		  }
 	      }
 	  }
-
-
-    /*
-      switch (d){
-
-               //    C
-               //    |
-               // A--+--B
-               //    |
-               //    D
-	
-      case NORTH:
-	for(int i = 0; i < g->nb_nodes; i++){
-	  //ici, n est le node A
-	  node n = game_node(g, i);
-	  
-	  if(get_x(n) > get_x(game_node(g, node_num)) //si xA > xD
-	     && get_x(n) < get_x(game_node(g, get_neighbour_dir(g, node_num, NORTH))) //si xA < xC
-	     && get_y(n) < get_y(game_node(g, node_num)) // si yA < yD (== yC)
-	     && g->bridges[i][EAST] > 0) //si A a un pont vers l'est
-	    return false;
-	  
-	  if(get_neighbour_dir(g, i, EAST) != -1 && //si A a un voisin B et ...
-	     g->bridges[get_neighbour_dir(g, i, EAST)][WEST] > 0) //si B a un pont vers l'ouest
-	     return false;
-	}
-	return true;
-	break;
-
-      case NW:
-	break;
-	
-      case WEST:
-	for(int i = 0; i < g->nb_nodes; i++){
-	  //ici, n est le node D
-	  node n = game_node(g, i);
-	  
-	  if(get_y(n) > get_y(game_node(g, get_neighbour_dir(g, node_num, WEST))) //si yD > yA
-	     && get_y(n) < get_y(game_node(g, node_num)) //si yD < yB
-	     && get_x(n) < get_x(game_node(g, node_num)) //si xD < xB (== xA)
-	     && g->bridges[i][NORTH] > 0) //si D a un pont vers le nord
-	    return false;
-	  
-	  if(get_neighbour_dir(g, i, NORTH) != -1 && //si D a un voisin C et ...
-	     g->bridges[get_neighbour_dir(g, i, NORTH)][SOUTH] > 0) //si C a un pont vers le sud
-	     return false;
-	}
-	return true;
-	break;
-
-      case SW:
-	break;
-	
-      case SOUTH:
-	for(int i = 0; i < g->nb_nodes; i++){
-	  //ici, n est le node A
-	  node n = game_node(g, i);
-	  
-	  if(get_x(n) < get_x(game_node(g, node_num)) //si xA < xC
-	     && get_x(n) > get_x(game_node(g, get_neighbour_dir(g, node_num, SOUTH))) //si xA > xD
-	     && get_y(n) < get_y(game_node(g, node_num)) // si yA < yC (== yD)
-	     && g->bridges[i][EAST] > 0) //si A a un pont vers l'est
-	    return false;
-	  
-	  if(get_neighbour_dir(g, i, EAST) != -1 && //si A a un voisin B et ...
-	     g->bridges[get_neighbour_dir(g, i, EAST)][WEST] > 0) //si B a un pont vers l'ouest
-	     return false;
-	}
-	return true;
-	break;
-
-      case SE:
-	break;
-	
-      case EAST:
-	for(int i = 0; i < g->nb_nodes; i++){
-	  //ici, n est le node D
-	  node n = game_node(g, i);
-	  
-	  if(get_y(n) < get_y(game_node(g, get_neighbour_dir(g, node_num, EAST))) //si yD < yB
-	     && get_y(n) > get_y(game_node(g, node_num)) //si yD > yA
-	     && get_x(n) > get_x(game_node(g, node_num)) //si xD > xA (== xB)
-	     && g->bridges[i][NORTH] > 0) //si D a un pont vers le nord
-	    return false;
-	  
-	  if(get_neighbour_dir(g, i, NORTH) != -1 && //si D a un voisin C et ...
-	     g->bridges[get_neighbour_dir(g, i, NORTH)][SOUTH] > 0) //si C a un pont vers le sud
-	     return false;
-	}
-	return true;
-	break;
-
-      case NE:
-	break;
-    */
       }
     return true;
   }
