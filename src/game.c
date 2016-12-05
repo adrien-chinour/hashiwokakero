@@ -388,11 +388,11 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
   }
 
   if(g->bridges[node_num][d] <= game_nb_max_bridges(g)){
-
+    
     node n0 = game_node(g, node_num), n1 = game_node(g, get_neighbour_dir(g, node_num, d));
     int x0 = get_x(n0), y0 = get_y(n0), x1 = get_x(n1), y1 = get_y(n1);
     double a0 = (y0-y1)/(x0-x1), b0 = y0-a0*x0;
-
+    
     if(x0 > x1)
       {
 	int change = x0;
