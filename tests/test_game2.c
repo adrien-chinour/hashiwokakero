@@ -63,7 +63,10 @@ int main (int argc, char *argv[]){
        fprintf(stdout,"test2 success\n");
         return EXIT_SUCCESS;
     }
-   else
-      return EXIT_FAILURE;
+    else{
+       fprintf(stderr,"test2 failure\n");
+       return EXIT_FAILURE;
+    }
+
 
 }
