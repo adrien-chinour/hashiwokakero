@@ -390,8 +390,14 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
   if(g->bridges[node_num][d] <= game_nb_max_bridges(g)){
     
     node n0 = game_node(g, node_num), n1 = game_node(g, get_neighbour_dir(g, node_num, d));
-    int x0 = get_x(n0), y0 = get_y(n0), x1 = get_x(n1), y1 = get_y(n1);
-    double a0 = (y0-y1)/(x0-x1), b0 = y0-a0*x0;
+    int x0 = get_x(n0), y0 = get_y(n0), x1 = get_x(n1), y1 = get_y(n1), a0;
+    
+    if(x0-x1 == 0)
+      a0 = 0;
+    else
+      a0 = (y0-y1)/(x0-x1);
+
+    int b0 = y0-a0*x0;
     
     if(x0 > x1)
       {
@@ -411,18 +417,27 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
       {
 	for(int j = 0; j < g->nb_dir; j++)
 	  {
-	    node n = game_node(g, i), nv = game_node(g, get_neighbour_dir(g, i, j));
-	    int xn = get_x(n), yn = get_y(n), xv = get_x(nv), yv = get_y(nv);
-	    double ai = (yn-yv)/(xn-xv), bi = (yn-ai*xn);
-	    
-	    if(a0 != ai)
+	    if(get_neighbour_dir(g, i, j) != -1)
 	      {
-		//coordonnées du point d'intersection des droites
-		double x = (bi-b0)/(a0-ai), y = ai*xn+bi;
-
-		//si (x;y) est sur le pont à poser et si (x;y) est sur un autre pont
-		if(x0 < x && x < x1 && y0 < y && y < y1 && xn < x && x < xv && yn < y && y < yv)
-		  return false;
+		node n = game_node(g, i), nv = game_node(g, get_neighbour_dir(g, i, j));
+		int xn = get_x(n), yn = get_y(n), xv = get_x(nv), yv = get_y(nv), ai;
+		
+		if(xn-xv == 0)
+		  ai = 0;
+		else
+		  ai = (yn-yv)/(xn-xv);
+		
+		int bi = (yn-ai*xn);
+		
+		if(a0 != ai)
+		  {
+		    //coordonnées du point d'intersection des droites
+		    int x = (bi-b0)/(a0-ai), y = ai*xn+bi;
+		    
+		    //si (x;y) est sur le pont à poser et si (x;y) est sur un autre pont
+		    if(x0 < x && x < x1 && y0 < y && y < y1 && xn < x && x < xv && yn < y && y < yv)
+		      return false;
+		  }
 	      }
 	  }
 
