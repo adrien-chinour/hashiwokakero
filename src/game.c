@@ -189,7 +189,7 @@ int get_neighbour_dir (cgame g, int node_num, dir d){
   node n = game_node(g, node_num);
   
   switch(d){
-  case NORTH: 
+  case NORTH:
     {
       int max_y = 0;
       
@@ -210,7 +210,7 @@ int get_neighbour_dir (cgame g, int node_num, dir d){
     
   case NE:
     {
-      int max_y = 0, max_x = 0;
+      int max_x = 0, max_y = 0;
       
       for(int i = 0; i < g->nb_nodes; i++){
         if(get_y(g->nodes[i]) > max_y)
@@ -315,7 +315,7 @@ int get_neighbour_dir (cgame g, int node_num, dir d){
           max_y = get_y(g->nodes[i]);
       }
       
-      int x = get_x(n)+1, y = get_y(n)-1;
+      int x = get_x(n)-1, y = get_y(n)+1;
       
       while (x >= 0 && y <= max_y && game_get_node_number(g,x,y) == -1){
 	x--;
@@ -413,10 +413,12 @@ int game_get_node_number (cgame g, int x, int y){
 
 bool can_add_bridge_dir (cgame g, int node_num, dir d){
 
+  //si l'ile n'a pas de voisin, on ne peut pas poser de pont
   if(get_neighbour_dir(g, node_num, d) == -1){
     return false;
   }
 
+  //si on a pas atteint le nombre maximum de ponts, on peut en poser un
   if(g->bridges[node_num][d] <= game_nb_max_bridges(g)){
     
     node n0 = game_node(g, node_num), n1 = game_node(g, get_neighbour_dir(g, node_num, d));
@@ -442,7 +444,7 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
 	y0 = y1;
 	y1 = change;
       }
-
+    
     for(int i = 0; i < g->nb_nodes; i++)
       {
 	for(int j = 0; j < g->nb_dir; j++)
