@@ -11,10 +11,10 @@
 
    2     4     1
 */
-#define EXAMPLE_NB_NODE 7
+#define EXAMPLE_NB_NODE 8
 #define NB_BRIDGES_MAX 2
 #define NB_DIR 4
-int vals[EXAMPLE_NB_NODE][3] = {{0,0,3},{0,1,5},{0,2,2},{1,1,1},{1,2,2},{2,0,2},{2,2,3}};
+int vals[EXAMPLE_NB_NODE][3] = {{0,0,2},{0,1,3},{0,2,1},{1,0,4},{1,1,7},{1,2,2},{2,0,1},{2,1,2}};
 
 static game default_game (){
     node nodes[EXAMPLE_NB_NODE];
@@ -83,6 +83,8 @@ int main (int argc, char *argv[])
        return EXIT_SUCCESS;
     }
 
-    else
-        return EXIT_FAILURE;
+    else{
+       fprintf(stderr,"test4 failure\n");
+       return EXIT_FAILURE;
+    }
 }

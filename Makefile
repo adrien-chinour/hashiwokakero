@@ -19,15 +19,15 @@ hashi_text : src/hashi_text.c libhashi.a
 # make test : créer les executables des tests sur les fonctions de
 # node.c et game.c puis les exécutes
 
-test :test1 test2 test3 test4 test5
-	@ ./test1 ; ./test2 ; ./test3 ; ./test4 ; ./test5 
+test :test1 test2 test3 test4 test5 test6 test7
+	@ ./test1 ; ./test2 ; ./test3 ; ./test4 ; ./test5 ; ./test6 ; ./test7
 	@ echo Tests terminés.
 
 test%: tests/test_game%.c tests/test_toolbox.c libhashi.a
-	$(CC) -o $@ $(CFLAGS) $< tests/test_toolbox.c -L. -lhashi
+	$(CC) -g -o $@ $(CFLAGS) $< tests/test_toolbox.c -L. -lhashi
 
 # make clean : nettoie les fichiers créés par le Makefile
 
 clean:
-	@ rm -rf src/*.o src/*~ test1 test2 test3 test4 test5 tests/*~ include/*~ *.a $(EXEC)
+	@ rm -rf src/*.o src/*~ test1 test2 test3 test4 test5 test6 test7 tests/*~ include/*~ *.a $(EXEC)
 	@ echo Nettoyage terminé.

@@ -34,7 +34,6 @@ bool test_pont_equivalent(){
    bool r = true;
    add_bridge_dir(g, 1, NORTH);
    r = r && test_equality_int(get_degree(g, 1), get_degree(g, 2), "le degré n'est pas équivalent");
-
    return r;
 }
 
@@ -47,6 +46,9 @@ int main (int argc, char *argv[])
        fprintf(stdout,"test5 success\n");
        return EXIT_SUCCESS;
     }
-    else
-        return EXIT_FAILURE;
+    else{
+       fprintf(stderr,"test5 failure\n");
+       return EXIT_FAILURE;
+    }
+
 }

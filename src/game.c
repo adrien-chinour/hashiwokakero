@@ -125,7 +125,37 @@ int get_neighbour_dir (cgame g, int node_num, dir d);
 void add_bridge_dir (game g, int node_num, dir d){
   if(can_add_bridge_dir (g, node_num, d)){
     g->bridges[node_num][d]++;
-    g->bridges[get_neighbour_dir(g, node_num, d)][d]++;
+
+    int back;
+    switch(d)
+      {
+      case NORTH:
+	back = SOUTH;
+	break;
+	case SOUTH:
+	back = NORTH;
+	break;
+	case EAST:
+	back = WEST;
+	break;
+	case WEST:
+	back = EAST;
+	break;
+	case NW:
+	back = SE;
+	break;
+	case SW:
+	back = NE;
+	break;
+	case SE:
+	back = NW;
+	break;
+	case NE:
+	back = SW;
+	break;
+      }
+    
+    g->bridges[get_neighbour_dir(g, node_num, d)][back]++;
   }
   else {
       printf("Erreur: can_add_bridge_dir (g, node_num, d) n'est pas valide.\n");
@@ -159,7 +189,7 @@ int get_neighbour_dir (cgame g, int node_num, dir d){
   node n = game_node(g, node_num);
   
   switch(d){
-  case NORTH: 
+  case NORTH:
     {
       int max_y = 0;
       
@@ -180,7 +210,7 @@ int get_neighbour_dir (cgame g, int node_num, dir d){
     
   case NE:
     {
-      int max_y = 0, max_x = 0;
+      int max_x = 0, max_y = 0;
       
       for(int i = 0; i < g->nb_nodes; i++){
         if(get_y(g->nodes[i]) > max_y)
@@ -285,7 +315,7 @@ int get_neighbour_dir (cgame g, int node_num, dir d){
           max_y = get_y(g->nodes[i]);
       }
       
-      int x = get_x(n)+1, y = get_y(n)-1;
+      int x = get_x(n)-1, y = get_y(n)+1;
       
       while (x >= 0 && y <= max_y && game_get_node_number(g,x,y) == -1){
 	x--;
@@ -308,56 +338,56 @@ int game_get_node_number (cgame g, int x, int y){
    return -1;
 }
 
-
- bool game_over (cgame g){
- 
-  // Fonction déclarée a l'intérieur car elle n'est utilisée que par game_over
-    void explore(cgame g, int node_num, bool connected[]){
-    
-    //initialise un tableau qui est a true si le node est lié aux autres
-    connected[node_num] = true;
-    
-    if(get_degree_dir(g, node_num, SOUTH) != 0){
+static void explore(cgame g, int node_num, bool connected[]){
+   
+   //initialise un tableau qui est a true si le node est lié aux autres
+   connected[node_num] = true;
+   
+   if(get_degree_dir(g, node_num, SOUTH) != 0){
       if(connected[get_neighbour_dir(g, node_num, SOUTH)] == false)
-        explore(g, get_neighbour_dir(g, node_num, SOUTH), connected);
-    }
-    
-    if(get_degree_dir(g, node_num, NORTH) != 0){
+         explore(g, get_neighbour_dir(g, node_num, SOUTH), connected);
+   }
+   
+   if(get_degree_dir(g, node_num, NORTH) != 0){
       if(connected[get_neighbour_dir(g, node_num, NORTH)] == false)
-        explore(g, get_neighbour_dir(g, node_num, NORTH), connected);
-    }
-    
-    if(get_degree_dir(g, node_num, EAST) != 0){
+         explore(g, get_neighbour_dir(g, node_num, NORTH), connected);
+   }
+   
+   if(get_degree_dir(g, node_num, EAST) != 0){
       if(connected[get_neighbour_dir(g, node_num, EAST)] == false)
         explore(g, get_neighbour_dir(g, node_num, EAST), connected);
-    }
-    
-    if(get_degree_dir(g, node_num, WEST) != 0){
+   }
+   
+   if(get_degree_dir(g, node_num, WEST) != 0){
       if(connected[get_neighbour_dir(g, node_num, WEST)] == false)
-        explore(g, get_neighbour_dir(g, node_num, WEST), connected);
-    }
+         explore(g, get_neighbour_dir(g, node_num, WEST), connected);
+   }
+   
+   if(get_degree_dir(g, node_num, NW) != 0){
+      if(connected[get_neighbour_dir(g, node_num, NW)] == false)
+         explore(g, get_neighbour_dir(g, node_num, NW), connected);
+   }
+   
+   if(get_degree_dir(g, node_num, SW) != 0){
+      if(connected[get_neighbour_dir(g, node_num, SW)] == false)
+         explore(g, get_neighbour_dir(g, node_num, SW), connected);
+   }
+   
+   if(get_degree_dir(g, node_num, SE) != 0){
+      if(connected[get_neighbour_dir(g, node_num, SE)] == false)
+         explore(g, get_neighbour_dir(g, node_num, SE), connected);
+   }
+   
+   if(get_degree_dir(g, node_num, NE) != 0){
+      if(connected[get_neighbour_dir(g, node_num, NE)] == false)
+         explore(g, get_neighbour_dir(g, node_num, NE), connected);
+   }
+}
 
-     if(get_degree_dir(g, node_num, NW) != 0){
-       if(connected[get_neighbour_dir(g, node_num, NW)] == false)
-          explore(g, get_neighbour_dir(g, node_num, NW), connected);
-     }
 
-     if(get_degree_dir(g, node_num, SW) != 0){
-        if(connected[get_neighbour_dir(g, node_num, SW)] == false)
-           explore(g, get_neighbour_dir(g, node_num, SW), connected);
-     }
 
-     if(get_degree_dir(g, node_num, SE) != 0){
-        if(connected[get_neighbour_dir(g, node_num, SE)] == false)
-           explore(g, get_neighbour_dir(g, node_num, SE), connected);
-     }
-
-     if(get_degree_dir(g, node_num, NE) != 0){
-        if(connected[get_neighbour_dir(g, node_num, NE)] == false)
-           explore(g, get_neighbour_dir(g, node_num, NE), connected);
-     }
-     
-    }
+ bool game_over (cgame g){
+    
 
   //verification des degrées
   for(int i = 0; i < game_nb_nodes(g); i++){
@@ -383,103 +413,67 @@ int game_get_node_number (cgame g, int x, int y){
 
 bool can_add_bridge_dir (cgame g, int node_num, dir d){
 
+  //si l'ile n'a pas de voisin, on ne peut pas poser de pont
   if(get_neighbour_dir(g, node_num, d) == -1){
     return false;
   }
 
-  if(g->bridges[node_num][d] < 2){
-      switch (d){
+  //si on a pas atteint le nombre maximum de ponts, on peut en poser un
+  if(g->bridges[node_num][d] <= game_nb_max_bridges(g)){
+    
+    node n0 = game_node(g, node_num), n1 = game_node(g, get_neighbour_dir(g, node_num, d));
+    int x0 = get_x(n0), y0 = get_y(n0), x1 = get_x(n1), y1 = get_y(n1), a0;
+    
+    if(x0-x1 == 0)
+      a0 = 0;
+    else
+      a0 = (y0-y1)/(x0-x1);
 
-               //    C
-               //    |
-               // A--+--B
-               //    |
-               //    D
-	
-      case NORTH:
-	for(int i = 0; i < g->nb_nodes; i++){
-	  //ici, n est le node A
-	  node n = game_node(g, i);
-	  
-	  if(get_x(n) > get_x(game_node(g, node_num)) //si xA > xD
-	     && get_x(n) < get_x(game_node(g, get_neighbour_dir(g, node_num, NORTH))) //si xA < xC
-	     && get_y(n) < get_y(game_node(g, node_num)) // si yA < yD (== yC)
-	     && g->bridges[i][EAST] > 0) //si A a un pont vers l'est
-	    return false;
-	  
-	  if(get_neighbour_dir(g, i, EAST) != -1 && //si A a un voisin B et ...
-	     g->bridges[get_neighbour_dir(g, i, EAST)][WEST] > 0) //si B a un pont vers l'ouest
-	     return false;
-	}
-	return true;
-	break;
-
-      case NW:
-	break;
-	
-      case WEST:
-	for(int i = 0; i < g->nb_nodes; i++){
-	  //ici, n est le node D
-	  node n = game_node(g, i);
-	  
-	  if(get_y(n) > get_y(game_node(g, get_neighbour_dir(g, node_num, WEST))) //si yD > yA
-	     && get_y(n) < get_y(game_node(g, node_num)) //si yD < yB
-	     && get_x(n) < get_x(game_node(g, node_num)) //si xD < xB (== xA)
-	     && g->bridges[i][NORTH] > 0) //si D a un pont vers le nord
-	    return false;
-	  
-	  if(get_neighbour_dir(g, i, NORTH) != -1 && //si D a un voisin C et ...
-	     g->bridges[get_neighbour_dir(g, i, NORTH)][SOUTH] > 0) //si C a un pont vers le sud
-	     return false;
-	}
-	return true;
-	break;
-
-      case SW:
-	break;
-	
-      case SOUTH:
-	for(int i = 0; i < g->nb_nodes; i++){
-	  //ici, n est le node A
-	  node n = game_node(g, i);
-	  
-	  if(get_x(n) < get_x(game_node(g, node_num)) //si xA < xC
-	     && get_x(n) > get_x(game_node(g, get_neighbour_dir(g, node_num, SOUTH))) //si xA > xD
-	     && get_y(n) < get_y(game_node(g, node_num)) // si yA < yC (== yD)
-	     && g->bridges[i][EAST] > 0) //si A a un pont vers l'est
-	    return false;
-	  
-	  if(get_neighbour_dir(g, i, EAST) != -1 && //si A a un voisin B et ...
-	     g->bridges[get_neighbour_dir(g, i, EAST)][WEST] > 0) //si B a un pont vers l'ouest
-	     return false;
-	}
-	return true;
-	break;
-
-      case SE:
-	break;
-	
-      case EAST:
-	for(int i = 0; i < g->nb_nodes; i++){
-	  //ici, n est le node D
-	  node n = game_node(g, i);
-	  
-	  if(get_y(n) < get_y(game_node(g, get_neighbour_dir(g, node_num, EAST))) //si yD < yB
-	     && get_y(n) > get_y(game_node(g, node_num)) //si yD > yA
-	     && get_x(n) > get_x(game_node(g, node_num)) //si xD > xA (== xB)
-	     && g->bridges[i][NORTH] > 0) //si D a un pont vers le nord
-	    return false;
-	  
-	  if(get_neighbour_dir(g, i, NORTH) != -1 && //si D a un voisin C et ...
-	     g->bridges[get_neighbour_dir(g, i, NORTH)][SOUTH] > 0) //si C a un pont vers le sud
-	     return false;
-	}
-	return true;
-	break;
-
-      case NE:
-	break;
+    int b0 = y0-a0*x0;
+    
+    if(x0 > x1)
+      {
+	int change = x0;
+	x0 = x1;
+	x1 = change;
       }
+    
+    if(y0 > y1)
+      {
+	int change = y0;
+	y0 = y1;
+	y1 = change;
+      }
+    
+    for(int i = 0; i < g->nb_nodes; i++)
+      {
+	for(int j = 0; j < g->nb_dir; j++)
+	  {
+	    if(g->bridges[i][j] > 0)
+	      {
+		node n = game_node(g, i), nv = game_node(g, get_neighbour_dir(g, i, j));
+		int xn = get_x(n), yn = get_y(n), xv = get_x(nv), yv = get_y(nv), ai;
+		
+		if(xn-xv == 0)
+		  ai = 0;
+		else
+		  ai = (yn-yv)/(xn-xv);
+		
+		int bi = (yn-ai*xn);
+		
+		if(a0 != ai)
+		  {
+		    //coordonnées du point d'intersection des droites
+		    int x = (bi-b0)/(a0-ai), y = ai*xn+bi;
+		    
+		    //si (x;y) est sur le pont à poser et si (x;y) est sur un autre pont
+		    if(x0 < x && x < x1 && y0 < y && y < y1 && xn < x && x < xv && yn < y && y < yv)
+		      return false;
+		  }
+	      }
+	  }
+      }
+    return true;
   }
   return false;
 }
