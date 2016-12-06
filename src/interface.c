@@ -126,7 +126,7 @@ void add_bridge(game g, hashiMap m){
   int node_num = -1;
   while(node_num < 0 || node_num >= game_nb_nodes(g)){
     char *value = (char*) malloc(sizeof(char));
-    printf("Sur quelle noeud voulez-vous ajouter un pont ?\n");
+    printf("Sur quelle noeud voulez-vous ajouter un pont (numero du noeud)?\n");
     scanf("%s", value);
     node_num = atoi(value);
     free(value);
@@ -137,7 +137,7 @@ void add_bridge(game g, hashiMap m){
   while(direction < 1 || direction > 4){
     char *value = (char*) malloc(sizeof(char));
     if(game_nb_dir(g) == 4) 
-      printf("Dans quelle direction ?\n  1 = NORD / 2 = SUD / 3 = EST / 4 = OUEST\n");
+      printf("Dans quelle direction ?\n  1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n");
     else 
       printf("Dans quelle direction ?\n  1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n 5 = NW / 6 = SW / 7 = SE / 8 = NE\n");
     scanf("%s", value);
