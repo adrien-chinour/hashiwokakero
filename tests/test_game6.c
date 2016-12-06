@@ -37,6 +37,7 @@ bool test_can_add_bridge_dir(){
    game g = default_game();
    bool r = true;
    r = test_equality_bool(true, can_add_bridge_dir(g, 0, NE), "can add NE") && r;
+   add_bridge_dir(g, 0, NE);
    
    r = test_equality_bool(false, can_add_bridge_dir(g, 1, EAST), "can add EAST") && r;
    
