@@ -420,17 +420,22 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
 
   //si on a pas atteint le nombre maximum de ponts, on peut en poser un
   if(g->bridges[node_num][d] <= game_nb_max_bridges(g)){
-    
+
+    //on prépare les calculs
     node n0 = game_node(g, node_num), n1 = game_node(g, get_neighbour_dir(g, node_num, d));
     int x0 = get_x(n0), y0 = get_y(n0), x1 = get_x(n1), y1 = get_y(n1), a0;
-    
+
+    //on évite une division par 0: a0 = 0
     if(x0-x1 == 0)
       a0 = 0;
+    //si la division n'est pas faite par 0, on calcule le coéfficient directeur
     else
       a0 = (y0-y1)/(x0-x1);
 
+    //on calcule l'ordonnée à l'origine
     int b0 = y0-a0*x0;
-    
+
+    //on inverse l'abscisse si x0 est plus grand que x1
     if(x0 > x1)
       {
 	int change = x0;
@@ -438,22 +443,27 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
 	x1 = change;
       }
     
+    //on inverse l'ordonnée si y0 est plus grand que y1
     if(y0 > y1)
       {
 	int change = y0;
 	y0 = y1;
 	y1 = change;
       }
-    
+
+    //on parcours chaque node pour voir s'ils ont un pont
     for(int i = 0; i < g->nb_nodes; i++)
       {
 	for(int j = 0; j < g->nb_dir; j++)
 	  {
+	    //si un node a un pont
 	    if(g->bridges[i][j] > 0)
 	      {
+		//on prépare les calculs
 		node n = game_node(g, i), nv = game_node(g, get_neighbour_dir(g, i, j));
 		int xn = get_x(n), yn = get_y(n), xv = get_x(nv), yv = get_y(nv), ai;
-		
+
+		//une fois de plus, on évite les divisions par 0
 		if(xn-xv == 0)
 		  ai = 0;
 		else
