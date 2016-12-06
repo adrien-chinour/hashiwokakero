@@ -122,40 +122,43 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d);
 //idem
 int get_neighbour_dir (cgame g, int node_num, dir d);
 
+
+
+static int inverse_dir(dir d){
+   int back;
+   switch(d)
+   {
+      case NORTH:
+         back = SOUTH;
+         break;
+	case SOUTH:
+           back = NORTH;
+           break;
+      case EAST:
+         back = WEST;
+         break;
+      case WEST:
+         back = EAST;
+	break;
+      case NW:
+         back = SE;
+         break;
+      case SW:
+         back = NE;
+         break;
+      case SE:
+         back = NW;
+         break;
+	case NE:
+           back = SW;
+           break;
+   }
+   return back;
+}
 void add_bridge_dir (game g, int node_num, dir d){
   if(can_add_bridge_dir (g, node_num, d)){
     g->bridges[node_num][d]++;
-
-    int back;
-    switch(d)
-      {
-      case NORTH:
-	back = SOUTH;
-	break;
-	case SOUTH:
-	back = NORTH;
-	break;
-	case EAST:
-	back = WEST;
-	break;
-	case WEST:
-	back = EAST;
-	break;
-	case NW:
-	back = SE;
-	break;
-	case SW:
-	back = NE;
-	break;
-	case SE:
-	back = NW;
-	break;
-	case NE:
-	back = SW;
-	break;
-      }
-    
-    g->bridges[get_neighbour_dir(g, node_num, d)][back]++;
+    g->bridges[get_neighbour_dir(g, node_num, d)][inverse_dir(d)]++;
   }
   else {
       printf("Erreur: can_add_bridge_dir (g, node_num, d) n'est pas valide.\n");
@@ -165,7 +168,7 @@ void add_bridge_dir (game g, int node_num, dir d){
 
 void del_bridge_dir (game g, int node_num, dir d){
    if(g->bridges[node_num][d] != 0){
-      g->bridges[get_neighbour_dir(g,node_num,d)][d]--;
+      g->bridges[get_neighbour_dir(g,node_num,d)][inverse_dir(d)]--;
       g->bridges[node_num][d]--;
    }
 }
@@ -341,6 +344,7 @@ int game_get_node_number (cgame g, int x, int y){
 static void explore(cgame g, int node_num, bool connected[]){
    
    //initialise un tableau qui est a true si le node est lié aux autres
+   
    connected[node_num] = true;
    
    if(get_degree_dir(g, node_num, SOUTH) != 0){
@@ -351,44 +355,51 @@ static void explore(cgame g, int node_num, bool connected[]){
    if(get_degree_dir(g, node_num, NORTH) != 0){
       if(connected[get_neighbour_dir(g, node_num, NORTH)] == false)
          explore(g, get_neighbour_dir(g, node_num, NORTH), connected);
+      
    }
+
    
    if(get_degree_dir(g, node_num, EAST) != 0){
       if(connected[get_neighbour_dir(g, node_num, EAST)] == false)
-        explore(g, get_neighbour_dir(g, node_num, EAST), connected);
+          explore(g, get_neighbour_dir(g, node_num, EAST), connected);
+       
+       
    }
    
    if(get_degree_dir(g, node_num, WEST) != 0){
-      if(connected[get_neighbour_dir(g, node_num, WEST)] == false)
+       if(connected[get_neighbour_dir(g, node_num, WEST)] == false){
          explore(g, get_neighbour_dir(g, node_num, WEST), connected);
+       }
+       
+   }
+   if(game_nb_dir(g)==8){
+   
+      if(get_degree_dir(g, node_num, NW) != 0){
+         if(connected[get_neighbour_dir(g, node_num, NW)] == false)
+            explore(g, get_neighbour_dir(g, node_num, NW), connected);
+      }
+      
+      if(get_degree_dir(g, node_num, SW) != 0){
+         if(connected[get_neighbour_dir(g, node_num, SW)] == false)
+            explore(g, get_neighbour_dir(g, node_num, SW), connected);
+      }
+      
+      if(get_degree_dir(g, node_num, SE) != 0){
+         if(connected[get_neighbour_dir(g, node_num, SE)] == false)
+            explore(g, get_neighbour_dir(g, node_num, SE), connected);
+      }
+      
+      if(get_degree_dir(g, node_num, NE) != 0){
+         if(connected[get_neighbour_dir(g, node_num, NE)] == false)
+            explore(g, get_neighbour_dir(g, node_num, NE), connected);
+      }
    }
    
-   if(get_degree_dir(g, node_num, NW) != 0){
-      if(connected[get_neighbour_dir(g, node_num, NW)] == false)
-         explore(g, get_neighbour_dir(g, node_num, NW), connected);
-   }
-   
-   if(get_degree_dir(g, node_num, SW) != 0){
-      if(connected[get_neighbour_dir(g, node_num, SW)] == false)
-         explore(g, get_neighbour_dir(g, node_num, SW), connected);
-   }
-   
-   if(get_degree_dir(g, node_num, SE) != 0){
-      if(connected[get_neighbour_dir(g, node_num, SE)] == false)
-         explore(g, get_neighbour_dir(g, node_num, SE), connected);
-   }
-   
-   if(get_degree_dir(g, node_num, NE) != 0){
-      if(connected[get_neighbour_dir(g, node_num, NE)] == false)
-         explore(g, get_neighbour_dir(g, node_num, NE), connected);
-   }
 }
 
 
 
  bool game_over (cgame g){
-    
-
   //verification des degrées
   for(int i = 0; i < game_nb_nodes(g); i++){
     if(get_degree(g, i) != get_required_degree(game_node(g, i)))
@@ -399,15 +410,17 @@ static void explore(cgame g, int node_num, bool connected[]){
   bool connected[game_nb_nodes(g)];
   for(int i = 0; i < game_nb_nodes(g); i++){
     connected[i] = false;
-  } 
+  }
 
+
+        
   explore(g, 0, connected);
+  
   
   for(int i = 0; i < game_nb_nodes(g); i++){
     if(connected[i] == false)
       return false;
-  } 
-
+  }
   return true;
 }
 
