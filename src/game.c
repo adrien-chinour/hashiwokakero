@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "../include/node.h"
 
@@ -19,12 +20,14 @@ typedef const struct game_s* cgame;
 game new_game (int nb_nodes, node *nodes, int nb_max_bridges, int nb_dir){
   
   game g = (game) malloc(sizeof(struct game_s));
+  assert(g != NULL);
 	
   g->nb_dir = nb_dir;
   g->nb_max_bridges = nb_max_bridges;
   g->nb_nodes = nb_nodes;
 	
   node *new_nodes = (node*) malloc(nb_nodes*sizeof(node));
+  assert(new_nodes != NULL);
   for(int i = 0; i < nb_nodes; i++){
     new_nodes[i] = new_node(get_x(nodes[i]), get_y(nodes[i]), get_required_degree(nodes[i]));
   }
@@ -33,8 +36,10 @@ game new_game (int nb_nodes, node *nodes, int nb_max_bridges, int nb_dir){
 	// http://www.commentcamarche.net/forum/affich-4931713-tableau-dynamique-a-2-dimensions
 	int **bridges;
 	bridges = (int**) malloc(nb_nodes*sizeof(int*)); 
+  assert( bridges != NULL);
 	for(int i = 0; i < nb_nodes; i++){
 		bridges[i] = (int*) malloc(nb_dir*sizeof(int)); 
+    assert( bridges[i] != NULL);
 	}
 
 	for(int i = 0; i < nb_nodes; i++){
@@ -74,6 +79,7 @@ void delete_game (game g){
 game copy_game (cgame g_src){
 
 	game g = (game) malloc(sizeof(struct game_s));
+  assert(g != NULL);
 	
 	g->nb_nodes = g_src->nb_nodes;
   g->nb_dir = g_src->nb_dir;
@@ -82,6 +88,7 @@ game copy_game (cgame g_src){
 	
   // allocation et initialisation de nodes[nb_nodes]
 	node *new_nodes = (node*) malloc(game_nb_nodes(g)*sizeof(node));
+  assert(new_nodes != NULL);
   for(int i = 0; i < game_nb_nodes(g); i++){
     new_nodes[i] = new_node(get_x(g_src->nodes[i]), get_y(g_src->nodes[i]), get_required_degree(g_src->nodes[i]));
   }
@@ -89,9 +96,11 @@ game copy_game (cgame g_src){
 
   // allocation et initialisation de bridges[nb_nodes][nb_dir]
   int **bridges;
-  bridges = malloc(game_nb_nodes(g)*sizeof(int*)); 
+  bridges = malloc(game_nb_nodes(g)*sizeof(int*));
+  assert(bridges != NULL); 
   for(int i = 0; i < game_nb_nodes(g); i++){
     bridges[i] = malloc(game_nb_dir(g)*sizeof(int)); 
+    assert(bridges[i] != NULL);
   }
 	for(int i = 0; i < game_nb_nodes(g); i++){
 		for(int j = 0; j < game_nb_dir(g); j++){
@@ -121,7 +130,6 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d);
 
 //idem
 int get_neighbour_dir (cgame g, int node_num, dir d);
-
 
 
 static int inverse_dir(dir d){
@@ -155,6 +163,7 @@ static int inverse_dir(dir d){
    }
    return back;
 }
+
 void add_bridge_dir (game g, int node_num, dir d){
   if(can_add_bridge_dir (g, node_num, d)){
     g->bridges[node_num][d]++;

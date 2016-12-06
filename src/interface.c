@@ -66,26 +66,19 @@ void draw_hashiMap(cgame g, hashiMap m){
   for(int i = m->size-1; i >= 0; i--){
     for(int j = 0 ; j < m->size ; j++){
       switch(m->matrix[i][j]){
-
-        case 0: // vide
-          printf(".  ");
-          break;
+        case 0: printf(".  "); break; // vide
 
         case 1: // node
           if(get_required_degree(game_node(g, game_get_node_number(g, j/2, i/2))) == get_degree(g, game_get_node_number(g, j/2, i/2)))
             printf("\033[32m%d  \033[00m", get_required_degree(game_node(g ,game_get_node_number(g,j/2,i/2))));
           else
             printf("\033[31m%d  \033[00m", get_required_degree(game_node(g ,game_get_node_number(g,j/2,i/2))));
-
           break;
 
-        case 2: // bridge
-          printf("+  ");
-          break;
-
-        case 3: // two bridges 
-          printf("#  ");
-          break;
+        case 2: printf("a  "); break; //1 pont
+        case 3: printf("b  "); break; //2 pont
+        case 4: printf("c  "); break; //3 pont
+        case 5: printf("d  "); break; //4 pont
 
         default: // error
           printf("ERR");
@@ -220,6 +213,7 @@ void add_bridge(game g, hashiMap m){
 }
 
 void del_bridge(game g, hashiMap m){
+  //selection numero node
   int node_num = -1;
   while(node_num < 0 || node_num >= game_nb_nodes(g)){
     char *value = (char*) malloc(sizeof(char));
@@ -229,95 +223,101 @@ void del_bridge(game g, hashiMap m){
     free(value);
   }
 
+  //selection de la direction
   int direction = 0;
   while(direction < 1 || direction > 4){
     char *value = (char*) malloc(sizeof(char));
-    printf("Dans quelle direction ? ( 1 = NORD / 2 = SUD / 3 = EST / 4 = OUEST ) \n");
+    if(game_nb_dir(g) == 4) 
+      printf("Dans quelle direction ?\n  1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n");
+    else 
+      printf("Dans quelle direction ?\n  1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n 5 = NW / 6 = SW / 7 = SE / 8 = NE\n");
     scanf("%s", value);
     direction = atoi(value);
     free(value);
   }
 
-  int i = 0;
+
+  int i = 0; int j = 0;
+  del_bridge_dir(g, node_num, direction-1);
   switch(direction){
     case 1: //NORTH
-      del_bridge_dir(g, node_num, NORTH);
       i = get_y(game_node(g, node_num))*2+1;
       while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, NORTH)))*2){
         if(get_degree_dir(g, node_num, NORTH) == 0) 
           m->matrix[i][get_x(game_node(g, node_num))*2] = 0;
-        else m->matrix[i][get_x(game_node(g, node_num))*2] = 2;
+        else m->matrix[i][get_x(game_node(g, node_num))*2]--;
         i++;
       }
       break;
-    case 2: //SOUTH
-      del_bridge_dir(g, node_num, SOUTH);
-      i = get_y(game_node(g, node_num))*2-1;
-      while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, SOUTH)))*2){
-        if(get_degree_dir(g, node_num, SOUTH) == 0)
-          m->matrix[i][get_x(game_node(g, node_num))*2] = 0;
-        else m->matrix[i][get_x(game_node(g, node_num))*2] = 2;
-        i++;
-      }
-      break;
-    case 3: //EAST
-      del_bridge_dir(g, node_num, EAST);
-      i = get_x(game_node(g, node_num))*2+1;
-      while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, EAST)))*2){
-        if(get_degree_dir(g, node_num, EAST) == 0)
-          m->matrix[get_y(game_node(g, node_num))*2][i] = 0;
-        else m->matrix[get_y(game_node(g, node_num))*2][i] = 2;
-        i++;
-      }
-      break;
-    case 4: //WEST
-      del_bridge_dir(g, node_num, WEST);
+    case 2: //WEST
       i = get_x(game_node(g, node_num))*2-1;
-      while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, WEST)))*2){
+      while(i > get_y(game_node(g, get_neighbour_dir(g, node_num, WEST)))*2){
         if(get_degree_dir(g, node_num, WEST) == 0)
           m->matrix[get_y(game_node(g, node_num))*2][i] = 0;
-        else m->matrix[get_y(game_node(g, node_num))*2][i] = 2;
+        else m->matrix[get_y(game_node(g, node_num))*2][i]--;
+        i--;
+      }
+      break;
+    case 3: //SOUTH
+      i = get_y(game_node(g, node_num))*2-1;
+      while(i > get_y(game_node(g, get_neighbour_dir(g, node_num, SOUTH)))*2){
+        if(get_degree_dir(g, node_num, SOUTH) == 0)
+          m->matrix[i][get_x(game_node(g, node_num))*2] = 0;
+        else m->matrix[i][get_x(game_node(g, node_num))*2]--;
+        i--;
+      }
+      break;
+    case 4: //EAST
+      i = get_x(game_node(g, node_num))*2+1;
+      while(i < get_x(game_node(g, get_neighbour_dir(g, node_num, EAST)))*2){
+        if(get_degree_dir(g, node_num, EAST) == 0)
+          m->matrix[get_y(game_node(g, node_num))*2][i] = 0;
+        else m->matrix[get_y(game_node(g, node_num))*2][i]--;
         i++;
       }
       break;
-    case 5:
+    case 5: //NW
       del_bridge_dir(g, node_num, NW);
       i = get_x(game_node(g, node_num))*2-1;
-      while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, NW)))*2){
+      j = get_y(game_node(g, node_num))*2+1;
+      while(i > get_y(game_node(g, get_neighbour_dir(g, node_num, NW)))*2){
         if(get_degree_dir(g, node_num, NW) == 0)
-          m->matrix[get_y(game_node(g, node_num))*2][i] = 0;
-        else m->matrix[get_y(game_node(g, node_num))*2][i] = 2;
-        i++;
+          m->matrix[j][i] = 0;
+        else m->matrix[j][i]--;
+        i--; j++;
       }
       break;
-    case 6:
+    case 6: //SW
       del_bridge_dir(g, node_num, SW);
       i = get_x(game_node(g, node_num))*2-1;
-      while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, SW)))*2){
+      j = get_y(game_node(g, node_num))*2-1;
+      while(i > get_y(game_node(g, get_neighbour_dir(g, node_num, SW)))*2){
         if(get_degree_dir(g, node_num, SW) == 0)
-          m->matrix[get_y(game_node(g, node_num))*2][i] = 0;
-        else m->matrix[get_y(game_node(g, node_num))*2][i] = 2;
-        i++;
+          m->matrix[j][i] = 0;
+        else m->matrix[j][i]--;
+        i--; j--;
       }
       break;
-    case 7:
+    case 7: //SE
       del_bridge_dir(g, node_num, SE);
-      i = get_x(game_node(g, node_num))*2-1;
+      i = get_x(game_node(g, node_num))*2+1;
+      j = get_y(game_node(g, node_num))*2-1;
       while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, SE)))*2){
         if(get_degree_dir(g, node_num, SE) == 0)
-          m->matrix[get_y(game_node(g, node_num))*2][i] = 0;
-        else m->matrix[get_y(game_node(g, node_num))*2][i] = 2;
-        i++;
+          m->matrix[j][i] = 0;
+        else m->matrix[j][i]--;
+        i++; j--;
       }
       break;
-    case 8:
+    case 8: //NE
       del_bridge_dir(g, node_num, NE);
-      i = get_x(game_node(g, node_num))*2-1;
+      i = get_x(game_node(g, node_num))*2+1;
+      j = get_y(game_node(g, node_num))*2+1;
       while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, NE)))*2){
         if(get_degree_dir(g, node_num, NE) == 0)
-          m->matrix[get_y(game_node(g, node_num))*2][i] = 0;
-        else m->matrix[get_y(game_node(g, node_num))*2][i] = 2;
-        i++;
+          m->matrix[j][i] = 0;
+        else m->matrix[j][i]--;
+        i++; j++;
       }
       break;
   }
@@ -405,6 +405,7 @@ game game_select(){
   while(choice < 1 || choice > 2){
     char *value = (char*) malloc(sizeof(char));
     printf("Selectionnez votre partie :\n");
+    printf("(Facile = 2 ponts max; Moyen = 3 ponts max; Difficile = 4 ponts max)\n");
     printf("-> 1 : FACILE - 4DIRS \n-> 2 : FACILE - 8DIRS \n-> 3 : MOYEN - 4DIRS \n-> 4 : MOYEN - 8DIRS \n-> 5 : DIFFICILE - 4DIRS \n-> 6 : DIFFICILE - 8DIRS\n");
     scanf("%s", value);
     choice = atoi(value);
