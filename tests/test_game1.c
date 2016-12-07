@@ -73,7 +73,7 @@ bool test_get_neighbour() {
 
 int main (int argc, char *argv[])
 {
-   printf("test1:");
+   printf("test1:\n");
    bool result= true;
    result = test_get_neighbour() && result;
    result ? printf(" test_get_neighbour ok \n") : printf("test_get_neighbour not ok \n");

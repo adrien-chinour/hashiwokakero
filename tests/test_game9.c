@@ -52,7 +52,7 @@ bool test_copy_game_bridges(){
 
 
 int main (int argc, char *argv[]){
-   printf("test9:");
+   printf("test9:\n");
    bool result = true;
    result = result && test_copy_game_bridges();
    result ? printf(" test_copy_game_bridges ok \n") : printf("test_copy_game_bridges not ok \n");

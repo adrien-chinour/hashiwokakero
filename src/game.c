@@ -391,99 +391,38 @@ bool game_over (cgame g){
 bool can_add_bridge_dir (cgame g, int node_num, dir d){
 
   //si l'ile n'a pas de voisin, on ne peut pas poser de pont
-  if(get_neighbour_dir(g, node_num, d) == -1){
-    return false;
-  }
+  if(get_neighbour_dir(g, node_num, d) == -1) return false;
     
   //si on a pas atteint le nombre maximum de ponts, on peut en poser un
-  if(get_degree_dir(g, node_num, d) <= game_nb_max_bridges(g)){
+  if(get_degree(g, node_num) > get_required_degree(game_node(g, node_num))) return false;
 
-    //on prépare les calculs
-    node n0 = game_node(g, node_num), n1 = game_node(g, get_neighbour_dir(g, node_num, d));
-    int x0 = get_x(n0), y0 = get_y(n0), x1 = get_x(n1), y1 = get_y(n1), a0, b0;
-    //abscisse de l'éventuelle intersection
-    float x;
+  //croisement
+  int x1 = get_x(game_node(g, get_neighbour_dir(g, node_num, d))) - get_x(game_node(g, node_num)); // AB x
+  int y1 = get_y(game_node(g, get_neighbour_dir(g, node_num, d))) - get_y(game_node(g, node_num)); // AB y
 
-    //eqX == true si une droite est verticale, sinon false
-    bool eqX = false;
-    
-    //on évite une division par 0 et on remplace l'équation y=a*x+b par un x
-    if(x0-x1 == 0)
-      {
-	eqX = true;
-	x = x0;
-	a0 = 0;
+  for(int i = 0; i < game_nb_nodes(g); i++){
+    if(i != node_num && i != get_neighbour_dir(g, node_num, d)){ // on ne regarde pas le node node_num ni son voisin dans la direction
+      for(int j = 0; j < game_nb_dir(g); j++){
+        if(get_degree_dir(g, i, j) != 0 && j != d && j != inverse_dir(d)){ // on ne regarde pas les directions parallèles
+          int x3 = get_x(game_node(g, i)) - get_x(game_node(g, node_num)); //AC x
+          int y3 = get_y(game_node(g, i)) - get_y(game_node(g, node_num)); //AC y
+          int x4 = get_x(game_node(g, get_neighbour_dir(g, i, j))) - get_x(game_node(g, node_num)); //AD x
+          int y4 = get_y(game_node(g, get_neighbour_dir(g, i, j))) - get_y(game_node(g, node_num)); //AD y
+
+          if( ( x1*y3 - y1*x3 ) * ( x1*y4 - y1*x4 ) < 0 ) return false; // Est-ce que le point d'intersection est sur le segment CD ?
+
+        }
       }
-    
-    //si la division n'est pas par 0, on calcule a0 et b0
-    else
-      {
-	//calcul du coefficient directeur et de l'ordonnée à l'origine
-	a0 = (y0-y1)/(x0-x1);
-	b0 = y0-a0*x0;
-      }
-
-    //on inverse l'abscisse si x0 est plus grand que x1
-    if(x0 > x1)
-      {
-	int change = x0;
-	x0 = x1;
-	x1 = change;
-      }
-    
-    //on inverse l'ordonnée si y0 est plus grand que y1
-    if(y0 > y1)
-      {
-	int change = y0;
-	y0 = y1;
-	y1 = change;
-      }
-
-    //on parcours chaque node pour voir s'ils ont un pont
-    for(int i = 0; i < game_nb_nodes(g); i++)
-      {
-	for(int j = 0; j < game_nb_dir(g); j++)
-	  {
-	    //si un node a un pont
-	    if(get_degree_dir(g, i, j) > 0)
-	      {
-		//on prépare les calculs
-		node n = game_node(g, i), nv = game_node(g, get_neighbour_dir(g, i, j));
-		int xn = get_x(n), yn = get_y(n), xv = get_x(nv), yv = get_y(nv), ai, bi;
-
-		//une fois de plus, on évite les divisions par 0
-		if(xn-xv == 0)
-		  {
-		    eqX = true;
-		    x = xn;
-		    ai = 0;
-		  }
-		else
-		  {
-		    ai = (yn-yv)/(xn-xv);
-		    bi = yn-ai*xn;
-		  }
-	        
-		if(a0 != ai)
-		  {
-		    //si une droite est verticale, le point d'intersection ne se calcule qu'avec y
-		    if(!eqX)
-		      {
-			//x est calculé si l'équation des 2 droites est y=a*x+b
-			x = (bi-b0)/(a0-ai);
-		      }
-
-		    //y est calculé dans tous les cas
-		    float y = ai*x+bi;
-		    
-		    //si (x;y) est sur le pont à poser et si (x;y) est sur un autre pont
-		    if(x0 <= x && x <= x1 && y0 <= y && y <= y1 && xn <= x && x <= xv && yn <= y && y <= yv)
-			return false;
-		  }
-	      }
-	  }
-      }
-    return true;
+    }
   }
-  return false;
+
+
+  /*  Intersection entre [AB] et [CD] ?
+    Vrai ssi  vectoriel(vecteur(AB),vecteur(CD)) != 0  => signifie qu'ils ne sont pas // 
+              && vectoriel(vecteur(AB),vecteur(AD)) * vectoriel(vecteur(AB),vecteur(AC)) < 0 => signifie que les deux vecteurs se croisent sur [CD]
+    Le premier test est effectué dans le deuxième if et le deuxieme dans le troisième if (phrase nul a chier)
+  */
+
+  return true;
+
 }
