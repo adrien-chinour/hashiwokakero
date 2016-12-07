@@ -1,5 +1,3 @@
-INFO : Tous les game sont de taille 5 pour le moment.
-
 -> GAME 1 : (max bridges = 2; nb dir = 4)
 
    2  .  2  =  3
