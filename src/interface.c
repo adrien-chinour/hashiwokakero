@@ -403,7 +403,7 @@ void reset_game(game g, hashiMap m){
 
 game game_select(){
   int choice = 0;
-  while(choice < 1 || choice > 4){
+  while(choice < 1 || choice > 6){
     char *value = (char*) malloc(sizeof(char));
     printf("Selectionnez votre partie :\n");
     printf("(Facile = 2 ponts max; Moyen = 3 ponts max; Difficile = 4 ponts max)\n");
@@ -418,8 +418,8 @@ game game_select(){
     case 2: return generate_game(2,2,8,8);
     case 3: return generate_game(3,3,4,7);
     case 4: return generate_game(4,3,8,7);
-    case 5: printf("pas encore dispo.\n"); return generate_game(1,2,4,7);
-    case 6: printf("pas encore dispo.\n"); return generate_game(1,2,4,7);
+    case 5: return generate_game(5,4,4,9);
+    case 6: return generate_game(6,4,8,8);
     default: printf("Erreur dans game_select\n"); exit(EXIT_FAILURE); break;
   }
 }
