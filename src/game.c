@@ -400,14 +400,12 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
 
     //on prépare les calculs
     node n0 = game_node(g, node_num), n1 = game_node(g, get_neighbour_dir(g, node_num, d));
-    int x0 = get_x(n0), y0 = get_y(n0), x1 = get_x(n1), y1 = get_y(n1), a0, b0;
-    //abscisse de l'éventuelle intersection
-    float x;
+    int x0 = get_x(n0), y0 = get_y(n0), x1 = get_x(n1), y1 = get_y(n1), a0, b0, x;
 
     //eqX == true si une droite est verticale, sinon false
     bool eqX = false;
     
-    //on évite une division par 0 et on remplace l'équation y=a*x+b par un x
+    //on évite une division par 0 et on remplace l'équation y=a*x+b par un simple x
     if(x0-x1 == 0)
       {
 	eqX = true;
@@ -445,7 +443,7 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
 	for(int j = 0; j < game_nb_dir(g); j++)
 	  {
 	    //si un node a un pont
-	    if(get_degree_dir(g, i, j) > 0)
+	    if(get_degree_dir(g, i, j) > 0 && i != node_num && i != get_neighbour_dir(g, node_num, d))
 	      {
 		//on prépare les calculs
 		node n = game_node(g, i), nv = game_node(g, get_neighbour_dir(g, i, j));
@@ -474,7 +472,7 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
 		      }
 
 		    //y est calculé dans tous les cas
-		    float y = ai*x+bi;
+		    int y = ai*x+bi;
 		    
 		    //si (x;y) est sur le pont à poser et si (x;y) est sur un autre pont
 		    if(x0 <= x && x <= x1 && y0 <= y && y <= y1 && xn <= x && x <= xv && yn <= y && y <= yv)
