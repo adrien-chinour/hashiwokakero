@@ -28,15 +28,20 @@ bool test_copy_game_bridges(){
    add_bridge_dir(g, 0, EAST);
    add_bridge_dir(g, 0, NORTH);
    add_bridge_dir(g, 1, EAST);
-   //add_bridge_dir(g, 2, SE);
-   //add_bridge_dir(g, 2, SE);
-
+   add_bridge_dir(g, 2, SE);
+   add_bridge_dir(g, 2, SE);
+   game g_copy=copy_game(g);
+   r = r && test_equality_bool(false, game_over(g), "pb game_over");
+   r = r && test_equality_bool(false, game_over(g_copy), "pb game_over on copy");
+   delete_game(g_copy);
    add_bridge_dir(g, 4, NE);
    add_bridge_dir(g, 4, SE);
    add_bridge_dir(g, 7, SOUTH);
-   //r=game_over(g);
+   g_copy=copy_game(g);
+   r = r && test_equality_bool(true, game_over(g), "pb game_over");
+   r = r && test_equality_bool(true, game_over(g_copy), "pb game_over on copy");
    delete_game(g);
-   //delete_game(g_copy);
+   delete_game(g_copy);
    return r;
 }
 

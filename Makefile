@@ -29,5 +29,5 @@ test%: tests/test_game%.c tests/test_toolbox.c libhashi.a
 # make clean : nettoie les fichiers créés par le Makefile
 
 clean:
-	@ rm -rf src/*.o src/*~ test1 test2 test3 test4 test5 test6 test7 tests/*~ include/*~ *.a $(EXEC)
+	@ rm -rf src/*.o src/*~ test1 test2 test3 test4 test5 test6 test7 test9 tests/*~ include/*~ *.a $(EXEC)
 	@ echo Nettoyage terminé.
