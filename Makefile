@@ -24,7 +24,7 @@ test :test1 test2 test3 test4 test5 test6 test7
 	@ echo Tests terminés.
 
 test%: tests/test_game%.c tests/test_toolbox.c libhashi.a
-	$(CC) -g -o $@ $(CFLAGS) $< tests/test_toolbox.c -L. -lhashi
+	@ $(CC) -g -o $@ $(CFLAGS) $< tests/test_toolbox.c -L. -lhashi
 
 # make clean : nettoie les fichiers créés par le Makefile
 
