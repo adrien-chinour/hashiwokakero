@@ -421,5 +421,6 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
     Le premier test est effectué dans le deuxième if et le deuxieme dans le troisième if (phrase nul a chier)
   */
 
+  /*il manque un test par rapport au nombre de ponts aussi */
   return true;
 }
