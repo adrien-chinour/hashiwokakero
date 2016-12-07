@@ -410,12 +410,10 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
           int y4 = get_y(game_node(g, get_neighbour_dir(g, i, j))) - get_y(game_node(g, node_num)); //AD y
 
           if( ( x1*y3 - y1*x3 ) * ( x1*y4 - y1*x4 ) < 0 ) return false; // Est-ce que le point d'intersection est sur le segment CD ?
-
         }
       }
     }
   }
-
 
   /*  Intersection entre [AB] et [CD] ?
     Vrai ssi  vectoriel(vecteur(AB),vecteur(CD)) != 0  => signifie qu'ils ne sont pas // 
@@ -424,5 +422,4 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
   */
 
   return true;
-
 }
