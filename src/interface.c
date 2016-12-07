@@ -127,7 +127,7 @@ void add_bridge(game g, hashiMap m){
 
   //selection de la direction
   int direction = 0;
-  while(direction < 1 || direction > 4){
+  while(direction < 1 || direction > game_nb_dir(g)){
     char *value = (char*) malloc(sizeof(char));
     if(game_nb_dir(g) == 4) 
       printf("Dans quelle direction ?\n  1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n");
@@ -172,7 +172,7 @@ void add_bridge(game g, hashiMap m){
         }
         break;
       case 5: //NW
-        i = get_x(game_node(g, node_num))*2+1;
+        i = get_x(game_node(g, node_num))*2-1;
         j = get_y(game_node(g, node_num))*2+1;
         while (j < get_y(game_node(g, get_neighbour_dir(g, node_num, NW)))*2){
           m->matrix[j][i] = get_degree_dir(g, node_num,NW)+1;
@@ -181,8 +181,8 @@ void add_bridge(game g, hashiMap m){
         }
         break;
       case 6: //SW
-        i = get_x(game_node(g, node_num))*2+1;
-        j = get_y(game_node(g, node_num))*2+1;
+        i = get_x(game_node(g, node_num))*2-1;
+        j = get_y(game_node(g, node_num))*2-1;
         while (j > get_y(game_node(g, get_neighbour_dir(g, node_num, SW)))*2){
           m->matrix[j][i] = get_degree_dir(g, node_num,SW)+1;
           j--;
@@ -191,7 +191,7 @@ void add_bridge(game g, hashiMap m){
         break;
       case 7: //SE
         i = get_x(game_node(g, node_num))*2+1;
-        j = get_y(game_node(g, node_num))*2+1;
+        j = get_y(game_node(g, node_num))*2-1;
         while (j > get_y(game_node(g, get_neighbour_dir(g, node_num, SE)))*2){
           m->matrix[j][i] = get_degree_dir(g, node_num,SE)+1;
           j--;
@@ -225,7 +225,7 @@ void del_bridge(game g, hashiMap m){
 
   //selection de la direction
   int direction = 0;
-  while(direction < 1 || direction > 4){
+  while(direction < 1 || direction > game_nb_dir(g)){
     char *value = (char*) malloc(sizeof(char));
     if(game_nb_dir(g) == 4) 
       printf("Dans quelle direction ?\n  1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n");
@@ -414,7 +414,7 @@ game game_select(){
 
   switch(choice){
     case 1: return generate_game(1,2,4,7);
-    case 2: printf("pas encore dispo.\n"); return generate_game(1,2,4,7);
+    case 2: return generate_game(2,2,8,8);
     case 3: printf("pas encore dispo.\n"); return generate_game(1,2,4,7);
     case 4: printf("pas encore dispo.\n"); return generate_game(1,2,4,7);
     case 5: printf("pas encore dispo.\n"); return generate_game(1,2,4,7);
