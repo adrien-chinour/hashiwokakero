@@ -44,7 +44,8 @@ bool test_can_add_bridge_dir(){
    r = test_equality_bool(false, can_add_bridge_dir(g, 5, NW), "can add NW") && r;
    
    r = test_equality_bool(false, can_add_bridge_dir(g, 3, NORTH), "can add NORTH") && r;
-   
+
+   delete_game(g);
    return r;
 }
 

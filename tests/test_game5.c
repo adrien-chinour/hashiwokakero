@@ -34,6 +34,7 @@ bool test_pont_equivalent(){
    bool r = true;
    add_bridge_dir(g, 1, NORTH);
    r = r && test_equality_int(get_degree(g, 1), get_degree(g, 2), "le degré n'est pas équivalent");
+   delete_game(g);
    return r;
 }
 
