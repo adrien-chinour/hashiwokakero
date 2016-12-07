@@ -169,10 +169,8 @@ void add_bridge_dir (game g, int node_num, dir d){
     g->bridges[node_num][d]++;
     g->bridges[get_neighbour_dir(g, node_num, d)][inverse_dir(d)]++;
   }
-  else {
+  else
       printf("Erreur: can_add_bridge_dir (g, node_num, d) n'est pas valide.\n");
-      exit(EXIT_FAILURE);
-  }
 }
 
 void del_bridge_dir (game g, int node_num, dir d){
@@ -402,7 +400,9 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
 
     //on prépare les calculs
     node n0 = game_node(g, node_num), n1 = game_node(g, get_neighbour_dir(g, node_num, d));
-    int x0 = get_x(n0), y0 = get_y(n0), x1 = get_x(n1), y1 = get_y(n1), a0, b0, x;
+    int x0 = get_x(n0), y0 = get_y(n0), x1 = get_x(n1), y1 = get_y(n1), a0, b0;
+    //abscisse de l'éventuelle intersection
+    float x;
 
     //eqX == true si une droite est verticale, sinon false
     bool eqX = false;
@@ -474,8 +474,8 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
 		      }
 
 		    //y est calculé dans tous les cas
-		    int y = ai*x+bi;
-
+		    float y = ai*x+bi;
+		    
 		    //si (x;y) est sur le pont à poser et si (x;y) est sur un autre pont
 		    if(x0 <= x && x <= x1 && y0 <= y && y <= y1 && xn <= x && x <= xv && yn <= y && y <= yv)
 			return false;
