@@ -31,15 +31,15 @@ bool test_copy_game_bridges(){
    add_bridge_dir(g, 2, SE);
    add_bridge_dir(g, 2, SE);
    game g_copy=copy_game(g);
-   r = r && test_equality_bool(false, game_over(g), "pb game_over");
-   r = r && test_equality_bool(false, game_over(g_copy), "pb game_over on copy");
+   r = r && test_equality_bool(false, game_over(g), " pb game_over");
+   r = r && test_equality_bool(false, game_over(g_copy), " pb game_over on copy");
    delete_game(g_copy);
    add_bridge_dir(g, 4, NE);
    add_bridge_dir(g, 4, SE);
    add_bridge_dir(g, 7, SOUTH);
    g_copy=copy_game(g);
-   r = r && test_equality_bool(true, game_over(g), "pb game_over");
-   r = r && test_equality_bool(true, game_over(g_copy), "pb game_over on copy");
+   r = r && test_equality_bool(true, game_over(g), " pb game_over");
+   r = r && test_equality_bool(true, game_over(g_copy), " pb game_over on copy");
    delete_game(g);
    delete_game(g_copy);
    return r;
@@ -52,8 +52,11 @@ bool test_copy_game_bridges(){
 
 
 int main (int argc, char *argv[]){
+   printf("test9:");
    bool result = true;
    result = result && test_copy_game_bridges();
+   result ? printf(" test_copy_game_bridges ok \n") : printf("test_copy_game_bridges not ok \n");
+
     if (result){
        fprintf(stdout,"test9 success\n");
         return EXIT_SUCCESS;
