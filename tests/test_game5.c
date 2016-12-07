@@ -34,6 +34,10 @@ bool test_pont_equivalent(){
    bool r = true;
    add_bridge_dir(g, 1, NORTH);
    r = r && test_equality_int(get_degree(g, 1), get_degree(g, 2), "le degré n'est pas équivalent");
+   del_bridge_dir(g,1,NORTH);
+   r = r && test_equality_int(get_degree(g, 1), get_degree(g, 2), "le degré n'est pas équivalent");
+   add_bridge_dir(g,1,SOUTH);
+   r = r && test_equality_int(get_degree(g, 0), get_degree(g, 1), "le degré n'est pas équivalent");
    delete_game(g);
    return r;
 }
@@ -43,7 +47,7 @@ int main (int argc, char *argv[])
 {
   printf("test5:\n");
     bool result= true;
-    result = result && test_pont_equivalent();
+    result = test_pont_equivalent() && result;
     result ? printf(" test_pont_équivalent ok \n") : printf(" test_pont_équivalent not ok \n");
     if (result){
        fprintf(stdout,"test5 success\n");
