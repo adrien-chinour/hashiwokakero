@@ -74,17 +74,21 @@ bool test_get_neighbour() {
 
 int main (int argc, char *argv[])
 {
-    bool result= true;
-    result = result && test_get_neighbour();
-    result = result && test_get_node_number();
-    result = result && test_can_add_bridge_dir();
+  printf("test4:\n");
+  bool result= true;
+  result = result && test_get_neighbour();
+  result ? printf(" test_get_neighbour ok \n") : printf(" test_get_neighbour not ok \n");
+  result = result && test_get_node_number();
+  result ? printf(" test_node_number ok \n") : printf(" test_node_number not ok \n");
+  result = result && test_can_add_bridge_dir();
+  result ? printf(" test_can_add_bridge_dir ok \n") : printf(" test_can_add_bridge_dir not ok \n");
     if (result){
-       fprintf(stdout,"test4 success\n");
-       return EXIT_SUCCESS;
+      fprintf(stdout,"test4 success\n");
+      return EXIT_SUCCESS;
     }
 
     else{
-       fprintf(stderr,"test4 failure\n");
-       return EXIT_FAILURE;
+      fprintf(stderr,"test4 failure\n");
+      return EXIT_FAILURE;
     }
 }

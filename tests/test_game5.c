@@ -41,8 +41,10 @@ bool test_pont_equivalent(){
 
 int main (int argc, char *argv[])
 {
+  printf("test5:\n");
     bool result= true;
     result = result && test_pont_equivalent();
+    result ? printf(" test_pont_équivalent ok \n") : printf(" test_pont_équivalent not ok \n");
     if (result){
        fprintf(stdout,"test5 success\n");
        return EXIT_SUCCESS;

@@ -76,11 +76,11 @@ int main (int argc, char *argv[])
    printf("test1:\n");
    bool result= true;
    result = test_get_neighbour() && result;
-   result ? printf(" test_get_neighbour ok \n") : printf("test_get_neighbour not ok \n");
+   result ? printf(" test_get_neighbour ok \n") : printf(" test_get_neighbour not ok \n");
    result = test_get_node_number() && result;
-   result ? printf(" test_node_number ok \n") : printf("test_node_number not ok \n");
+   result ? printf(" test_node_number ok \n") : printf(" test_node_number not ok \n");
    result = test_can_add_bridge_dir() && result;
-   result ? printf(" test_can_add_bridge_dir ok \n") : printf("test_can_add_bridge_dir not ok \n");
+   result ? printf(" test_can_add_bridge_dir ok \n") : printf(" test_can_add_bridge_dir not ok \n");
    if (result){
       fprintf(stdout,"test1 success\n");
       return EXIT_SUCCESS;
