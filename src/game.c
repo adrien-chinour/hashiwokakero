@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "../include/node.h"
 
@@ -19,12 +20,14 @@ typedef const struct game_s* cgame;
 game new_game (int nb_nodes, node *nodes, int nb_max_bridges, int nb_dir){
   
   game g = (game) malloc(sizeof(struct game_s));
+  assert(g != NULL);
 	
   g->nb_dir = nb_dir;
   g->nb_max_bridges = nb_max_bridges;
   g->nb_nodes = nb_nodes;
 	
   node *new_nodes = (node*) malloc(nb_nodes*sizeof(node));
+  assert(new_nodes != NULL);
   for(int i = 0; i < nb_nodes; i++){
     new_nodes[i] = new_node(get_x(nodes[i]), get_y(nodes[i]), get_required_degree(nodes[i]));
   }
@@ -33,8 +36,10 @@ game new_game (int nb_nodes, node *nodes, int nb_max_bridges, int nb_dir){
 	// http://www.commentcamarche.net/forum/affich-4931713-tableau-dynamique-a-2-dimensions
 	int **bridges;
 	bridges = (int**) malloc(nb_nodes*sizeof(int*)); 
+  assert( bridges != NULL);
 	for(int i = 0; i < nb_nodes; i++){
 		bridges[i] = (int*) malloc(nb_dir*sizeof(int)); 
+    assert( bridges[i] != NULL);
 	}
 
 	for(int i = 0; i < nb_nodes; i++){
@@ -74,6 +79,7 @@ void delete_game (game g){
 game copy_game (cgame g_src){
 
 	game g = (game) malloc(sizeof(struct game_s));
+  assert(g != NULL);
 	
 	g->nb_nodes = g_src->nb_nodes;
   g->nb_dir = g_src->nb_dir;
@@ -82,6 +88,7 @@ game copy_game (cgame g_src){
 	
   // allocation et initialisation de nodes[nb_nodes]
 	node *new_nodes = (node*) malloc(game_nb_nodes(g)*sizeof(node));
+  assert(new_nodes != NULL);
   for(int i = 0; i < game_nb_nodes(g); i++){
     new_nodes[i] = new_node(get_x(g_src->nodes[i]), get_y(g_src->nodes[i]), get_required_degree(g_src->nodes[i]));
   }
@@ -89,9 +96,11 @@ game copy_game (cgame g_src){
 
   // allocation et initialisation de bridges[nb_nodes][nb_dir]
   int **bridges;
-  bridges = malloc(game_nb_nodes(g)*sizeof(int*)); 
+  bridges = malloc(game_nb_nodes(g)*sizeof(int*));
+  assert(bridges != NULL); 
   for(int i = 0; i < game_nb_nodes(g); i++){
     bridges[i] = malloc(game_nb_dir(g)*sizeof(int)); 
+    assert(bridges[i] != NULL);
   }
 	for(int i = 0; i < game_nb_nodes(g); i++){
 		for(int j = 0; j < game_nb_dir(g); j++){
@@ -122,40 +131,43 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d);
 //idem
 int get_neighbour_dir (cgame g, int node_num, dir d);
 
+
+static int inverse_dir(dir d){
+   int back;
+   switch(d)
+   {
+      case NORTH:
+         back = SOUTH;
+         break;
+	case SOUTH:
+           back = NORTH;
+           break;
+      case EAST:
+         back = WEST;
+         break;
+      case WEST:
+         back = EAST;
+	break;
+      case NW:
+         back = SE;
+         break;
+      case SW:
+         back = NE;
+         break;
+      case SE:
+         back = NW;
+         break;
+	case NE:
+           back = SW;
+           break;
+   }
+   return back;
+}
+
 void add_bridge_dir (game g, int node_num, dir d){
   if(can_add_bridge_dir (g, node_num, d)){
     g->bridges[node_num][d]++;
-
-    int back;
-    switch(d)
-      {
-      case NORTH:
-	back = SOUTH;
-	break;
-	case SOUTH:
-	back = NORTH;
-	break;
-	case EAST:
-	back = WEST;
-	break;
-	case WEST:
-	back = EAST;
-	break;
-	case NW:
-	back = SE;
-	break;
-	case SW:
-	back = NE;
-	break;
-	case SE:
-	back = NW;
-	break;
-	case NE:
-	back = SW;
-	break;
-      }
-    
-    g->bridges[get_neighbour_dir(g, node_num, d)][back]++;
+    g->bridges[get_neighbour_dir(g, node_num, d)][inverse_dir(d)]++;
   }
   else {
       printf("Erreur: can_add_bridge_dir (g, node_num, d) n'est pas valide.\n");
@@ -165,7 +177,7 @@ void add_bridge_dir (game g, int node_num, dir d){
 
 void del_bridge_dir (game g, int node_num, dir d){
    if(g->bridges[node_num][d] != 0){
-      g->bridges[get_neighbour_dir(g,node_num,d)][d]--;
+      g->bridges[get_neighbour_dir(g,node_num,d)][inverse_dir(d)]--;
       g->bridges[node_num][d]--;
    }
 }
@@ -340,54 +352,20 @@ int game_get_node_number (cgame g, int x, int y){
 
 static void explore(cgame g, int node_num, bool connected[]){
    
-   //initialise un tableau qui est a true si le node est lié aux autres
-   connected[node_num] = true;
+  //initialise un tableau qui est a true si le node est lié aux autres
    
-   if(get_degree_dir(g, node_num, SOUTH) != 0){
-      if(connected[get_neighbour_dir(g, node_num, SOUTH)] == false)
-         explore(g, get_neighbour_dir(g, node_num, SOUTH), connected);
-   }
+  connected[node_num] = true;
    
-   if(get_degree_dir(g, node_num, NORTH) != 0){
-      if(connected[get_neighbour_dir(g, node_num, NORTH)] == false)
-         explore(g, get_neighbour_dir(g, node_num, NORTH), connected);
-   }
-   
-   if(get_degree_dir(g, node_num, EAST) != 0){
-      if(connected[get_neighbour_dir(g, node_num, EAST)] == false)
-        explore(g, get_neighbour_dir(g, node_num, EAST), connected);
-   }
-   
-   if(get_degree_dir(g, node_num, WEST) != 0){
-      if(connected[get_neighbour_dir(g, node_num, WEST)] == false)
-         explore(g, get_neighbour_dir(g, node_num, WEST), connected);
-   }
-   
-   if(get_degree_dir(g, node_num, NW) != 0){
-      if(connected[get_neighbour_dir(g, node_num, NW)] == false)
-         explore(g, get_neighbour_dir(g, node_num, NW), connected);
-   }
-   
-   if(get_degree_dir(g, node_num, SW) != 0){
-      if(connected[get_neighbour_dir(g, node_num, SW)] == false)
-         explore(g, get_neighbour_dir(g, node_num, SW), connected);
-   }
-   
-   if(get_degree_dir(g, node_num, SE) != 0){
-      if(connected[get_neighbour_dir(g, node_num, SE)] == false)
-         explore(g, get_neighbour_dir(g, node_num, SE), connected);
-   }
-   
-   if(get_degree_dir(g, node_num, NE) != 0){
-      if(connected[get_neighbour_dir(g, node_num, NE)] == false)
-         explore(g, get_neighbour_dir(g, node_num, NE), connected);
-   }
+  for(int i = 0; i < game_nb_dir(g); i++){
+    if(get_degree_dir(g, node_num, i) != 0){
+      if(connected[get_neighbour_dir(g, node_num, i)] == false)
+         explore(g, get_neighbour_dir(g, node_num, i), connected);
+    }
+  }   
 }
 
 
-
- bool game_over (cgame g){
-
+bool game_over (cgame g){
   //verification des degrées
   for(int i = 0; i < game_nb_nodes(g); i++){
     if(get_degree(g, i) != get_required_degree(game_node(g, i)))
@@ -398,15 +376,17 @@ static void explore(cgame g, int node_num, bool connected[]){
   bool connected[game_nb_nodes(g)];
   for(int i = 0; i < game_nb_nodes(g); i++){
     connected[i] = false;
-  } 
+  }
 
+
+        
   explore(g, 0, connected);
+  
   
   for(int i = 0; i < game_nb_nodes(g); i++){
     if(connected[i] == false)
       return false;
-  } 
-
+  }
   return true;
 }
 
