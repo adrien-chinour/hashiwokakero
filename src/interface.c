@@ -91,7 +91,8 @@ void draw_hashiMap(cgame g, hashiMap m){
       printf ("| %d\n\n", i/2);
     else
        printf("|\n\n");
-  }  
+  }
+  printf("(a = 1pont; b = 2ponts; ...)\n");  
 }
 
 void print_game(cgame g){
@@ -130,9 +131,9 @@ void add_bridge(game g, hashiMap m){
   while(direction < 1 || direction > game_nb_dir(g)){
     char *value = (char*) malloc(sizeof(char));
     if(game_nb_dir(g) == 4) 
-      printf("Dans quelle direction ?\n  1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n");
+      printf("Dans quelle direction ?\n 1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n");
     else 
-      printf("Dans quelle direction ?\n  1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n 5 = NW / 6 = SW / 7 = SE / 8 = NE\n");
+      printf("Dans quelle direction ?\n 1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n 5 = NW / 6 = SW / 7 = SE / 8 = NE\n");
     scanf("%s", value);
     direction = atoi(value);
     free(value);
@@ -228,9 +229,9 @@ void del_bridge(game g, hashiMap m){
   while(direction < 1 || direction > game_nb_dir(g)){
     char *value = (char*) malloc(sizeof(char));
     if(game_nb_dir(g) == 4) 
-      printf("Dans quelle direction ?\n  1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n");
+      printf("Dans quelle direction ?\n 1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n");
     else 
-      printf("Dans quelle direction ?\n  1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n 5 = NW / 6 = SW / 7 = SE / 8 = NE\n");
+      printf("Dans quelle direction ?\n 1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n 5 = NW / 6 = SW / 7 = SE / 8 = NE\n");
     scanf("%s", value);
     direction = atoi(value);
     free(value);
@@ -402,7 +403,7 @@ void reset_game(game g, hashiMap m){
 
 game game_select(){
   int choice = 0;
-  while(choice < 1 || choice > 2){
+  while(choice < 1 || choice > 4){
     char *value = (char*) malloc(sizeof(char));
     printf("Selectionnez votre partie :\n");
     printf("(Facile = 2 ponts max; Moyen = 3 ponts max; Difficile = 4 ponts max)\n");
@@ -415,8 +416,8 @@ game game_select(){
   switch(choice){
     case 1: return generate_game(1,2,4,7);
     case 2: return generate_game(2,2,8,8);
-    case 3: printf("pas encore dispo.\n"); return generate_game(1,2,4,7);
-    case 4: printf("pas encore dispo.\n"); return generate_game(1,2,4,7);
+    case 3: return generate_game(3,3,4,7);
+    case 4: return generate_game(4,3,8,7);
     case 5: printf("pas encore dispo.\n"); return generate_game(1,2,4,7);
     case 6: printf("pas encore dispo.\n"); return generate_game(1,2,4,7);
     default: printf("Erreur dans game_select\n"); exit(EXIT_FAILURE); break;
