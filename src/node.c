@@ -12,7 +12,7 @@ typedef struct node_s {
 
 node new_node(int x, int y, int required_degree){
 	node n = (node) malloc(sizeof(struct node_s));
-	assert(new != NULL);
+	assert(n != NULL);
 	n->x = x;
 	n->y = y;
 	n->required_degree = required_degree;
