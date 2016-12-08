@@ -46,8 +46,10 @@ bool test_can_add_bridge_dir() {
 
 int main (int argc, char *argv[])
 {
+    printf("test7:\n");
     bool result= true;
     result = test_can_add_bridge_dir() && result;
+    result ? printf(" test_can_add_bridge_dir ok \n") : printf(" test_can_add_bridge_dir not ok \n");
     if (result){
        fprintf(stdout,"test7 success\n");
         return EXIT_SUCCESS;

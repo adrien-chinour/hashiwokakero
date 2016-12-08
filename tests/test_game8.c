@@ -38,15 +38,37 @@ static game default_game (){
 bool test_can_add_bridge_dir(){
   game g = default_game();
   bool r = true;
-  r = test_equality_bool(true,can_add_bridge_dir(g,4,EAST)," probleme de can_add_bride\n") && r;
-  add_bridge_dir(g,4,EAST);
-  r = test_equality_bool(true,can_add_bridge_dir(g,4,EAST)," probleme de can_add_bride\n") && r;
-  add_bridge_dir(g,4,EAST);
-  r = test_equality_bool(true,can_add_bridge_dir(g,4,EAST)," probleme de can_add_bride\n") && r;
-  add_bridge_dir(g,4,EAST);
-  r = test_equality_bool(true,can_add_bridge_dir(g,4,EAST)," probleme de can_add_bride\n") && r;
-  add_bridge_dir(g,4,EAST);
-  r = test_equality_bool(false,can_add_bridge_dir(g,4,EAST)," probleme de can_add_bride (pont de trop)\n") && r;
+  r = test_equality_bool(true,can_add_bridge_dir(g,3,EAST)," probleme de can_add_bride\n") && r;
+  add_bridge_dir(g,3,EAST);
+  r = test_equality_bool(true,can_add_bridge_dir(g,3,EAST)," probleme de can_add_bride\n") && r;
+  add_bridge_dir(g,3,EAST);
+  r = test_equality_bool(true,can_add_bridge_dir(g,3,EAST)," probleme de can_add_bride\n") && r;
+  add_bridge_dir(g,3,EAST);
+  r = test_equality_bool(true,can_add_bridge_dir(g,3,EAST)," probleme de can_add_bride\n") && r;
+  add_bridge_dir(g,3,EAST);
+  r = test_equality_bool(false,can_add_bridge_dir(g,3,EAST)," probleme de can_add_bride\n") && r;
+
+  r = test_equality_bool(true,can_add_bridge_dir(g,6,SE)," probleme de can_add_bride\n") && r;
+  add_bridge_dir(g, 6, SE);
+
+  r = test_equality_bool(true,can_add_bridge_dir(g,7,SOUTH)," probleme de can_add_bride\n") && r;
+  add_bridge_dir(g, 7, SOUTH);
+
+  r = test_equality_bool(true,can_add_bridge_dir(g,8,SW)," probleme de can_add_bride\n") && r;
+  add_bridge_dir(g,8,SW);
+
+  r = test_equality_bool(true,can_add_bridge_dir(g,5,WEST)," probleme de can_add_bride\n") && r;
+  add_bridge_dir(g, 5, WEST);
+
+  r = test_equality_bool(true,can_add_bridge_dir(g,2,NW)," probleme de can_add_bride\n") && r;
+  add_bridge_dir(g, 2, NW);
+
+  r = test_equality_bool(true,can_add_bridge_dir(g,1,NORTH)," probleme de can_add_bride\n") && r;
+  add_bridge_dir(g, 1, NORTH);
+
+  r = test_equality_bool(false,can_add_bridge_dir(g,0,NE)," probleme de can_add_bride\n") && r;
+
+  delete_game(g);
   return r;
 }
 
@@ -56,15 +78,17 @@ bool test_can_add_bridge_dir(){
 
 int main (int argc, char *argv[])
 {
-    bool result= true;
-    result = result && test_can_add_bridge_dir();
-    if (result){
-       fprintf(stdout,"test8 success\n");
-       return EXIT_SUCCESS;
-    }
+   printf("test8:\n");
+   bool result= true;
+   result = test_can_add_bridge_dir() && result;
+   result ? printf(" test_can_add_bridge_dir ok \n") : printf(" test_can_add_bridge_dir not ok \n");
+   if (result){
+      fprintf(stdout,"test8 success\n");
+      return EXIT_SUCCESS;
+   }
 
     else{
-      fprintf(stderr,"test8 failure:\n");
-        return EXIT_FAILURE;
+       fprintf(stderr,"test8 failure:\n");
+       return EXIT_FAILURE;
     }
 }

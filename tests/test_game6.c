@@ -36,14 +36,14 @@ static game default_game (){
 bool test_can_add_bridge_dir(){
    game g = default_game();
    bool r = true;
-   r = test_equality_bool(true, can_add_bridge_dir(g, 0, NE), "can add NE") && r;
+   r = test_equality_bool(true, can_add_bridge_dir(g, 0, NE), " can add NE") && r;
    add_bridge_dir(g, 0, NE);
    
-   r = test_equality_bool(false, can_add_bridge_dir(g, 1, EAST), "can add EAST") && r;
+   r = test_equality_bool(false, can_add_bridge_dir(g, 1, EAST), " can add EAST") && r;
    
-   r = test_equality_bool(false, can_add_bridge_dir(g, 5, NW), "can add NW") && r;
+   r = test_equality_bool(false, can_add_bridge_dir(g, 5, NW), " can add NW") && r;
    
-   r = test_equality_bool(false, can_add_bridge_dir(g, 3, NORTH), "can add NORTH") && r;
+   r = test_equality_bool(false, can_add_bridge_dir(g, 3, NORTH), " can add NORTH") && r;
 
    delete_game(g);
    return r;
@@ -63,7 +63,7 @@ int main (int argc, char *argv[])
   }
   
     else{
-      fprintf(stderr,"test6 success\n");
+      fprintf(stderr,"test6 failure\n");
       return EXIT_FAILURE;
     }
 }
