@@ -34,12 +34,12 @@ bool test_get_node_number() {
 
     for (int i = 0 ; i < EXAMPLE_NB_NODE; i++) {
       int num = game_get_node_number (g, vals[i][0], vals[i][1]);
-      r = test_interval_int(0,EXAMPLE_NB_NODE-1, num, " Pb game_node_number") && r;
+      r = test_interval_int(0,EXAMPLE_NB_NODE-1, num, "  Pb game_node_number") && r;
       node n = game_node(g, num);
-      r = test_equality_int(vals[i][2], get_required_degree(n), " Pb with degrees") && r;
+      r = test_equality_int(vals[i][2], get_required_degree(n), "  Pb with degrees") && r;
     }
-    r = test_equality_int(-1, game_get_node_number (g, 1, 0), " Pb game_node_number") && r;
-    r = test_equality_int(-1, game_get_node_number (g, 2, 1), " Pb game_node_number") && r;
+    r = test_equality_int(-1, game_get_node_number (g, 1, 0), "  Pb game_node_number") && r;
+    r = test_equality_int(-1, game_get_node_number (g, 2, 1), "  Pb game_node_number") && r;
     delete_game(g);
     return r;
 }
@@ -48,7 +48,7 @@ bool test_can_add_bridge_dir() {
     game g = default_game();
     bool r = true;
     int num = game_get_node_number (g, 0, 0);
-    r = test_equality_bool(true, can_add_bridge_dir(g, num, NORTH), " can add NORTH") && r;
+    r = test_equality_bool(true, can_add_bridge_dir(g, num, NORTH), "  can add NORTH") && r;
     r = test_equality_bool(true, can_add_bridge_dir(g, num, EAST), " can add EAST") && r;
     r = test_equality_bool(false, can_add_bridge_dir(g, num, WEST), " can add WEST") && r;
     r = test_equality_bool(false, can_add_bridge_dir(g, num, SOUTH), " can add SOUTH") && r;
@@ -61,10 +61,10 @@ bool test_can_add_bridge_dir() {
 bool test_get_neighbour() {
     game g = default_game();
     bool r = true;
-    r = test_equality_int(5, get_neighbour_dir(g,0,EAST), " pb neighbour 0 EAST") && r;
-    r = test_equality_int(4, get_neighbour_dir(g,2,EAST), " pb neighbour 2 EAST") && r;
-    r = test_equality_int(0, get_neighbour_dir(g,1,SOUTH), " pb neighbour 1 SOUTH") && r;
-    r = test_equality_int(2, get_neighbour_dir(g,1,NORTH), " pb neighbour 1 NORTH") && r;
+    r = test_equality_int(5, get_neighbour_dir(g,0,EAST), " Pb neighbour 0 EAST") && r;
+    r = test_equality_int(4, get_neighbour_dir(g,2,EAST), " Pb neighbour 2 EAST") && r;
+    r = test_equality_int(0, get_neighbour_dir(g,1,SOUTH), " Pb neighbour 1 SOUTH") && r;
+    r = test_equality_int(2, get_neighbour_dir(g,1,NORTH), " Pb neighbour 1 NORTH") && r;
     delete_game(g);
     return r;
 }

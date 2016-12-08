@@ -37,7 +37,7 @@ bool test_can_add_bridge_dir() {
     bool r = true;
     //int num = game_get_node_number (g, 0, 0);
     r = test_equality_bool(true, can_add_bridge_dir(g, 0, EAST), "pb de pont simple à l'est") && r;
-    add_bridge_dir(g, 1, EAST);
+    add_bridge_dir(g, 0, EAST);
     r = test_equality_bool(false, can_add_bridge_dir(g, 2, NORTH), "pb de pont se traversant") && r;
     r = test_equality_bool(true, can_add_bridge_dir(g, 1, SOUTH), "pb de pont sur une node en possédant déjà un") && r;
     delete_game(g);
