@@ -393,8 +393,14 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
   //si l'ile n'a pas de voisin, on ne peut pas poser de pont
   if(get_neighbour_dir(g, node_num, d) == -1) return false;
     
-  //si on a pas atteint le nombre maximum de ponts, on peut en poser un
-  if(get_degree(g, node_num) > get_required_degree(game_node(g, node_num))) return false;
+  //si le noeud a atteint le nombre maximum de ponts
+  if(get_degree(g, node_num) >= get_required_degree(game_node(g, node_num))) return false;
+
+  //si le voisin a atteint le nombre max de pont
+  if(get_degree(g,get_neighbour_dir(g, node_num, d)) >= get_required_degree(game_node(g, get_neighbour_dir(g, node_num, d)))) return false;
+
+  //si le noeud a atteint le maximum de pont dans une direction
+  if(get_degree_dir(g, node_num, d) >= game_nb_max_bridges(g)) return false;
 
   //croisement
   int x1 = get_x(game_node(g, get_neighbour_dir(g, node_num, d))) - get_x(game_node(g, node_num)); // AB x
