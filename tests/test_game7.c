@@ -36,10 +36,10 @@ bool test_can_add_bridge_dir() {
     game g = default_game();
     bool r = true;
     //int num = game_get_node_number (g, 0, 0);
-    r = test_equality_bool(true, can_add_bridge_dir(g, 0, EAST), "pb de pont simple à l'est");
+    r = test_equality_bool(true, can_add_bridge_dir(g, 0, EAST), "pb de pont simple à l'est") && r;
     add_bridge_dir(g, 1, EAST);
-    r = test_equality_bool(false, can_add_bridge_dir(g, 3, NORTH), "pb de pont se traversant");
-    r = test_equality_bool(true, can_add_bridge_dir(g, 1, SOUTH), "pb de pont sur une node en possédant déjà un");
+    r = test_equality_bool(false, can_add_bridge_dir(g, 2, NORTH), "pb de pont se traversant") && r;
+    r = test_equality_bool(true, can_add_bridge_dir(g, 1, SOUTH), "pb de pont sur une node en possédant déjà un") && r;
     delete_game(g);
     return r;
 }

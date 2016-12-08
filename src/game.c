@@ -394,28 +394,36 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
   if(get_neighbour_dir(g, node_num, d) == -1) return false;
     
   //si le noeud a atteint le nombre maximum de ponts
-  if(get_degree(g, node_num) >= get_required_degree(game_node(g, node_num))) return false;
+  //if(get_degree(g, node_num) >= get_required_degree(game_node(g, node_num))) return false;
 
   //si le voisin a atteint le nombre max de pont
-  if(get_degree(g,get_neighbour_dir(g, node_num, d)) >= get_required_degree(game_node(g, get_neighbour_dir(g, node_num, d)))) return false;
+  //if(get_degree(g,get_neighbour_dir(g, node_num, d)) >= get_required_degree(game_node(g, get_neighbour_dir(g, node_num, d)))) return false;
 
   //si le noeud a atteint le maximum de pont dans une direction
   if(get_degree_dir(g, node_num, d) >= game_nb_max_bridges(g)) return false;
 
   //croisement
-  int x1 = get_x(game_node(g, get_neighbour_dir(g, node_num, d))) - get_x(game_node(g, node_num)); // AB x
-  int y1 = get_y(game_node(g, get_neighbour_dir(g, node_num, d))) - get_y(game_node(g, node_num)); // AB y
+  int x1 = get_x(game_node(g, get_neighbour_dir(g, node_num, d))) - get_x(game_node(g, node_num)); //AB x
+  int y1 = get_y(game_node(g, get_neighbour_dir(g, node_num, d))) - get_y(game_node(g, node_num)); //AB y
 
   for(int i = 0; i < game_nb_nodes(g); i++){
     if(i != node_num && i != get_neighbour_dir(g, node_num, d)){ // on ne regarde pas le node node_num ni son voisin dans la direction
       for(int j = 0; j < game_nb_dir(g); j++){
         if(get_degree_dir(g, i, j) != 0 && j != d && j != inverse_dir(d)){ // on ne regarde pas les directions parallèles
+          //coordonnées des vecteurs utiles
+          int x2 = get_x(game_node(g, get_neighbour_dir(g, i , j))) - get_x(game_node(g, i)); //CD x
+          int y2 = get_y(game_node(g, get_neighbour_dir(g, i , j))) - get_y(game_node(g, i)); //CD y
           int x3 = get_x(game_node(g, i)) - get_x(game_node(g, node_num)); //AC x
           int y3 = get_y(game_node(g, i)) - get_y(game_node(g, node_num)); //AC y
           int x4 = get_x(game_node(g, get_neighbour_dir(g, i, j))) - get_x(game_node(g, node_num)); //AD x
           int y4 = get_y(game_node(g, get_neighbour_dir(g, i, j))) - get_y(game_node(g, node_num)); //AD y
+          int x5 = get_x(game_node(g, get_neighbour_dir(g, node_num, d))) - get_x(game_node(g, i)); //CB x
+          int y5 = get_y(game_node(g, get_neighbour_dir(g, node_num, d))) - get_y(game_node(g, i)); //CB y
+          int x6 = get_x(game_node(g, node_num)) - get_x(game_node(g, i)); //CA x
+          int y6 = get_y(game_node(g, node_num)) - get_y(game_node(g, i)); //CA y
 
-          if( ( x1*y3 - y1*x3 ) * ( x1*y4 - y1*x4 ) < 0 ) return false; // Est-ce que le point d'intersection est sur le segment CD ?
+          //printf("test intersection CD : %d;test intersection AB : %d;node_num = %d\n", ( x1*y3 - y1*x3 ) * ( x1*y4 - y1*x4 ),   (x2*y5 - y2*x5 ) * ( x2*y6 - y2*x6 ), node_num);
+          if( ( x1*y3 - y1*x3 ) * ( x1*y4 - y1*x4 ) < 0 && ( x2*y5 - y2*x5 ) * ( x2*y6 - y2*x6 ) < 0 ) return false; // Est-ce que le point d'intersection est sur [CD] et [AB]  ?
         }
       }
     }
