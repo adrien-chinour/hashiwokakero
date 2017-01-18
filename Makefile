@@ -5,16 +5,19 @@ ARFLAGS=rcs
 OBJETS=src/game.o src/node.o src/interface.o src/generate.o
 EXEC =hashi_text
 
-all: $(OBJETS) libhashi.a hashi_text
+all: $(OBJETS) libhashi.a libtext.a hashi_text
 
 src/%.o : src/%.c
 	$(CC) -c $(CFLAGS) $^ -o $@
 
-libhashi.a: $(OBJETS)
+libhashi.a: src/game.o src/node.o
 	$(AR) $(ARFLAGS) $@ $^
 
-hashi_text : src/hashi_text.c libhashi.a
-	$(CC) -g -o $@ $(CFLAGS) $< -L. -lhashi
+libtext.a: src/interface.o src/generate.o
+	$(AR) $(ARFLAGS) $@ $^
+
+hashi_text : src/hashi_text.c libhashi.a libtext.a
+	$(CC) -g -o $@ $(CFLAGS) $< -L. -lhashi -ltext
 
 # make test : créer les executables des tests sur les fonctions de
 # node.c et game.c puis les exécutes

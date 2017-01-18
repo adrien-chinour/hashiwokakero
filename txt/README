@@ -1,0 +1,43 @@
+* SOMMAIRE :
+
+1. Installation
+
+2. Utilisation
+ 2.1 Lancer le programme
+ 2.2 Placer un noeud
+ 2.3 Supprimer un noeud
+ 2.4 Lancer l'aide
+
+3. Autres
+
+4. Crédits
+
+1 - INSTALLATION
+
+- Ouvrez un terminal
+- Rendez vous dans le dossier "hashi-tm2h"
+- Executez la commande "make"
+
+Si tout c'est bien déroulé vous devriez avoir maintenant un fichier "hashi_text" dans le dossier "hashi-tm2h
+
+2 - UTILISATION
+
+2.1 - Lancez le programme :
+(une fois l'installation terminé)
+- Ouvrez un terminal
+- Rendez-vous dans le dossier "hashi-tm2h"
+- Executer la commande "./hashi_text"
+- Le programme devrez se lancer avec un logo "hashi".
+
+2.2 - Placer un noeud :
+Entrez d'abord le numéro du noeud, pour le connaître ils sont rangés de bas en haut et de gauche à droite en commançant par le noeud numéro 0.
+Ensuite choisissez la direction comme indiqué.
+
+2.3 - Supprimer un noeud :
+Identique au placement d'un noeud.
+
+2.4 - Lancer l'aide :
+Appuyez sur 1 puis ENTREE a partir du premier menu.
+
+3 - AUTRES
+
