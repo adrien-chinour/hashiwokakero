@@ -66,11 +66,11 @@ int main (int argc, char *argv[]){
    result ? printf(" test_copy_game_bridges ok \n") : printf(" test_copy_game_bridges not ok \n");
 
     if (result){
-       fprintf(stdout,"test9 success\n");
+       fprintf(stdout,"test_copy_game_bridges success\n");
         return EXIT_SUCCESS;
     }
     else{
-       fprintf(stderr,"test9 failure\n");
+       fprintf(stderr,"test_copy_game_bridges failure\n");
        return EXIT_FAILURE;
     }
 }

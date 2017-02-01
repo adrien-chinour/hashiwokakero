@@ -28,7 +28,7 @@ static game default_game (){
 }
 
 
-bool test_get_node_number() {
+bool test_get_node_number1() {
     game g = default_game();
     bool r = true;
 
@@ -48,15 +48,15 @@ int main (int argc, char *argv[])
 {
    printf("test1:\n");
    bool result= true;
-   result = test_get_node_number() && result;
-   result ? printf(" test_node_number ok \n") : printf(" test_node_number not ok \n");
+   result = test_get_node_number1() && result;
+   result ? printf(" test_get_node_number1 ok \n") : printf(" test_get_node_number1 not ok \n");
    if (result){
-      fprintf(stdout,"test1 success\n");
+      fprintf(stdout,"test_get_node_number1 success\n");
       return EXIT_SUCCESS;
    }
 
    else{
-      fprintf(stderr,"test1 failure: get_node_num\n");
+      fprintf(stderr,"test_get_node_number1 failure: get_node_num\n");
       return EXIT_FAILURE;
    }
 

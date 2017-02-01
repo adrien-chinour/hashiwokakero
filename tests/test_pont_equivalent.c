@@ -50,11 +50,11 @@ int main (int argc, char *argv[])
     result = test_pont_equivalent() && result;
     result ? printf(" test_pont_équivalent ok \n") : printf(" test_pont_équivalent not ok \n");
     if (result){
-       fprintf(stdout,"test5 success\n");
+       fprintf(stdout,"test_pont_equivalent success\n");
        return EXIT_SUCCESS;
     }
     else{
-       fprintf(stderr,"test5 failure\n");
+       fprintf(stderr,"test_pont_equivalent failure\n");
        return EXIT_FAILURE;
     }
 

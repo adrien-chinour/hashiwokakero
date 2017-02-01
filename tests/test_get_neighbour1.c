@@ -46,12 +46,12 @@ int main (int argc, char *argv[])
    result = test_get_neighbour() && result;
    result ? printf(" test_get_neighbour1 ok \n") : printf(" test_get_neighbour1 not ok \n");
    if (result){
-      fprintf(stdout,"test1 success\n");
+      fprintf(stdout,"test_get_neighbour1 success\n");
       return EXIT_SUCCESS;
    }
 
    else{
-      fprintf(stderr,"test1 failure: get_neighbour1\n");
+      fprintf(stderr,"test_get_neighbour1 failure: get_neighbour1\n");
       return EXIT_FAILURE;
    }
 

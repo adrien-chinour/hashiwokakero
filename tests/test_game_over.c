@@ -53,11 +53,11 @@ int main (int argc, char *argv[])
   result = result && test_game_over();
   result ? printf(" test_game_over ok \n") : printf(" test_game_over not ok \n");
   if (result){
-    fprintf(stdout,"test3 success\n");
+    fprintf(stdout,"test_game_over success\n");
     return EXIT_SUCCESS;
   }
   else{
-    fprintf(stderr,"test3 failure\n");
+    fprintf(stderr,"test_game_over failure\n");
     return EXIT_FAILURE;
   }
 

@@ -33,7 +33,7 @@ static game default_game (){
 }
 
 
-bool test_can_add_bridge_dir(){
+bool test_can_add_bridge_dir3(){
    game g = default_game();
    bool r = true;
    r = test_equality_bool(true, can_add_bridge_dir(g, 0, NE), " can add NE") && r;
@@ -55,15 +55,15 @@ int main (int argc, char *argv[])
 {
   printf("test6:\n");
   bool result= true;
-  result = test_can_add_bridge_dir() && result;
-  result ? printf(" test_can_add_bridge_dir ok \n") : printf(" test_can_add_bridge_dir not ok \n");
+  result = test_can_add_bridge_dir3() && result;
+  result ? printf(" test_can_add_bridge_dir3 ok \n") : printf(" test_can_add_bridge_dir3 not ok \n");
   if (result){
-    fprintf(stdout,"test6 success\n");
+    fprintf(stdout,"test_can_add_bridge_dir3 success\n");
     return EXIT_SUCCESS;
   }
   
     else{
-      fprintf(stderr,"test6 failure\n");
+      fprintf(stderr,"test_can_add_bridge_dir3 failure\n");
       return EXIT_FAILURE;
     }
 }

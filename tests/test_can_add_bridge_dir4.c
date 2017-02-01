@@ -32,7 +32,7 @@ static game default_game (){
 
 
 
-bool test_can_add_bridge_dir() {
+bool test_can_add_bridge_dir4() {
     game g = default_game();
     bool r = true;
     //int num = game_get_node_number (g, 0, 0);
@@ -48,15 +48,15 @@ int main (int argc, char *argv[])
 {
     printf("test7:\n");
     bool result= true;
-    result = test_can_add_bridge_dir() && result;
-    result ? printf(" test_can_add_bridge_dir ok \n") : printf(" test_can_add_bridge_dir not ok \n");
+    result = test_can_add_bridge_dir4() && result;
+    result ? printf(" test_can_add_bridge_dir4 ok \n") : printf(" test_can_add_bridge_dir4 not ok \n");
     if (result){
-       fprintf(stdout,"test7 success\n");
+       fprintf(stdout,"test_can_add_bridge_dir4 success\n");
         return EXIT_SUCCESS;
     }
 
     else{
-       fprintf(stderr,"test7 failure\n");
+       fprintf(stderr,"test_can_add_bridge_dir4 failure\n");
        return EXIT_FAILURE;
     }
 
