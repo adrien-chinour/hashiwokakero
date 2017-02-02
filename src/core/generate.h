@@ -10,5 +10,8 @@
 #include "game.h"
 
 game generate_game(int game, int nb_max_bridges, int nb_dir, int nb_nodes);
+game translate_game();
+game translate_save();
+void write_save(game g);
 
 #endif // _GENERATE_H_

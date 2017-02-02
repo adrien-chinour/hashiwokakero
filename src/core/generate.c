@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
-#include "node.h"
-#include "game.h"
+#include "../core/node.h"
+#include "../core/game.h"
 
 // Les tabeaux utilisés pour généré les games sont déclarés ici.
 int game1[7][3] = {{0,0,3},{0,2,5},{0,4,2},{2,2,1},{2,4,2},{4,0,2},{4,4,3}};
@@ -35,3 +36,129 @@ game generate_game(int nb_game, int nb_max_bridges, int nb_dir, int nb_nodes){
     
     return g;
 }
+
+game translate_game(){
+   FILE *gametxt;
+   gametxt = fopen("./save/game_default.txt","r");
+   if(gametxt==NULL){
+      fprintf(stderr,"fichier manquant\n");
+   }
+   char * l = malloc(sizeof(char)*7);
+   fgets(l,7,gametxt);
+   int * tab=malloc(sizeof(int)*3);
+
+   char * token = strtok(l," ");
+   int tmp;
+   int c = 0;
+
+   while(token != NULL){
+      tmp=atoi(token);
+      tab[c]=tmp;
+      token = strtok(NULL, " ");
+      c++;
+   }
+   c=0;
+   int * tabnode=malloc(sizeof(int)*3);
+   node * nodes= malloc(sizeof(nodes)*(tab[0]));
+   for(int i=0; i<tab[0]; i++){
+      fgets(l,7,gametxt);
+      char * token = strtok(l," ");
+      while(token != NULL){
+         tmp=atoi(token);
+         tabnode[c]=tmp;
+         token = strtok(NULL, " ");
+         c++;
+      }
+      c=0;
+      nodes[i]=new_node(tabnode[0], tabnode[1], tabnode[2]);
+   }
+   game g = new_game(tab[0],nodes,tab[1],tab[2]);
+   add_bridge_dir(g, 0, 0);
+
+   fclose(gametxt);
+   free(tabnode);
+   for (int i = 0 ; i < tab[0]; i++) delete_node(nodes[i]);
+   free(tab);
+   free(l);
+   free(token);
+   free(nodes);
+   return g;
+}
+
+game translate_save(){ //pour les sauvegardes + solutions
+   FILE *gametxt;
+   gametxt = fopen("./save/default_solution.txt","r");
+   if(gametxt==NULL){
+      fprintf(stderr,"fichier manquant\n");
+   }
+   char * l = malloc(sizeof(char)*16);
+   fgets(l,10,gametxt);
+   int * tab = malloc(sizeof(int)*3);
+
+   char * token = strtok(l, " ");
+   int tmp;
+   int c = 0;
+
+   while(token != NULL){
+      tmp=atoi(token);
+      tab[c]=tmp;
+      token = strtok(NULL, " ");
+      c++;
+   }
+   c=0;
+   int * tabnode = malloc(sizeof(int)*(3+tab[1]));
+   node * nodes = malloc(sizeof(nodes)*(tab[0]));
+   
+   for(int i=0; i<tab[0]; i++){
+      fgets(l,17,gametxt);
+      char * token = strtok(l," ");
+      while(token != NULL){
+         tmp=atoi(token);
+         tabnode[c]=tmp;
+         token = strtok(NULL, " ");
+         c++;
+      }
+      c=0;
+      nodes[i]=new_node(tabnode[0], tabnode[1], tabnode[2]);
+   }
+   //ok
+   game g = new_game(tab[0],nodes,tab[1],tab[2]);
+   
+   rewind(gametxt);
+   
+   fgets(l,10,gametxt);
+   for(int i=0; i<tab[0]; i++){
+      fgets(l,17,gametxt);
+      char * token = strtok(l," ");
+      while(token != NULL){
+         tmp=atoi(token);
+         tabnode[c]=tmp;
+         token = strtok(NULL, " ");
+         c++;
+      }
+      c=0;
+      for (int j= 3;j<(tab[1]+3);j++){
+         int num=game_get_node_number(g, tabnode[0], tabnode[1]);//ok
+         for(int k=0;k<tabnode[j];k++){
+            add_bridge_dir(g, num,(j-3));
+         }
+      }
+   }
+
+   fclose(gametxt);
+   //free(tabnode);
+   for (int i = 0 ; i < tab[0]; i++) delete_node(nodes[i]);
+   //free(tab);
+   //free(l);
+   //free(token);
+   //free(nodes);
+   return g;
+}
+
+void write_save(game g){
+   FILE *gametxt;
+   gametxt = fopen("./save/save_game.txt","w");
+   fprintf(gametxt,"%d %d %d\n",game_nb_nodes(g),game_nb_max_bridges(g),game_nb_dir(g));
+
+}
+
