@@ -1,2 +1,3 @@
 -> Résoudre les erreurs valgrind des scanf
--> Créer un seul exécutable de test a partir de tout les tests
+
+-> Modifier le CMakeLists.txt pour avoir un ctest correct (avec un test pour chaque foncion de core)
