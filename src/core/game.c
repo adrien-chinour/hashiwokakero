@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "../include/node.h"
+#include "node.h"
 
 typedef enum dir_e {NORTH, WEST, SOUTH, EAST, NW, SW, SE, NE} dir;
 

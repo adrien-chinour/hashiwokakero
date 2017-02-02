@@ -5,9 +5,9 @@
 #include <stdbool.h>
 #include <assert.h>
 
-#include "../include/node.h"
-#include "../include/game.h"
-#include "../include/interface.h"
+#include "../core/node.h"
+#include "../core/game.h"
+#include "interface.h"
 
 int get_choice(){
   int choice = -1;

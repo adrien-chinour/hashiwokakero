@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
-#include "../include/game.h"
+#include "../core/game.h"
 #include "test_toolbox.h"
 
 /* Defalult configuration
@@ -39,18 +39,8 @@ bool test_can_add_bridge_dir1() {
     return r;
 }
 
-int main (int argc, char *argv[])
+int main ()
 {
-   printf("test1:\n");
-   bool result= true;
-   result ? printf(" test_can_add_bridge_dir1 ok \n") : printf(" test_can_add_bridge_dir1 not ok \n");
-   if (result){
-      fprintf(stdout,"test1 success\n");
-      return EXIT_SUCCESS;
-   }
-
-   else{
-      fprintf(stderr,"test1 failure: can_add_bridge_dir1\n");
-      return EXIT_FAILURE;
-   }
+   printf("%d", test_can_add_bridge_dir1());
+   return EXIT_SUCCESS;;
 }

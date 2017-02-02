@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
-#include "../include/game.h"
+#include "../core/game.h"
 #include "test_toolbox.h"
 
 

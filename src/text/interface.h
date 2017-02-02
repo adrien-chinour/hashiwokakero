@@ -8,9 +8,9 @@
 #include <stdbool.h>
 #include <assert.h>
 
-#include "node.h"
-#include "game.h"
-#include "generate.h"
+#include "../core/node.h"
+#include "../core/game.h"
+#include "../core/generate.h"
 
 typedef struct s_map {
   int size;
