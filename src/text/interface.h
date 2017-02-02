@@ -38,4 +38,6 @@ void reset_game(game g, hashiMap m);
 
 game game_select();
 
+void save_game(game g);
+
 #endif // _INTERFACE_H_

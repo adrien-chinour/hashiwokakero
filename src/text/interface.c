@@ -402,6 +402,12 @@ void reset_game(game g, hashiMap m){
   }
 }
 
+void save_game(game g){
+   write_save(g);
+   printf("sauvegarde terminée\n");
+
+}
+
 game game_select(){
   int choice = 0;
   while(choice < 1 || choice > 7){
@@ -415,7 +421,7 @@ game game_select(){
   }
 
   switch(choice){
-     case 1: return generate_game(1,2,4,7);
+     case 1: return translate_game();
      case 2: return generate_game(2,2,8,8);
      case 3: return generate_game(3,3,4,7);
      case 4: return generate_game(4,3,8,7);

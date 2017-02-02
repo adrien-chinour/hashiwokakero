@@ -59,7 +59,7 @@ game translate_game(){
    }
    c=0;
    int * tabnode=malloc(sizeof(int)*3);
-   node * nodes= malloc(sizeof(nodes)*(tab[0]));
+   node * nodes= malloc(sizeof(node)*(tab[0]));
    for(int i=0; i<tab[0]; i++){
       fgets(l,7,gametxt);
       char * token = strtok(l," ");
@@ -73,14 +73,12 @@ game translate_game(){
       nodes[i]=new_node(tabnode[0], tabnode[1], tabnode[2]);
    }
    game g = new_game(tab[0],nodes,tab[1],tab[2]);
-   add_bridge_dir(g, 0, 0);
 
    fclose(gametxt);
    free(tabnode);
    for (int i = 0 ; i < tab[0]; i++) delete_node(nodes[i]);
    free(tab);
    free(l);
-   free(token);
    free(nodes);
    return g;
 }
@@ -107,7 +105,7 @@ game translate_save(){ //pour les sauvegardes + solutions
    }
    c=0;
    int * tabnode = malloc(sizeof(int)*(3+tab[1]));
-   node * nodes = malloc(sizeof(nodes)*(tab[0]));
+   node * nodes = malloc(sizeof(node)*(tab[0]));
    
    for(int i=0; i<tab[0]; i++){
       fgets(l,17,gametxt);
@@ -121,7 +119,6 @@ game translate_save(){ //pour les sauvegardes + solutions
       c=0;
       nodes[i]=new_node(tabnode[0], tabnode[1], tabnode[2]);
    }
-   //ok
    game g = new_game(tab[0],nodes,tab[1],tab[2]);
    
    rewind(gametxt);
@@ -138,7 +135,7 @@ game translate_save(){ //pour les sauvegardes + solutions
       }
       c=0;
       for (int j= 3;j<(tab[1]+3);j++){
-         int num=game_get_node_number(g, tabnode[0], tabnode[1]);//ok
+         int num=game_get_node_number(g, tabnode[0], tabnode[1]);
          for(int k=0;k<tabnode[j];k++){
             add_bridge_dir(g, num,(j-3));
          }
@@ -148,9 +145,8 @@ game translate_save(){ //pour les sauvegardes + solutions
    fclose(gametxt);
    //free(tabnode);
    for (int i = 0 ; i < tab[0]; i++) delete_node(nodes[i]);
-   //free(tab);
-   //free(l);
-   //free(token);
+   free(tab);
+   free(l);
    //free(nodes);
    return g;
 }
@@ -159,6 +155,20 @@ void write_save(game g){
    FILE *gametxt;
    gametxt = fopen("./save/save_game.txt","w");
    fprintf(gametxt,"%d %d %d\n",game_nb_nodes(g),game_nb_max_bridges(g),game_nb_dir(g));
-
+   int nb_dir=game_nb_dir(g);
+   if(nb_dir==4){
+      for(int i=0; i<game_nb_nodes(g);i++){
+         node node_i = game_node(g,i);
+         fprintf(gametxt,"%d %d %d %d %d %d %d\n",get_x(node_i),get_y(node_i),get_required_degree(node_i),get_degree_dir(g, i, 0),get_degree_dir(g, i, 1),get_degree_dir(g, i, 2),get_degree_dir(g, i, 3));
+      }
+   }
+   else{
+      for(int i=0; i<game_nb_nodes(g);i++){
+         node node_i = game_node(g,i);
+         fprintf(gametxt,"%d %d %d %d %d %d %d %d %d %d %d\n",get_x(node_i),get_y(node_i),get_required_degree(node_i),get_degree_dir(g, i, 0),get_degree_dir(g, i, 1),get_degree_dir(g, i, 2),get_degree_dir(g, i, 3),get_degree_dir(g, i, 4),get_degree_dir(g, i, 5),get_degree_dir(g, i, 6),get_degree_dir(g, i, 7));
+      }
+   }
+   fclose(gametxt);
 }
+
 
