@@ -11,7 +11,7 @@
 
 int get_choice(){
   int choice = -1;
-  while(choice < 0 || choice > 7){
+  while(choice < 0 || choice > 8){
     char *value = (char*) malloc(sizeof(char));
     printf("Que souhaitez-vous faire ? (1 pour l'aide)\n");
     scanf("%s", value);
@@ -32,7 +32,7 @@ void prompt(game g, hashiMap m){
       case 0: delete_game(g); printf("À bientôt !\n"); break;
 
       /*1 = Aide*/
-      case 1: printf("0 = Quitter\n1 = Aide\n2 = Afficher la partie\n3 = Afficher info nodes\n4 = Ajouter un pont\n5 = Supprimer un pont\n6 = Recommencer\n7 = Valider la partie\n"); break;
+      case 1: printf("0 = Quitter\n1 = Aide\n2 = Afficher la partie\n3 = Afficher info nodes\n4 = Ajouter un pont\n5 = Supprimer un pont\n6 = Recommencer\n7 = Valider la partie\n8 = Sauvegarder la partie\n"); break;
       
       /*2 = Affiche la partie*/
       case 2: draw_hashiMap(g,m); break;
@@ -51,6 +51,9 @@ void prompt(game g, hashiMap m){
       
       /*test si le jeu est fini*/
       case 7: test_game_over(g); break;
+
+       case 8: save_game(g); break;
+          
     }
   }
 }
