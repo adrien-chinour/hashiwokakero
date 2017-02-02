@@ -3,7 +3,9 @@
 #include <string.h>
 #include <stdbool.h>
 
-//fonction de lecture sécurisée d'une chaîne de caractère écrite par le joueur
+#include "secure.h"
+
+//fonction de lecture sécurisée d'une chaîne de caractère écrite par l'utilisateur
 bool read(char *chaine, int longueur)
 {
   //on va chercher où se trouve '\n'
