@@ -420,7 +420,7 @@ game game_select(){
   }
 
   switch(choice){
-     case 1: return generate_game(1,2,4,7);
+     case 1: return translate_game();
      case 2: return generate_game(2,2,8,8);
      case 3: return generate_game(3,3,4,7);
      case 4: return generate_game(4,3,8,7);
