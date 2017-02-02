@@ -403,23 +403,25 @@ void reset_game(game g, hashiMap m){
 
 game game_select(){
   int choice = 0;
-  while(choice < 1 || choice > 6){
+  while(choice < 1 || choice > 7){
     char *value = (char*) malloc(sizeof(char));
     printf("Selectionnez votre partie :\n");
     printf("(Facile = 2 ponts max; Moyen = 3 ponts max; Difficile = 4 ponts max)\n");
-    printf("-> 1 : FACILE - 4DIRS \n-> 2 : FACILE - 8DIRS \n-> 3 : MOYEN - 4DIRS \n-> 4 : MOYEN - 8DIRS \n-> 5 : DIFFICILE - 4DIRS \n-> 6 : DIFFICILE - 8DIRS\n");
+    printf("-> 1 : FACILE - 4DIRS \n-> 2 : FACILE - 8DIRS \n-> 3 : MOYEN - 4DIRS \n-> 4 : MOYEN - 8DIRS \n-> 5 : DIFFICILE - 4DIRS \n-> 6 : DIFFICILE - 8DIRS\n-> 7 : EXEMPLE GAGNE\n");
     scanf("%s", value);
     choice = atoi(value);
     free(value);
   }
 
   switch(choice){
-    case 1: return generate_game(1,2,4,7);
-    case 2: return generate_game(2,2,8,8);
-    case 3: return generate_game(3,3,4,7);
-    case 4: return generate_game(4,3,8,7);
-    case 5: return generate_game(5,4,4,9);
-    case 6: return generate_game(6,4,8,8);
+     case 1: return generate_game(1,2,4,7);
+     case 2: return generate_game(2,2,8,8);
+     case 3: return generate_game(3,3,4,7);
+     case 4: return generate_game(4,3,8,7);
+     case 5: return generate_game(5,4,4,9);
+     case 6: return generate_game(6,4,8,8);
+     case 7: return translate_save();
+        
     default: printf("Erreur dans game_select\n"); exit(EXIT_FAILURE); break;
   }
 }
