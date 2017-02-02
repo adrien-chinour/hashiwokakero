@@ -8,6 +8,7 @@
 #include "../core/node.h"
 #include "../core/game.h"
 #include "../core/generate.h"
+#include "../core/securise.c"
 
 typedef struct s_map {
   int size;
@@ -119,9 +120,9 @@ void add_bridge(game g, hashiMap m){
   // selection du noeud
   int node_num = -1;
   while(node_num < 0 || node_num >= game_nb_nodes(g)){
-    char *value = (char*) malloc(sizeof(char));
+    char *value = (char*) malloc(4096*sizeof(char));
     printf("Sur quelle noeud voulez-vous ajouter un pont (numero du noeud)?\n");
-    scanf("%s", &value);
+    scanf("%s", value);
     node_num = atoi(value);
     free(value);
   }
@@ -129,12 +130,12 @@ void add_bridge(game g, hashiMap m){
   //selection de la direction
   int direction = 0;
   while(direction < 1 || direction > game_nb_dir(g)){
-    char *value = (char*) malloc(sizeof(char));
+    char *value = (char*) malloc(4096*sizeof(char));
     if(game_nb_dir(g) == 4) 
       printf("Dans quelle direction ?\n 1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n");
     else 
       printf("Dans quelle direction ?\n 1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n 5 = NW / 6 = SW / 7 = SE / 8 = NE\n");
-    scanf("%s", &value);
+    scanf("%s", value);
     direction = atoi(value);
     free(value);
   }
@@ -217,9 +218,9 @@ void del_bridge(game g, hashiMap m){
   //selection numero node
   int node_num = -1;
   while(node_num < 0 || node_num >= game_nb_nodes(g)){
-    char *value = (char*) malloc(sizeof(char));
+    char *value = (char*) malloc(4096*sizeof(char));
     printf("Sur quelle noeud voulez-vous supprimer un pont ?\n");
-    scanf("%s", &value);
+    scanf("%s", value);
     node_num = atoi(value);
     free(value);
   }
@@ -227,12 +228,12 @@ void del_bridge(game g, hashiMap m){
   //selection de la direction
   int direction = 0;
   while(direction < 1 || direction > game_nb_dir(g)){
-    char *value = (char*) malloc(sizeof(char));
+    char *value = (char*) malloc(4096*sizeof(char));
     if(game_nb_dir(g) == 4) 
       printf("Dans quelle direction ?\n 1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n");
     else 
       printf("Dans quelle direction ?\n 1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n 5 = NW / 6 = SW / 7 = SE / 8 = NE\n");
-    scanf("%s", &value);
+    scanf("%s", value);
     direction = atoi(value);
     free(value);
   }
@@ -404,11 +405,11 @@ void reset_game(game g, hashiMap m){
 game game_select(){
   int choice = 0;
   while(choice < 1 || choice > 7){
-    char *value = (char*) malloc(sizeof(char));
+    char *value = (char*) malloc(4096*sizeof(char));
     printf("Selectionnez votre partie :\n");
     printf("(Facile = 2 ponts max; Moyen = 3 ponts max; Difficile = 4 ponts max)\n");
     printf("-> 1 : FACILE - 4DIRS \n-> 2 : FACILE - 8DIRS \n-> 3 : MOYEN - 4DIRS \n-> 4 : MOYEN - 8DIRS \n-> 5 : DIFFICILE - 4DIRS \n-> 6 : DIFFICILE - 8DIRS\n-> 7 : EXEMPLE GAGNE\n");
-    scanf("%s", &value);
+    scanf("%s", value);
     choice = atoi(value);
     free(value);
   }
