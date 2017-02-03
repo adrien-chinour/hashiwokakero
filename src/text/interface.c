@@ -8,7 +8,7 @@
 #include "../core/node.h"
 #include "../core/game.h"
 #include "../core/generate.h"
-#include "../core/securise.c"
+#include "../core/secure.c"
 
 typedef struct s_map {
   int size;

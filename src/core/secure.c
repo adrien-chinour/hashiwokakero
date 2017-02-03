@@ -46,3 +46,14 @@ bool read(char *chaine, int longueur)
       return false;
     }
 }
+
+/*
+void until(int min, int max)
+{
+  while(min <= max)
+    {
+      
+      min++;
+    }
+}
+*/
