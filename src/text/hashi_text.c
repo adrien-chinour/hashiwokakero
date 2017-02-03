@@ -38,11 +38,7 @@ void prompt(game g, hashiMap m){
 
     switch(choice){
       /*1 = Aide*/
-<<<<<<< HEAD
-      case 1: printf("1 = Aide\n2 = Afficher la partie\n3 = Afficher info nodes\n4 = Ajouter un pont\n5 = Supprimer un pont\n6 = Recommencer\n7 = Valider la partie\n8 = Quitter\n"); break;
-=======
-      case 1: printf("0 = Quitter\n1 = Aide\n2 = Afficher la partie\n3 = Afficher info nodes\n4 = Ajouter un pont\n5 = Supprimer un pont\n6 = Recommencer\n7 = Valider la partie\n8 = Sauvegarder la partie\n"); break;
->>>>>>> 77279b880df96ead55442b7b20504721c99b4619
+      case 1: printf("0 = Quitter\n1 = Aide\n2 = Afficher la partie\n3 = Afficher info nodes\n4 = Ajouter un pont\n5 = Supprimer un pont\n6 = Recommencer\n7 = Valider la partie\n8 = Sauvegarder la partie\n9 = Quitter\n"); break;
       
       /*2 = Affiche la partie*/
       case 2: draw_hashiMap(g,m); break;
@@ -61,14 +57,12 @@ void prompt(game g, hashiMap m){
       
       /*test si le jeu est fini*/
       case 7: test_game_over(g); break;
-
-<<<<<<< HEAD
-      /*0 = Quitter*/
-      case 8: delete_game(g); printf("À bientôt !\n"); break;
-=======
+         
+       /*sauvegarde le jeu*/
        case 8: save_game(g); break;
           
->>>>>>> 77279b880df96ead55442b7b20504721c99b4619
+       /*0 = Quitter*/
+      case 9: delete_game(g); printf("À bientôt !\n"); break;
     }
   }
 }
