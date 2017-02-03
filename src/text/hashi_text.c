@@ -7,7 +7,7 @@
 
 #include "../core/node.h"
 #include "../core/game.h"
-#include "../core/securise.c"
+#include "../core/secure.h"
 #include "interface.h"
 
 //TEST A AJOUTER POUR LIMITER LES ERREURS
@@ -15,13 +15,8 @@
 
 int get_choice(){
   int choice = -1;
-<<<<<<< HEAD
   while(choice < 1 || choice > 8){
     char *value = (char*) malloc(4096*sizeof(char));
-=======
-  while(choice < 0 || choice > 8){
-    char *value = (char*) malloc(sizeof(char));
->>>>>>> 77279b880df96ead55442b7b20504721c99b4619
     printf("Que souhaitez-vous faire ? (1 pour l'aide)\n");
     scanf("%s", value);
     choice = atoi(value);
