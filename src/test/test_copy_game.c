@@ -56,19 +56,8 @@ bool test_copy_game(){
 
 
 
-int main (int argc, char *argv[]){
-  printf("test2:\n");
-  bool result = true;
-  result = test_copy_game()&& result;
-  result ? printf(" test_copy_game ok \n") : printf(" test_copy_game not ok \n");
-  if (result){
-    fprintf(stdout,"test_copy_game success\n");
-    return EXIT_SUCCESS;
-  }
-  else{
-    fprintf(stderr,"test_copy_game failure\n");
-    return EXIT_FAILURE;
-  }
-
-
+int main ()
+{
+   printf("%d", test_copy_game());
+   return EXIT_SUCCESS;;
 }

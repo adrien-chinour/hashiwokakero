@@ -44,20 +44,8 @@ bool test_can_add_bridge_dir4() {
     return r;
 }
 
-int main (int argc, char *argv[])
+int main ()
 {
-    printf("test7:\n");
-    bool result= true;
-    result = test_can_add_bridge_dir4() && result;
-    result ? printf(" test_can_add_bridge_dir4 ok \n") : printf(" test_can_add_bridge_dir4 not ok \n");
-    if (result){
-       fprintf(stdout,"test_can_add_bridge_dir4 success\n");
-        return EXIT_SUCCESS;
-    }
-
-    else{
-       fprintf(stderr,"test_can_add_bridge_dir4 failure\n");
-       return EXIT_FAILURE;
-    }
-
+   printf("%d", test_can_add_bridge_dir4());
+   return EXIT_SUCCESS;;
 }

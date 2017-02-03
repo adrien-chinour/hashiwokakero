@@ -7,7 +7,7 @@
 
 #include "../core/node.h"
 #include "../core/game.h"
-#include "../core/securise.c"
+#include "../core/secure.h"
 #include "interface.h"
 
 //TEST A AJOUTER POUR LIMITER LES ERREURS
@@ -35,8 +35,8 @@ void prompt(game g, hashiMap m){
     switch(choice){
       /*0 = Quitter*/
       case 0: delete_game(g); printf("À bientôt !\n"); break;
-      /*1 = Aide*/
 	
+      /*1 = Aide*/
       case 1: printf("0 = Quitter\n1 = Aide\n2 = Afficher la partie\n3 = Afficher info nodes\n4 = Ajouter un pont\n5 = Supprimer un pont\n6 = Recommencer\n7 = Valider la partie\n8 = Sauvegarder la partie\n"); break;
       
       /*2 = Affiche la partie*/

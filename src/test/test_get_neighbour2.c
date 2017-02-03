@@ -40,19 +40,8 @@ bool test_get_neighbour2() {
 
 
 
-int main (int argc, char *argv[])
+int main ()
 {
-  printf("test4:\n");
-  bool result= true;
-  result = result && test_get_neighbour2();
-  result ? printf(" test_get_neighbour2 ok \n") : printf(" test_get_neighbour2 not ok \n");
-    if (result){
-      fprintf(stdout,"test_get_neighbour2 success\n");
-      return EXIT_SUCCESS;
-    }
-
-    else{
-      fprintf(stderr,"test_get_neighbour2 failure\n");
-      return EXIT_FAILURE;
-    }
+   printf("%d", test_get_neighbour2());
+   return EXIT_SUCCESS;;
 }

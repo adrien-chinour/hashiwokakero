@@ -46,19 +46,8 @@ bool test_game_over(){
 }
 
 
-int main (int argc, char *argv[])
+int main ()
 {
-  printf("test3:\n");
-  bool result= true;
-  result = result && test_game_over();
-  result ? printf(" test_game_over ok \n") : printf(" test_game_over not ok \n");
-  if (result){
-    fprintf(stdout,"test_game_over success\n");
-    return EXIT_SUCCESS;
-  }
-  else{
-    fprintf(stderr,"test_game_over failure\n");
-    return EXIT_FAILURE;
-  }
-
+   printf("%d", test_game_over());
+   return EXIT_SUCCESS;;
 }

@@ -27,7 +27,7 @@ static game default_game (){
     return g;
 }
 
-bool test_get_neighbour() {
+bool test_get_neighbour1() {
     game g = default_game();
     bool r = true;
     r = test_equality_int(5, get_neighbour_dir(g,0,EAST), " Pb neighbour 0 EAST") && r;
@@ -39,20 +39,8 @@ bool test_get_neighbour() {
 }
 
 
-int main (int argc, char *argv[])
+int main ()
 {
-   printf("test1:\n");
-   bool result= true;
-   result = test_get_neighbour() && result;
-   result ? printf(" test_get_neighbour1 ok \n") : printf(" test_get_neighbour1 not ok \n");
-   if (result){
-      fprintf(stdout,"test_get_neighbour1 success\n");
-      return EXIT_SUCCESS;
-   }
-
-   else{
-      fprintf(stderr,"test_get_neighbour1 failure: get_neighbour1\n");
-      return EXIT_FAILURE;
-   }
-
+   printf("%d", test_get_neighbour1());
+   return EXIT_SUCCESS;;
 }

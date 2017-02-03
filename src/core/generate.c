@@ -171,4 +171,13 @@ void write_save(game g){
    fclose(gametxt);
 }
 
+void write_game(game g){
+   FILE *gametxt;
+   gametxt = fopen("./map/game_1.txt","w");
+   fprintf(gametxt,"%d %d %d\n",game_nb_nodes(g),game_nb_max_bridges(g),game_nb_dir(g));
+   for(int i=0; i<game_nb_nodes(g);i++){
+      node node_i = game_node(g,i);
+      fprintf(gametxt,"%d %d %d\n",get_x(node_i),get_y(node_i),get_required_degree(node_i));
+   }
+}
 
