@@ -42,19 +42,8 @@ bool test_get_node_number2() {
     return r;
 }
 
-int main (int argc, char *argv[])
+int main ()
 {
-  printf("test4:\n");
-  bool result= true;
-  result = result && test_get_node_number2();
-  result ? printf(" test_get_node_number2 ok \n") : printf(" test_get_node_number2 not ok \n");
-   if (result){
-      fprintf(stdout,"test_get_node_number2 success\n");
-      return EXIT_SUCCESS;
-    }
-
-    else{
-      fprintf(stderr,"test_get_node_number2 failure\n");
-      return EXIT_FAILURE;
-    }
+   printf("%d", test_get_node_number2());
+   return EXIT_SUCCESS;;
 }

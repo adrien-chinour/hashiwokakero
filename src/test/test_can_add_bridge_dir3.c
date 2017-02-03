@@ -51,19 +51,8 @@ bool test_can_add_bridge_dir3(){
 
 
 
-int main (int argc, char *argv[])  
+int main ()
 {
-  printf("test6:\n");
-  bool result= true;
-  result = test_can_add_bridge_dir3() && result;
-  result ? printf(" test_can_add_bridge_dir3 ok \n") : printf(" test_can_add_bridge_dir3 not ok \n");
-  if (result){
-    fprintf(stdout,"test_can_add_bridge_dir3 success\n");
-    return EXIT_SUCCESS;
-  }
-  
-    else{
-      fprintf(stderr,"test_can_add_bridge_dir3 failure\n");
-      return EXIT_FAILURE;
-    }
+   printf("%d", test_can_add_bridge_dir3());
+   return EXIT_SUCCESS;;
 }
