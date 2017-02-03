@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <time.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include "../core/secure.h"
 #include "test_toolbox.h"

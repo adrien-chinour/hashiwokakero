@@ -14,7 +14,7 @@ add_library(hashi src/core/game.c src/core/node.c)
 #libtext
 add_library(text src/core/generate.c src/text/interface.c)
 
-#tests
+#TESTS
 
 ##can_add_bridges_dir1
 add_executable(can_add_bridges_dir1 src/test/test_can_add_bridge_dir1.c src/test/test_toolbox.c)
@@ -67,6 +67,10 @@ target_link_libraries(get_node_number2 hashi)
 ##pont_equivalent
 add_executable(pont_equivalent src/test/test_pont_equivalent.c src/test/test_toolbox.c)
 target_link_libraries(pont_equivalent hashi)
+
+##read_secure
+add_executable(read_secure src/test/test_secure.c src/test/test_toolbox.c)
+target_link_libraries(read_secure)
 
 ##testing
 enable_testing()
