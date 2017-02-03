@@ -36,6 +36,38 @@ target_link_libraries(can_add_bridges_dir4 hashi)
 add_executable(can_add_bridges_dir5 src/test/test_can_add_bridge_dir5.c src/test/test_toolbox.c)
 target_link_libraries(can_add_bridges_dir5 hashi)
 
+##copy_game_bridges
+add_executable(copy_game_bridges src/test/test_copy_game_bridges.c src/test/test_toolbox.c)
+target_link_libraries(copy_game_bridges hashi)
+
+##copy_game
+add_executable(copy_game src/test/test_copy_game.c src/test/test_toolbox.c)
+target_link_libraries(copy_game hashi)
+
+##game_over
+add_executable(game_over src/test/test_game_over.c src/test/test_toolbox.c)
+target_link_libraries(game_over hashi)
+
+##get_neighbour1
+add_executable(get_neighbour1 src/test/test_get_neighbour1.c src/test/test_toolbox.c)
+target_link_libraries(get_neighbour1 hashi)
+
+##get_neighbour2
+add_executable(get_neighbour2 src/test/test_get_neighbour2.c src/test/test_toolbox.c)
+target_link_libraries(get_neighbour2 hashi)
+
+##get_node_number1
+add_executable(get_node_number1 src/test/test_get_node_number1.c src/test/test_toolbox.c)
+target_link_libraries(get_node_number1 hashi)
+
+##get_node_number2
+add_executable(get_node_number2 src/test/test_get_node_number2.c src/test/test_toolbox.c)
+target_link_libraries(get_node_number2 hashi)
+
+##pont_equivalent
+add_executable(pont_equivalent src/test/test_pont_equivalent.c src/test/test_toolbox.c)
+target_link_libraries(pont_equivalent hashi)
+
 ##testing
 enable_testing()
 
