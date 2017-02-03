@@ -73,3 +73,39 @@ enable_testing()
 
 add_test(can_add_bridges_dir1 can_add_bridges_dir1)
 set_tests_properties (can_add_bridges_dir1 PROPERTIES PASS_REGULAR_EXPRESSION "1")
+
+add_test(can_add_bridges_dir2 can_add_bridges_dir2)
+set_tests_properties (can_add_bridges_dir2 PROPERTIES PASS_REGULAR_EXPRESSION "1")
+
+add_test(can_add_bridges_dir3 can_add_bridges_dir3)
+set_tests_properties (can_add_bridges_dir3 PROPERTIES PASS_REGULAR_EXPRESSION "1")
+
+add_test(can_add_bridges_dir4 can_add_bridges_dir4)
+set_tests_properties (can_add_bridges_dir4 PROPERTIES PASS_REGULAR_EXPRESSION "1")
+
+add_test(can_add_bridges_dir5 can_add_bridges_dir5)
+set_tests_properties (can_add_bridges_dir5 PROPERTIES PASS_REGULAR_EXPRESSION "1")
+
+add_test(copy_game copy_game)
+set_tests_properties (copy_game PROPERTIES PASS_REGULAR_EXPRESSION "1")
+
+add_test(copy_game_bridges copy_game_bridges)
+set_tests_properties (copy_game_bridges PROPERTIES PASS_REGULAR_EXPRESSION "1")
+
+add_test(game_over game_over)
+set_tests_properties (game_over PROPERTIES PASS_REGULAR_EXPRESSION "1")
+
+add_test(get_neighbour1 get_neighbour1)
+set_tests_properties (get_neighbour1 PROPERTIES PASS_REGULAR_EXPRESSION "1")
+
+add_test(get_neighbour2 get_neighbour2)
+set_tests_properties (get_neighbour2 PROPERTIES PASS_REGULAR_EXPRESSION "1")
+
+add_test(get_node_number1 get_node_number1)
+set_tests_properties (get_node_number1 PROPERTIES PASS_REGULAR_EXPRESSION "1")
+
+add_test(get_node_number2 get_node_number2)
+set_tests_properties (get_node_number2 PROPERTIES PASS_REGULAR_EXPRESSION "1")
+
+add_test(pont_equivalent pont_equivalent)
+set_tests_properties (pont_equivalent PROPERTIES PASS_REGULAR_EXPRESSION "1")
