@@ -53,6 +53,6 @@ bool test_can_add_bridge_dir3(){
 
 int main ()
 {
-   printf("%d", test_can_add_bridge_dir3());
+   printf("%d\n", test_can_add_bridge_dir3());
    return EXIT_SUCCESS;;
 }

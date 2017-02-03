@@ -78,6 +78,6 @@ bool test_can_add_bridge_dir5(){
 
 int main ()
 {
-   printf("%d", test_can_add_bridge_dir5());
+   printf("%d\n", test_can_add_bridge_dir5());
    return EXIT_SUCCESS;;
 }

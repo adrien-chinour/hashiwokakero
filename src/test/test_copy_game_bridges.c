@@ -61,6 +61,6 @@ bool test_copy_game_bridges(){
 
 int main ()
 {
-   printf("%d", test_copy_game_bridges());
+   printf("%d\n", test_copy_game_bridges());
    return EXIT_SUCCESS;;
 }

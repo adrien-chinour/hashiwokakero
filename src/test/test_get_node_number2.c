@@ -44,6 +44,6 @@ bool test_get_node_number2() {
 
 int main ()
 {
-   printf("%d", test_get_node_number2());
+   printf("%d\n", test_get_node_number2());
    return EXIT_SUCCESS;;
 }

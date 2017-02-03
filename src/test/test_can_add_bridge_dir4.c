@@ -46,6 +46,6 @@ bool test_can_add_bridge_dir4() {
 
 int main ()
 {
-   printf("%d", test_can_add_bridge_dir4());
+   printf("%d\n", test_can_add_bridge_dir4());
    return EXIT_SUCCESS;;
 }

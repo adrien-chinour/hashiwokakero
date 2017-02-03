@@ -58,6 +58,6 @@ bool test_copy_game(){
 
 int main ()
 {
-   printf("%d", test_copy_game());
+   printf("%d\n", test_copy_game());
    return EXIT_SUCCESS;;
 }

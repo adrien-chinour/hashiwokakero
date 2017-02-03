@@ -48,6 +48,6 @@ bool test_game_over(){
 
 int main ()
 {
-   printf("%d", test_game_over());
+   printf("%d\n", test_game_over());
    return EXIT_SUCCESS;;
 }

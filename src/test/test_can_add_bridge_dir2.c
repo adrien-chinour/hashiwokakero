@@ -40,6 +40,6 @@ bool test_can_add_bridge_dir2() {
 
 int main ()
 {
-   printf("%d", test_can_add_bridge_dir2());
+   printf("%d\n", test_can_add_bridge_dir2());
    return EXIT_SUCCESS;;
 }

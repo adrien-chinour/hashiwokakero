@@ -45,6 +45,6 @@ bool test_pont_equivalent(){
 
 int main ()
 {
-   printf("%d", test_pont_equivalent());
+   printf("%d\n", test_pont_equivalent());
    return EXIT_SUCCESS;;
 }

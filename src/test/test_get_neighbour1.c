@@ -41,6 +41,6 @@ bool test_get_neighbour1() {
 
 int main ()
 {
-   printf("%d", test_get_neighbour1());
+   printf("%d\n", test_get_neighbour1());
    return EXIT_SUCCESS;;
 }
