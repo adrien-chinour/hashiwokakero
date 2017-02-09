@@ -31,7 +31,7 @@ struct Env_t {
      
 /* **************************************************************** */
      
-Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], cgame g)
+Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], game g)
 {  
   Env * env = malloc(sizeof(struct Env_t));
 
