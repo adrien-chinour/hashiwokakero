@@ -10,7 +10,7 @@
 
 #include "../core/node.h"
 #include "../core/game.h"
-#include "../core/generate.h"
+#include "../core/file.h"
 
 typedef struct s_map {
   int size;

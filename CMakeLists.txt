@@ -4,18 +4,24 @@ cmake_minimum_required(VERSION 3.3)
 #nom du projet
 project (hashi-tm2h C)
 
-#executable interface text
+#executable interface terminal
 add_executable(hashi_text src/text/hashi_text.c)
 target_link_libraries(hashi_text hashi text)
+
+#executable interface graphique
+#add_executable(hashi_gui src/gui/hashi_gui.c)
+#target_link_libraries(hashi_gui hashi gui)
 
 # libhashi
 add_library(hashi src/core/game.c src/core/node.c)
 
 #libtext
-add_library(text src/core/generate.c src/text/interface.c)
+add_library(text src/core/file.c src/text/interface.c)
+
+#libgui
+#add_library(gui src/core/file.c src/gui/model.c)
 
 #TESTS
-
 ##can_add_bridges_dir1
 add_executable(can_add_bridges_dir1 src/test/test_can_add_bridge_dir1.c src/test/test_toolbox.c)
 target_link_libraries(can_add_bridges_dir1 hashi)
