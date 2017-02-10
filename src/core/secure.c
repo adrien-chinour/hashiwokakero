@@ -11,6 +11,8 @@ bool read(char *chaine, int longueur)
   //on va chercher où se trouve '\n'
   char *enter = NULL;
 
+  printf("ici\n");
+  
   //on regarde si aucune erreur de saisie n'est faite
   if(fgets(chaine, longueur, stdin) != NULL)
     {
@@ -29,6 +31,9 @@ bool read(char *chaine, int longueur)
 	  //tant que '\n' est pas trouvé et que le buffer n'est pas vide, on le vide
 	  while (c != '\n' && c != EOF)
 	    c = getchar();
+
+	  //il a eu dépassement, on signale l'erreur
+	  return false;
         }
       //la saisie s'est bien passée, on le signale
       return true;
@@ -46,14 +51,3 @@ bool read(char *chaine, int longueur)
       return false;
     }
 }
-
-/*
-void until(int min, int max)
-{
-  while(min <= max)
-    {
-      
-      min++;
-    }
-}
-*/
