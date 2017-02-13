@@ -1,8 +1,6 @@
-// SDL2 Demo by aurelien.esnard@u-bordeaux.fr
-
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>  // required to load transparent texture from PNG
-#include <SDL2/SDL_ttf.h>    // required to use TTF fonts     
+#include <SDL2/SDL_ttf.h>    // required to use TTF fonts
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,94 +12,84 @@
 
 /* **************************************************************** */
 
-
 #define FONT "Arial.ttf"
 
 /* **************************************************************** */
      
 struct Env_t {
-   int * x;
-   int * y;
-   SDL_Texture ** degree;
-   SDL_Texture ** back;
-   int size;
-
-  /* PUT YOUR VARIABLES HERE */
+  int * x;
+  int * y;
+  SDL_Texture ** degree;
+  SDL_Texture ** back;
+  int size;
+  int max;
 }; 
      
-/* **************************************************************** */
-     
-Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], game g)
-{  
-  Env * env = malloc(sizeof(struct Env_t));
+Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
 
+  game g = translate_game();
+  
+  Env * env = malloc(sizeof(struct Env_t));
+  if(env == NULL) return NULL;
+  
   int w, h;
   SDL_GetWindowSize(win, &w, &h);
   int max = 0;
   int nb_nodes = game_nb_nodes(g);
   
-
   env->x = malloc(sizeof(int)*nb_nodes);
+  if(env->x == NULL) {free(env); return NULL;}
+  
   env->y = malloc(sizeof(int)*nb_nodes);
+  if(env->y == NULL) {free(env); return NULL;}
+  
   env->degree = malloc(sizeof(SDL_Texture*)*nb_nodes);
+  if(env->degree == NULL) {free(env); return NULL;}
+  
   env->back = malloc(sizeof(SDL_Texture*)*nb_nodes);
+  if(env->back == NULL) {free(env); return NULL;}
   
-
-  for(int i = 0 ; i<game_nb_nodes(g);i++){
+  for(int i = 0 ; i < game_nb_nodes(g) ; i++){
      node n = game_node(g, i);
-     
-     if(get_x(n)>max)
-        max=get_x(n);
-     if(get_y(n)>max)
-        max=get_y(n);
+     if(get_x(n) > max) max = get_x(n);
+     if(get_y(n) > max) max = get_y(n);
   }
-  env->size = w/(max *2 + 2);
   
-  
-  
+  env->max = max + 1;
+  env->size = w/( (max + 1) *2);
 
-  
-
-  SDL_Color gray ={150,150,150,255};
-  SDL_Color black ={255,255,255,255};
-
-  
-
-  /* PUT YOUR CODE HERE TO INIT TEXTURES, ... */
-  
-
+  delete_game(g);
   return env;
 }
-     
-/* **************************************************************** */
-     
-void render(SDL_Window* win, SDL_Renderer* ren, Env * env)
-{
-  /* PUT YOUR CODE HERE TO RENDER TEXTURES, ... */
-}
-     
-/* **************************************************************** */
-     
-     
-bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e)
-{     
 
+void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
+
+  int width, height;
+  SDL_GetWindowSize(win, &width, &height);
+  
+  /* background lines in gray */
+  SDL_SetRenderDrawColor(ren , 0xA0, 0xA0, 0xA0, SDL_ALPHA_OPAQUE);
+  for(int i = 1; i < env->max * 2; i++){
+    SDL_RenderDrawLine(ren, (i * env->size), 0, (i * env->size), width);
+    SDL_RenderDrawLine(ren, 0, (i * env->size), width, (i * env->size));
+  }
+  
+}
+
+bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
+  int w, h;
+  SDL_GetWindowSize(win, &w, &h);
+
+  /* generic events */
   if (e->type == SDL_QUIT) {
     return true;
   }
-
-  /* PUT YOUR CODE HERE TO PROCESS EVENTS */
   
   return false; 
 }
 
-/* **************************************************************** */
-
 void clean(SDL_Window* win, SDL_Renderer* ren, Env * env)
 {
-  /* PUT YOUR CODE HERE TO CLEAN MEMORY */
-
+  
   free(env);
 }
-     
-/* **************************************************************** */

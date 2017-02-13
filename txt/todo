@@ -1,3 +1,6 @@
--> Résoudre les erreurs valgrind des scanf
+-> Corriger les tests d'erreurs d'allocation de la fonction init du fichier model
+( il ne faut pas seulement free(env) )
 
--> Modifier le CMakeLists.txt pour avoir un ctest correct (avec un test pour chaque foncion de core)
+-> renommer model.c et model.h pour un nom plus adapter
+
+-> Modifier le CMakeLists.txt pour qu'il génère les tests mais avec seulement un executable
