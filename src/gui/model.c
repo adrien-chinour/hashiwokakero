@@ -21,7 +21,6 @@ struct Env_t {
   int * y;
   SDL_Texture ** degree;
   SDL_Texture ** back;
-  int size;
   int max;
 }; 
      
@@ -54,24 +53,23 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
      if(get_x(n) > max) max = get_x(n);
      if(get_y(n) > max) max = get_y(n);
   }
-  
   env->max = max + 1;
-  env->size = w/( (max + 1) *2);
-
+  
   delete_game(g);
   return env;
 }
 
 void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
 
-  int width, height;
+  int width, height, size;
   SDL_GetWindowSize(win, &width, &height);
+  size = width/(env->max * 2);
   
   /* background lines in gray */
   SDL_SetRenderDrawColor(ren , 0xA0, 0xA0, 0xA0, SDL_ALPHA_OPAQUE);
   for(int i = 1; i < env->max * 2; i++){
-    SDL_RenderDrawLine(ren, (i * env->size), 0, (i * env->size), width);
-    SDL_RenderDrawLine(ren, 0, (i * env->size), width, (i * env->size));
+    SDL_RenderDrawLine(ren, (i * size), 0, (i * size), width);
+    SDL_RenderDrawLine(ren, 0, (i * size), height, (i * size));
   }
   
 }

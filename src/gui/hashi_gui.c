@@ -7,8 +7,7 @@
      
 /* **************************************************************** */
      
-#define SCREEN_WIDTH 500
-#define SCREEN_HEIGHT 500
+#define SCREEN_SIZE 500
 
 /* **************************************************************** */
      
@@ -18,13 +17,19 @@ int main(int argc, char * argv[]) {
   if(SDL_Init(SDL_INIT_VIDEO) != 0) ERROR("SDL_Init VIDEO"); 
   if(IMG_Init(IMG_INIT_PNG & IMG_INIT_PNG) != IMG_INIT_PNG) ERROR("IMG_Init PNG");
   if(TTF_Init() != 0) ERROR("TTF_Init");  
+
+  int screen_size;
+  if(argc > 1 && atoi(argv[1]) > 100 && atoi(argv[1]) < 4000)
+    screen_size = atoi(argv[1]);
+  else
+    screen_size = SCREEN_SIZE;
   
   /* create window and renderer */
   SDL_Window * win = SDL_CreateWindow("Hashiwokakero - TM2H",
 				      SDL_WINDOWPOS_UNDEFINED,
 				      SDL_WINDOWPOS_UNDEFINED,
-    				      SCREEN_WIDTH, SCREEN_HEIGHT,
-				      SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    				      screen_size, screen_size,
+				      SDL_WINDOW_SHOWN);
   
   if(!win) ERROR("SDL_CreateWindow");  
 
