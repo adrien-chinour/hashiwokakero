@@ -17,8 +17,6 @@
  2.3 	Utilisation en mode graphique
 
 
-
-
 3. 	Autres
 
 4. 	Crédits
@@ -29,7 +27,8 @@
 
 - Ouvrez un terminal
 - Rendez vous dans le dossier "hashi-tm2h"
-- Executez la commande "./install.sh"
+- Executez la commande "cmake ."
+- Puis executez la commande "make"
 
 Si tout c'est bien déroulé vous devriez avoir maintenant un répertoire "build", il contient :
  	* l'exécutable "hashi_text" pour lancer le programme en mode terminal
@@ -56,6 +55,8 @@ Identique au placement d'un noeud.
 Appuyez sur 1 puis appuyer sur ENTREE a partir du premier menu.
 
 2.2.4 - Quitter le programme :
+
+2.3 - UTILISATION EN MODE GRAPHIQUE
 
 
 3 - AUTRES
