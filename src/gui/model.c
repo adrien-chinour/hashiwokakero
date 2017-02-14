@@ -13,6 +13,7 @@
 /* **************************************************************** */
 
 #define FONT "Arial.ttf"
+#define ISLAND "island.png"
 
 /* **************************************************************** */
      
@@ -20,7 +21,7 @@ struct Env_t {
   int * x;
   int * y;
   SDL_Texture ** degree;
-  SDL_Texture ** back;
+  SDL_Texture * back;
   int max;
   int nb_nodes;
 }; 
@@ -46,10 +47,14 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   
   env->degree = malloc(sizeof(SDL_Texture*)*nb_nodes);
   if(env->degree == NULL) {free(env); return NULL;}
+
+  //env->back = malloc(sizeof(SDL_Texture*)*nb_nodes);
+  //if(env->back == NULL) {free(env); return NULL;}
+
   
-  env->back = malloc(sizeof(SDL_Texture*)*nb_nodes);
-  if(env->back == NULL) {free(env); return NULL;}
-  
+  env->back = IMG_LoadTexture(ren, ISLAND);
+  if(!env->back) ERROR("IMG_LoadTexture: %s\n", ISLAND);
+
   for(int i = 0 ; i < nb_nodes ; i++){
      node n = game_node(g, i);
      env->x[i] = get_x(n);
@@ -79,16 +84,14 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
     SDL_RenderDrawLine(ren, 0, (i * size), height, (i * size));
   }
 
-  /* nodes in black */
-  SDL_SetRenderDrawColor(ren, 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE);
+  /* nodes textures */
   for(int i = 0; i < env->nb_nodes; i++){
-    SDL_Rect srcrect;
-    srcrect.x = (env->x[i] * 2 + 1) * size  - size / 2;
-    srcrect.y = (env->y[i] * 2 + 1) * size - size / 2;
-    srcrect.w = size;
-    srcrect.h = size;
-    SDL_RenderFillRect(ren, &(srcrect));
-    SDL_RenderDrawRect(ren, &(srcrect));
+    SDL_Rect rect;
+    rect.w = size;
+    rect.h = size;
+    rect.x = (env->x[i] * 2 + 1) * size  - size / 2;
+    rect.y = (env->y[i] * 2 + 1) * size - size / 2;
+    SDL_RenderCopy(ren, env->back, NULL, &(rect));
   }
   
 }
