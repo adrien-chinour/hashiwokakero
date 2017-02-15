@@ -28,22 +28,25 @@ int main(int argc, char * argv[]) {
   SDL_Window * win = SDL_CreateWindow("Hashiwokakero - TM2H",
 				      SDL_WINDOWPOS_UNDEFINED,
 				      SDL_WINDOWPOS_UNDEFINED,
-    				      screen_size, screen_size,
+				      screen_size, screen_size,
 				      SDL_WINDOW_SHOWN);
-  
   if(!win) ERROR("SDL_CreateWindow");  
 
   SDL_Renderer * ren = SDL_CreateRenderer(win, -1,
 					  SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-  if(!ren) ERROR("SDL_CreateWindow");    
-     
-  /* initialize your environment */
+  if(!ren) ERROR("SDL_CreateWindow");
+
+  /* add game menu here */
+  //exemple : char * game_file = display_game_menu();
+  //return path to the game selected
+  
+  /* initialize game environment */
   Env * env = init(win, ren, argc, argv);
   if (env == NULL){
     fprintf(stderr, "Alloc (struct Env_t *) failed");
     exit(EXIT_FAILURE);
   }
-     
+  
   /* main render loop */
   bool quit = false;
   while (!quit) {
@@ -60,7 +63,7 @@ int main(int argc, char * argv[]) {
     SDL_SetRenderDrawColor(ren, 0, 204, 255, SDL_ALPHA_OPAQUE); 
     SDL_RenderClear(ren);
     
-    /* render all what you want */    
+    /* render all what you want */
     render(win, ren, env); 
     SDL_RenderPresent(ren);
     SDL_Delay(10);
