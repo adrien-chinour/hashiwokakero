@@ -43,14 +43,10 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   if(env->x == NULL) {free(env); return NULL;}
   
   env->y = malloc(sizeof(int)*nb_nodes);
-  if(env->y == NULL) {free(env); return NULL;}
+  if(env->y == NULL) {free(env->x); free(env); return NULL;}
   
   env->degree = malloc(sizeof(SDL_Texture*)*nb_nodes);
-  if(env->degree == NULL) {free(env); return NULL;}
-
-  //env->back = malloc(sizeof(SDL_Texture*)*nb_nodes);
-  //if(env->back == NULL) {free(env); return NULL;}
-
+  if(env->degree == NULL) {free(env->x); free(env->y); free(env); return NULL;}
   
   env->back = IMG_LoadTexture(ren, ISLAND);
   if(!env->back) ERROR("IMG_LoadTexture: %s\n", ISLAND);
@@ -77,12 +73,14 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   SDL_GetWindowSize(win, &width, &height);
   size = width/(env->max * 2);
   
-  /* background lines in gray */
-  SDL_SetRenderDrawColor(ren , 0xA0, 0xA0, 0xA0, SDL_ALPHA_OPAQUE);
+  /* background lines in white */
+  /*
+  SDL_SetRenderDrawColor(ren , 255, 255, 255, SDL_ALPHA_OPAQUE);
   for(int i = 1; i < env->max * 2; i++){
     SDL_RenderDrawLine(ren, (i * size), 0, (i * size), width);
     SDL_RenderDrawLine(ren, 0, (i * size), height, (i * size));
   }
+  */
 
   /* nodes textures */
   for(int i = 0; i < env->nb_nodes; i++){

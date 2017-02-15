@@ -38,7 +38,6 @@ int main(int argc, char * argv[]) {
   if(!ren) ERROR("SDL_CreateWindow");    
      
   /* initialize your environment */
-
   Env * env = init(win, ren, argc, argv);
   if (env == NULL){
     fprintf(stderr, "Alloc (struct Env_t *) failed");
@@ -58,7 +57,7 @@ int main(int argc, char * argv[]) {
     }
      
     /* background in white */
-    SDL_SetRenderDrawColor(ren, 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE); 
+    SDL_SetRenderDrawColor(ren, 0, 204, 255, SDL_ALPHA_OPAQUE); 
     SDL_RenderClear(ren);
     
     /* render all what you want */    
