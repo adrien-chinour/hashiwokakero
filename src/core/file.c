@@ -37,9 +37,9 @@ game generate_game(int nb_game, int nb_max_bridges, int nb_dir, int nb_nodes){
     return g;
 }
 
-game translate_game(){
+game translate_game(char * fileopen){
    FILE *gametxt;
-   gametxt = fopen("./save/game_default.txt","r");
+   gametxt = fopen(fileopen,"r");
    if(gametxt==NULL){
       fprintf(stderr,"fichier manquant\n");
    }
@@ -83,9 +83,9 @@ game translate_game(){
    return g;
 }
 
-game translate_save(){ //pour les sauvegardes + solutions
+game translate_save(char * fileopen){ //pour les sauvegardes + solutions
    FILE *gametxt;
-   gametxt = fopen("./save/default_solution.txt","r");
+   gametxt = fopen(fileopen,"r");
    if(gametxt==NULL){
       fprintf(stderr,"fichier manquant\n");
    }
@@ -151,9 +151,9 @@ game translate_save(){ //pour les sauvegardes + solutions
    return g;
 }
 
-void write_save(game g){
+void write_save(game g, char * filesave){
    FILE *gametxt;
-   gametxt = fopen("./save/save_game.txt","w");
+   gametxt = fopen(filesave,"w");
    fprintf(gametxt,"%d %d %d\n",game_nb_nodes(g),game_nb_max_bridges(g),game_nb_dir(g));
    int nb_dir=game_nb_dir(g);
    if(nb_dir==4){

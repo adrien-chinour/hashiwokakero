@@ -403,7 +403,7 @@ void reset_game(game g, hashiMap m){
 }
 
 void save_game(game g){
-   write_save(g);
+   write_save(g,"save/save.txt");
    printf("sauvegarde terminée\n");
 
 }
@@ -421,13 +421,13 @@ game game_select(){
   }
 
   switch(choice){
-     case 1: return translate_game();
+     case 1: return translate_game("save/game_default.txt");
      case 2: return generate_game(2,2,8,8);
      case 3: return generate_game(3,3,4,7);
      case 4: return generate_game(4,3,8,7);
      case 5: return generate_game(5,4,4,9);
      case 6: return generate_game(6,4,8,8);
-     case 7: return translate_save();
+     case 7: return translate_save("save/default_solution.txt");
         
     default: printf("Erreur dans game_select\n"); exit(EXIT_FAILURE); break;
   }

@@ -58,7 +58,7 @@ void prompt(game g, hashiMap m){
       case 7: test_game_over(g); break;
 
       /*8 = sauvegarde le jeu*/
-      case 8: save_game(g); break;
+       case 8: save_game(g); break;
     }
   }
 }

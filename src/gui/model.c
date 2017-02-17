@@ -35,7 +35,7 @@ struct Env_t {
      
 Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
 
-  game g = translate_game();
+  game g = translate_game("save/default_solution.txt");
   
   Env * env = malloc(sizeof(struct Env_t));
   if(env == NULL) return NULL;
