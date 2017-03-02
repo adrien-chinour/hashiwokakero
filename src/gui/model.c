@@ -13,6 +13,7 @@
 /* **************************************************************** */
 
 #define FONT "Arial.ttf"
+#define FONTSIZE 20
 #define ISLAND "img/island.png"
 #define BOAT1 "img/boat1.png"
 #define BOAT2 "img/boat2.png"
@@ -27,6 +28,7 @@ struct Env_t {
   SDL_Texture * boat2;
   SDL_Texture * boat3;
   SDL_Texture * boat4;
+  SDL_Texture ** text;
   int max;
   game g;
 }; 
@@ -56,25 +58,42 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   SDL_GetWindowSize(win, &w, &h);
   int max = 0;
 
+  /* Init island texture from PNG image */
   env->island = IMG_LoadTexture(ren, ISLAND);
   if(!env->island) ERROR("IMG_LoadTexture: %s\n", ISLAND);
 
+  /* Init boat texture from PNG image */
   env->boat1 = IMG_LoadTexture(ren, BOAT1);
   if(!env->boat1) ERROR("IMG_LoadTexture: %s\n", BOAT1);
-
   env->boat2 = IMG_LoadTexture(ren, BOAT2);
   if(!env->boat2) ERROR("IMG_LoadTexture: %s\n", BOAT2);
-
   env->boat3 = IMG_LoadTexture(ren, BOAT3);
   if(!env->boat3) ERROR("IMG_LoadTexture: %s\n", BOAT3);
-
   env->boat4 = IMG_LoadTexture(ren, BOAT4);
   if(!env->boat4) ERROR("IMG_LoadTexture: %s\n", BOAT4);
 
+  
+  
+  SDL_Texture ** text = malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
+  if(text == NULL) {delete_game(g); free(env); return NULL;}
+  
+  env->text = text;
+  
   for(int i = 0 ; i < game_nb_nodes(g) ; i++){
-     node n = game_node(g, i);
-     if(get_x(n) > max) max = get_x(n);
-     if(get_y(n) > max) max = get_y(n);
+    node n = game_node(g, i);
+    if(get_x(n) > max) max = get_x(n);
+    if(get_y(n) > max) max = get_y(n);
+    SDL_Color color = { 0, 0, 0, 255 }; /* black color in RGBA */
+    TTF_Font * font = TTF_OpenFont(FONT, FONTSIZE);
+    if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
+    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
+    char * degree = malloc(sizeof(char)*10);
+    sprintf(degree, "%d", get_required_degree(n));
+    SDL_Surface * surf = TTF_RenderText_Blended(font, degree , color); // blended rendering for ultra nice text
+    //free(degree);
+    env->text[i] = SDL_CreateTextureFromSurface(ren, surf);
+    SDL_FreeSurface(surf);
+    TTF_CloseFont(font);
   }
   
   env->max = max + 1;
@@ -96,16 +115,24 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
     SDL_RenderDrawLine(ren, 0, (i * size), height, (i * size));
   }
 
-  /* nodes textures */
+  /* nodes */
   for(int i = 0; i < game_nb_nodes(env->g); i++){
     node n = game_node(env->g, i);
+    
+    /* texture */
     rect.w = size;
     rect.h = size;
     rect.x = (get_x(n) * 2 + 1) * size  - size / 2;
     rect.y = (get_y(n) * 2 + 1) * size - size / 2;
     SDL_RenderCopy(ren, env->island, NULL, &(rect));
+    
+    /* degree */
+    SDL_QueryTexture(env->text[i], NULL, NULL, &rect.w, &rect.h);
+    rect.x = (get_x(n) * 2 + 1) * size  - size / 2;
+    rect.y = (get_y(n) * 2 + 1) * size  - size / 2;
+    SDL_RenderCopy(ren, env->text[i], NULL, &rect);
   }
-
+  
   /* test boat texture */
   //boat1
   //rect.w = size/4; rect.h = size/2; rect.x = 10; rect.y = 10;
@@ -136,5 +163,6 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
 
 void clean(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   delete_game(env->g);
+  free(env->text);
   free(env);
 }
