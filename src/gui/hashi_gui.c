@@ -43,7 +43,7 @@ int main(int argc, char * argv[]) {
   /* initialize game environment */
   Env * env = init(win, ren, argc, argv);
   if (env == NULL){
-    fprintf(stderr, "Alloc (struct Env_t *) failed");
+    fprintf(stderr, "Initialisation de l'environnement impossible\n");
     exit(EXIT_FAILURE);
   }
   

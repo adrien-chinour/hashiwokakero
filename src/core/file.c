@@ -42,6 +42,7 @@ game translate_game(char * fileopen){
    gametxt = fopen(fileopen,"r");
    if(gametxt==NULL){
       fprintf(stderr,"fichier manquant\n");
+      return NULL;
    }
    char * l = malloc(sizeof(char)*7);
    fgets(l,7,gametxt);

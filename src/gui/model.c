@@ -22,36 +22,40 @@
 /* **************************************************************** */
      
 struct Env_t {
-  int * x;
-  int * y;
   SDL_Texture * island;
   SDL_Texture * boat1;
   SDL_Texture * boat2;
   SDL_Texture * boat3;
   SDL_Texture * boat4;
   int max;
-  int nb_nodes;
+  game g;
 }; 
      
 Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
 
-  game g = translate_game("save/default_solution.txt");
+  char * game_file = NULL;
+  game g = NULL;
   
+  /* L'utilisateur a rentré un nom de fichier */
+  if(argc >= 3) game_file = argv[2];
+  if (game_file != NULL) printf("%s\n",game_file); //debug
+
+  /* On charge le game en fonction de ce que l'utilisateur demande*/
+  if(game_file != NULL) {g = translate_game(game_file); }
+  else {g = translate_game("save/game_default.txt"); }
+
+  /* test retour fonction translate*/
+  if (g == NULL) return NULL;
+
+  /*allocation de notre structure d'environnement*/
   Env * env = malloc(sizeof(struct Env_t));
-  if(env == NULL) return NULL;
-  
+  if(env == NULL) {delete_game(g); return NULL;}
+
+  env->g = g;  
   int w, h;
   SDL_GetWindowSize(win, &w, &h);
   int max = 0;
-  int nb_nodes= game_nb_nodes(g);
 
-  
-  env->x = malloc(sizeof(int)*nb_nodes);
-  if(env->x == NULL) {free(env); return NULL;}
-  
-  env->y = malloc(sizeof(int)*nb_nodes);
-  if(env->y == NULL) {free(env->x); free(env); return NULL;}
-  
   env->island = IMG_LoadTexture(ren, ISLAND);
   if(!env->island) ERROR("IMG_LoadTexture: %s\n", ISLAND);
 
@@ -67,19 +71,14 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   env->boat4 = IMG_LoadTexture(ren, BOAT4);
   if(!env->boat4) ERROR("IMG_LoadTexture: %s\n", BOAT4);
 
-  for(int i = 0 ; i < nb_nodes ; i++){
+  for(int i = 0 ; i < game_nb_nodes(g) ; i++){
      node n = game_node(g, i);
-     env->x[i] = get_x(n);
-     env->y[i] = get_y(n);
      if(get_x(n) > max) max = get_x(n);
      if(get_y(n) > max) max = get_y(n);
   }
   
   env->max = max + 1;
-  env->nb_nodes = nb_nodes;
 
-  
-  delete_game(g);
   return env;
 }
 
@@ -98,11 +97,12 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   }
 
   /* nodes textures */
-  for(int i = 0; i < env->nb_nodes; i++){
+  for(int i = 0; i < game_nb_nodes(env->g); i++){
+    node n = game_node(env->g, i);
     rect.w = size;
     rect.h = size;
-    rect.x = (env->x[i] * 2 + 1) * size  - size / 2;
-    rect.y = (env->y[i] * 2 + 1) * size - size / 2;
+    rect.x = (get_x(n) * 2 + 1) * size  - size / 2;
+    rect.y = (get_y(n) * 2 + 1) * size - size / 2;
     SDL_RenderCopy(ren, env->island, NULL, &(rect));
   }
 
@@ -135,7 +135,6 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
 }
 
 void clean(SDL_Window* win, SDL_Renderer* ren, Env * env) {
-  free(env->x);
-  free(env->y);
+  delete_game(env->g);
   free(env);
 }
