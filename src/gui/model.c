@@ -23,7 +23,7 @@
 /* **************************************************************** */
      
 struct Env_t {
-  SDL_Texture * island;
+  SDL_Texture ** island;
   SDL_Texture * boat1;
   SDL_Texture * boat2;
   SDL_Texture * boat3;
@@ -31,7 +31,10 @@ struct Env_t {
   SDL_Texture ** text;
   int max;
   game g;
-}; 
+  SDL_Point mouse;
+};
+
+
      
 Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
 
@@ -59,8 +62,14 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   int max = 0;
 
   /* Init island texture from PNG image */
-  env->island = IMG_LoadTexture(ren, ISLAND);
-  if(!env->island) ERROR("IMG_LoadTexture: %s\n", ISLAND);
+
+  env->island=malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
+
+
+  for(int i = 0 ; i < game_nb_nodes(g) ; i++){ //à mettre dans l'autre boucle for
+    env->island[i] = IMG_LoadTexture(ren, ISLAND);
+    if(!env->island) ERROR("IMG_LoadTexture: %s\n", ISLAND);
+  }
 
   /* Init boat texture from PNG image */
   env->boat1 = IMG_LoadTexture(ren, BOAT1);
@@ -122,9 +131,9 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
     /* texture */
     rect.w = size;
     rect.h = size;
-    rect.x = (get_x(n) * 2 + 1) * size  - size / 2;
+    rect.x = (get_x(n) * 2 + 1) * size - size / 2;
     rect.y = (get_y(n) * 2 + 1) * size - size / 2;
-    SDL_RenderCopy(ren, env->island, NULL, &(rect));
+    SDL_RenderCopy(ren, env->island[i], NULL, &(rect));
     
     /* degree */
     SDL_QueryTexture(env->text[i], NULL, NULL, &rect.w, &rect.h);
@@ -157,12 +166,43 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   if (e->type == SDL_QUIT) {
     return true;
   }
+
+  if(e->type == SDL_MOUSEBUTTONDOWN){
+     SDL_GetMouseState(&env->mouse.x, &env->mouse.y);
   
+     int width, height, size;
+     SDL_GetWindowSize(win, &width, &height);
+     size = width/(env->max * 2);
+     
+     int x = env->mouse.x;
+     int y = env->mouse.y;
+     x = (((x + size / 2) / size)-1)/2;
+     y = (((y + size / 2) / size)-1)/2;
+
+     env->island[game_get_node_number(env->g, x,y)]=env->boat1;
+     
+  }
+  if(e->type == SDL_MOUSEBUTTONUP){
+     SDL_Point mousedir;
+     SDL_GetMouseState(&mousedir.x, &mousedir.y);
+  }
+
+
   return false; 
 }
 
 void clean(SDL_Window* win, SDL_Renderer* ren, Env * env) {
+  for(int i = 0 ; i < game_nb_nodes(env->g) ; i++){
+     //il faut rajouter le cas de island modifié
+     //SDL_DestroyTexture(env->island[0]);
+  }
+  SDL_DestroyTexture(env->boat1);
+  SDL_DestroyTexture(env->boat2);
+  SDL_DestroyTexture(env->boat3);
+  SDL_DestroyTexture(env->boat4);
   delete_game(env->g);
   free(env->text);
   free(env);
 }
+
+
