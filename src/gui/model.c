@@ -169,7 +169,7 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
 
   if(e->type == SDL_MOUSEBUTTONDOWN){
      SDL_GetMouseState(&env->mouse.x, &env->mouse.y);
-  
+     
      int width, height, size;
      SDL_GetWindowSize(win, &width, &height);
      size = width/(env->max * 2);
@@ -186,8 +186,6 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
      SDL_Point mousedir;
      SDL_GetMouseState(&mousedir.x, &mousedir.y);
   }
-
-
   return false; 
 }
 

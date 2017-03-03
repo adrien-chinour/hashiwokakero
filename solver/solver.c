@@ -4,8 +4,9 @@
 #include <time.h>
 #include <stdbool.h>
 
-#include "src/core/node.h"
-#include "src/core/game.h"
+#include "../src/core/node.h"
+#include "../src/core/game.h"
+#include "../src/core/file.h"
 
 //cette fonction va renvoyer un tableau contenant la solution du jeu
 int solve(int num, cgame g)
@@ -34,12 +35,15 @@ int solve(int num, cgame g)
 int main(int argc, char *argv[])
 {
   int num = 0;
-  
+  game g = translate_game(argv[1]);
   while(!game_over(g))
     {
       //on résout une grille donnée
-      num = solve(num, game);
+      num = solve(num, g);
     }
+  char * save;
+  sprintf(save, "%s.solved",argv[1]);
+  write_save(g,save);
   printf("solution found !\n");
   
   return EXIT_SUCCESS;
