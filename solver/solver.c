@@ -4,8 +4,8 @@
 #include <time.h>
 #include <stdbool.h>
 
-#include "../include/node.h"
-#include "../include/game.h"
+#include "src/core/node.h"
+#include "src/core/game.h"
 
 //cette fonction va renvoyer un tableau contenant la solution du jeu
 int solve(int num, cgame g)
