@@ -73,9 +73,13 @@ game solve (game g){
 }
 
 int main(int argc, char *argv[]) {
+  if( argc != 2){
+    printf("Aucun nom de fichier entré, veuillez écrire :\n./hashi_solve nom_du_fichier\n");
+    return EXIT_FAILURE;
+  }
   game g = translate_game(argv[1]);
   //g = solve(g);
-  char * save = malloc(sizeof(char)*2);
+  char * save = malloc(sizeof(char)*100);
   sprintf(save, "%s.solved",argv[1]);
   write_save(g,save);
   printf("solution found !\n");
