@@ -3,8 +3,8 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "../core/node.h"
-#include "../core/game.h"
+#include "node.h"
+#include "game.h"
 
 // Les tabeaux utilisés pour généré les games sont déclarés ici.
 int game1[7][3] = {{0,0,3},{0,2,5},{0,4,2},{2,2,1},{2,4,2},{4,0,2},{4,4,3}};
