@@ -9,9 +9,47 @@
 #include "../core/file.h"
 #include "slist.h"
 
+
+
+
+bool solver_r(game g,int node_num,int dir){
+  if(get_required_degree(game_node(g,node_num))==get_degree(g,node_num)){
+    if(node_num<(game_nb_nodes(g)-1)){
+      printf("grrr\n");
+      solver_r(g,node_num+1,dir);
+    }
+    else{
+      if(game_over(g)){
+        return g;
+      }
+      else{
+        if(dir>=0){
+          del_bridge_dir(g,node_num,dir); //revenir en arrière
+          printf("debut supp %d\n",node_num);
+        }
+      }
+    } 
+  }
+  else{
+    for(int d=0; d<game_nb_dir(g);d++){
+      if(can_add_bridge_dir(g,node_num,d)&&(!(get_required_degree(game_node(g,node_num))==get_degree(g,node_num)))){
+        add_bridge_dir(g,node_num,d);
+        solver_r(g,node_num,d);
+      }
+    }
+    if(dir>=0){
+      //del_bridge_dir(g,node_num,dir);
+      printf("fin supp %d\n",node_num);
+    }
+  }
+}
+
+
+
 /*
   Applique la possibilité donnée par tab sur le node n dans le game g
 */
+ 
 game apply_possibility(int * tab, game g, int node_num){
   for(int i = 0; i < game_nb_dir(g); i++){
     if(get_degree_dir(g,node_num,i) > tab[i])
@@ -98,7 +136,8 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
   game g = translate_game(argv[1]);
-  //g = solve(g);
+  solver_r(g,0,-1);
+  
   char * save = malloc(sizeof(char)*100);
   sprintf(save, "%s.solved",argv[1]);
   write_save(g,save);
