@@ -32,11 +32,12 @@ void evidence(game g)
       for(int j = 0; j < game_nb_dirs(g); j++)
 	{
 	  //solution évidente 1: degré de l'île = nombre de voisins * nombre de ponts maximum
-	  if(get_required_degree(g, i) == nb_neighbours(g, i) * game_nb_max_bridges(g))
+	  if(get_required_degree(g, i) == nb_neighbours(g, i) * game_nb_max_bridges(g) && can_add_bridge_dir(g, i, j))
 	    {
 	      for(int k = 0; k < game_nb_max_bridges(g); k++)
 	        add_bridge_dir(g, i, j);
 	    }
+	  //solution évidente 2: il n'y a qu'un voisin
 	  else if(nb_neighbours(g, i) == 1)
 	    {
 	      for(int k = 0; k < game_nb_max_bridges(g); k++)
