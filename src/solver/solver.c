@@ -9,8 +9,43 @@
 #include "../core/file.h"
 #include "slist.h"
 
+//cette fonction compte le nombre de voisins d'une île
+int nb_neighbours(game g, int num)
+{
+  //le compteur de voisins de num va incrémenter à chaque voisin vu
+  int neighbours = 0;
+  
+  for(int i = 0; i < game_nb_dirs(g); i++)
+    {
+      if(get_neighbour_dir(g, num, i) != -1)
+	neighbours++;
+    }
+  return neighbours;
+}
 
-
+void evidence(game g)
+{
+  //on parcours chaque node
+  for(int i = 0; i < game_nb_nodes(g); i++)
+    {
+      //on regarde dans toutes les directions
+      for(int j = 0; j < game_nb_dirs(g); j++)
+	{
+	  //solution évidente 1: degré de l'île = nombre de voisins * nombre de ponts maximum
+	  if(get_required_degree(g, i) == nb_neighbours(g, i) * game_nb_max_bridges(g))
+	    {
+	      for(int k = 0; k < game_nb_max_bridges(g); k++)
+	        add_bridge_dir(g, i, j);
+	    }
+	  else if(nb_neighbours(g, i) == 1)
+	    {
+	      for(int k = 0; k < game_nb_max_bridges(g); k++)
+	        add_bridge_dir(g, i, j);
+	    }
+	  
+	}
+    }
+}
 
 bool solver_r(game g,int node_num,int dir){
   //si le nombre de ponts max d'une ile et atteint
