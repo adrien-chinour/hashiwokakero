@@ -15,7 +15,6 @@
 bool solver_r(game g,int node_num,int dir){
   if(get_required_degree(game_node(g,node_num))==get_degree(g,node_num)){
     if(node_num<(game_nb_nodes(g)-1)){
-      printf("grrr\n");
       solver_r(g,node_num+1,dir);
     }
     else{
@@ -25,24 +24,20 @@ bool solver_r(game g,int node_num,int dir){
       else{
         if(dir>=0){
           del_bridge_dir(g,node_num,dir); //revenir en arrière
-          printf("debut supp %d\n",node_num);
         }
       }
     } 
   }
   else{
     for(int d=0; d<game_nb_dir(g);d++){
-      if(can_add_bridge_dir(g,node_num,d)&&(!(get_required_degree(game_node(g,node_num))==get_degree(g,node_num)))){
+       if(can_add_bridge_dir(g,node_num,d)&&(!(get_required_degree(game_node(g,node_num))==get_degree(g,node_num)))&&(!(get_required_degree(game_node(g,get_neighbour_dir(g,node_num,d)))==get_degree(g,get_neighbour_dir(g,node_num,d))))){
         add_bridge_dir(g,node_num,d);
         solver_r(g,node_num,d);
       }
     }
-    if(dir>=0){
-      //del_bridge_dir(g,node_num,dir);
-      printf("fin supp %d\n",node_num);
-    }
   }
 }
+
 
 
 
