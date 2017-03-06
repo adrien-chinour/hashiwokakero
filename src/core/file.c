@@ -44,8 +44,8 @@ game translate_game(char * fileopen){
       fprintf(stderr,"fichier manquant\n");
       return NULL;
    }
-   char * l = malloc(sizeof(char)*7);
-   fgets(l,7,gametxt);
+   char * l = malloc(sizeof(char)*255);
+   fgets(l,255,gametxt);
    int * tab=malloc(sizeof(int)*3);
 
    char * token = strtok(l," ");
@@ -62,7 +62,7 @@ game translate_game(char * fileopen){
    int * tabnode=malloc(sizeof(int)*3);
    node * nodes= malloc(sizeof(node)*(tab[0]));
    for(int i=0; i<tab[0]; i++){
-      fgets(l,7,gametxt);
+      fgets(l,255,gametxt);
       char * token = strtok(l," ");
       while(token != NULL){
          tmp=atoi(token);
@@ -90,7 +90,7 @@ game translate_save(char * fileopen){ //pour les sauvegardes + solutions
    if(gametxt==NULL){
       fprintf(stderr,"fichier manquant\n");
    }
-   char * l = malloc(sizeof(char)*16);
+   char * l = malloc(sizeof(char)*255);
    fgets(l,10,gametxt);
    int * tab = malloc(sizeof(int)*3);
 
@@ -109,7 +109,7 @@ game translate_save(char * fileopen){ //pour les sauvegardes + solutions
    node * nodes = malloc(sizeof(node)*(tab[0]));
    
    for(int i=0; i<tab[0]; i++){
-      fgets(l,17,gametxt);
+      fgets(l,255,gametxt);
       char * token = strtok(l," ");
       while(token != NULL){
          tmp=atoi(token);
@@ -126,7 +126,7 @@ game translate_save(char * fileopen){ //pour les sauvegardes + solutions
    
    fgets(l,10,gametxt);
    for(int i=0; i<tab[0]; i++){
-      fgets(l,17,gametxt);
+      fgets(l,255,gametxt);
       char * token = strtok(l," ");
       while(token != NULL){
          tmp=atoi(token);
@@ -144,7 +144,7 @@ game translate_save(char * fileopen){ //pour les sauvegardes + solutions
    }
 
    fclose(gametxt);
-   //free(tabnode);
+   free(tabnode);
    for (int i = 0 ; i < tab[0]; i++) delete_node(nodes[i]);
    free(tab);
    free(l);
@@ -180,5 +180,6 @@ void write_game(game g){
       node node_i = game_node(g,i);
       fprintf(gametxt,"%d %d %d\n",get_x(node_i),get_y(node_i),get_required_degree(node_i));
    }
+   fclose(gametxt);
 }
 
