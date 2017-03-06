@@ -82,25 +82,42 @@ bool solver_r(game g,int node_num,int dir){
 }
 
 
-
+game reset_node(game g, int node_num){
+  for(int i = 0; i < game_nb_dir(g); i++){
+    while(get_degree_dir(g, node_num, i) > 0){
+      del_bridge_dir(g,node_num, i);
+    }
+  }
+  return g;
+}
 
 /*
   Applique la possibilité donnée par tab sur le node n dans le game g
 */
  
 game apply_possibility(int * tab, game g, int node_num){
+  g = reset_node(g,node_num);
   for(int i = 0; i < game_nb_dir(g); i++){
-    if(get_degree_dir(g,node_num,i) > tab[i])
-      while(get_degree_dir(g,node_num,i) > tab[i]) {del_bridge_dir(g,node_num,i);}
-
-    else if (get_degree_dir(g,node_num,i) < tab[i])
-      while(get_degree_dir(g,node_num,i) < tab[i]) {
-	if(can_add_bridge_dir(g, node_num, i))
-	  add_bridge_dir(g, node_num, i);
-      }
+    for(int j = 0; j < tab[i]; j++){
+      add_bridge_dir(g, node_num, i);
+    }
   }
   return g;
 }
+
+bool check_possibility(int * tab, game g, int node_num){
+  int somme = 0;
+  for(int i = 0; i < game_nb_dir(g); i++){
+    if(tab[i] > 0 && can_add_bridge_dir(g, node_num, i) == false){
+      return false;
+    }
+    somme += tab[i]; 
+  }
+  if(somme != get_required_degree(game_node(g,node_num)))
+    return false;
+  return true;
+}	 
+	 
 
 /*
   Fonction utilisée par create_possibilities pour générer les variantes de tab
@@ -111,16 +128,20 @@ game apply_possibility(int * tab, game g, int node_num){
 static int * next_possibility (int * tab, int n, int max){
   int * next_tab = malloc(sizeof(int)*n);
   int i = 0;
-  if (tab[n-1] >= max){
-    next_tab[0] = -1;
-    printf("coucou\n");
-    return next_tab;
-  }
   while(tab[i] == max){
+    if(i == n-1){
+      next_tab[0] = -1;
+      return next_tab;
+    }
     next_tab[i] = 0;
     i++;
   }
   next_tab[i] = tab[i]+1;
+  i++;
+  while(i<n){
+    next_tab[i] = tab[i];
+    i++;
+  }
   return next_tab;
 }
 
@@ -130,7 +151,7 @@ static int * next_possibility (int * tab, int n, int max){
   chaque élément de la liste contient un tableau qui caractérise une possibilté
   exemeple : [1;2;0;0] -> Un pont au nord et deux a l'ouest
  */
-SList create_possibilities(game g, int node_num){
+SList  create_possibilities(game g, int node_num){
   SList list = slist_create_empty();
   /* Générer toute les combinaisons possibles et les stocker dans la liste */
   int n = game_nb_dir(g);
@@ -140,13 +161,15 @@ SList create_possibilities(game g, int node_num){
     tab[i] = 0;
   }
   while(tab[0] != -1){
-    list = slist_prepend(list, tab);
-    int * tab = next_possibility(tab, n, max);
+    if(check_possibility(tab,g,node_num)){
+       list = slist_prepend(list, tab);
+       printf("%d,%d,%d,%d\n",tab[0],tab[1],tab[2],tab[3]);
+    }
+    tab = next_possibility(tab, n, max);
   }
   printf("generation des possibilitées de %d terminée\n",node_num);
   return list;
 }
-
 
 /*
   Fonction principal elle effectue les appelles a toute les fonctions 
@@ -165,6 +188,7 @@ game solve (game g){
     start[i] = combinaison[i];
     g = apply_possibility(slist_data(combinaison[i]),g,i);
   }
+  printf("fin initialisation\n");
   
   /* L'indice du noeud à modifier */
   int num = 0;
@@ -172,10 +196,17 @@ game solve (game g){
   /* On boucle jusqu'à la bonne combinaison :) */
   while(!game_over(g)){
     while(slist_next(combinaison[num]) == NULL){
+      if(num == game_nb_nodes(g)-1){
+	printf("Aucune solution trouvé :'(\n");
+	return g;
+      }
       combinaison[num] = start[num];
+      g = apply_possibility(slist_data(combinaison[num]),g,num);
       num++;
     }
+    combinaison[num] = slist_next(combinaison[num]);
     g = apply_possibility(slist_data(combinaison[num]),g,num);
+    num = 0;
   }
   return g;
 }

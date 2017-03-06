@@ -422,7 +422,7 @@ game game_select(){
 
   switch(choice){
      case 1: return translate_game("save/game_default.txt");
-     case 2: return generate_game(2,2,8,8);
+     case 2: return translate_save("save/game_default.txt.solved");
      case 3: return generate_game(3,3,4,7);
      case 4: return generate_game(4,3,8,7);
      case 5: return generate_game(5,4,4,9);
