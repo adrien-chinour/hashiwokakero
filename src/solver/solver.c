@@ -13,15 +13,19 @@
 
 
 bool solver_r(game g,int node_num,int dir){
+  //si le nombre de ponts max d'une ile et atteint
   if(get_required_degree(game_node(g,node_num))==get_degree(g,node_num)){
+    //si on n'a pas parcouru chaque ile, on relance la récursivité avec la suivante
     if(node_num<(game_nb_nodes(g)-1)){
       printf("grrr\n");
       solver_r(g,node_num+1,dir);
     }
+    //mais si le jeu est fini, on donne le résultat
     else{
       if(game_over(g)){
         return g;
       }
+      //sinon quelque chose s'est mal passé, on supprime un pont
       else{
         if(dir>=0){
           del_bridge_dir(g,node_num,dir); //revenir en arrière
@@ -30,8 +34,11 @@ bool solver_r(game g,int node_num,int dir){
       }
     } 
   }
+  //si le degré de l'ile vue n'est pas atteint
   else{
+    //on regarde dans toutes les directions
     for(int d=0; d<game_nb_dir(g);d++){
+      //on peut poser un pont, on le pose et on relance la récursivité
       if(can_add_bridge_dir(g,node_num,d)&&(!(get_required_degree(game_node(g,node_num))==get_degree(g,node_num)))){
         add_bridge_dir(g,node_num,d);
         solver_r(g,node_num,d);
