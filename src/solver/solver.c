@@ -36,12 +36,8 @@ bool solver_r(game g,int node_num,int dir){
   else{
     //on regarde dans toutes les directions
     for(int d=0; d<game_nb_dir(g);d++){
-<<<<<<< HEAD
        if(can_add_bridge_dir(g,node_num,d)&&(!(get_required_degree(game_node(g,node_num))==get_degree(g,node_num)))&&(!(get_required_degree(game_node(g,get_neighbour_dir(g,node_num,d)))==get_degree(g,get_neighbour_dir(g,node_num,d))))){
-=======
-      //on peut poser un pont, on le pose et on relance la récursivité
-      if(can_add_bridge_dir(g,node_num,d)&&(!(get_required_degree(game_node(g,node_num))==get_degree(g,node_num)))){
->>>>>>> 522bd8b214e09bb0c505a6f9a60fb4c756e4147d
+	 //on peut poser un pont, on le pose et on relance la récursivité
         add_bridge_dir(g,node_num,d);
         solver_r(g,node_num,d);
       }
