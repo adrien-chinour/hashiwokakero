@@ -138,12 +138,18 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
   game g = translate_game(argv[1]);
-  solver_r(g,0,-1);
-  
+  if(solver_r(g,0,-1))
+     printf("solution found !\n");
+  else
+     printf("solution not found !\n");
+  if(game_over(g))
+     printf("ok\n");
+  else
+     printf("not ok\n");
   char * save = malloc(sizeof(char)*100);
   sprintf(save, "%s.solved",argv[1]);
   write_save(g,save);
-  printf("solution found !\n");
+  //printf("solution found !\n");
   free(save);
   return EXIT_SUCCESS;
 }

@@ -90,7 +90,7 @@ game translate_save(char * fileopen){ //pour les sauvegardes + solutions
    if(gametxt==NULL){
       fprintf(stderr,"fichier manquant\n");
    }
-   char * l = malloc(sizeof(char)*16);
+   char * l = malloc(sizeof(char)*255);
    fgets(l,10,gametxt);
    int * tab = malloc(sizeof(int)*3);
 
@@ -109,7 +109,7 @@ game translate_save(char * fileopen){ //pour les sauvegardes + solutions
    node * nodes = malloc(sizeof(node)*(tab[0]));
    
    for(int i=0; i<tab[0]; i++){
-      fgets(l,17,gametxt);
+      fgets(l,255,gametxt);
       char * token = strtok(l," ");
       while(token != NULL){
          tmp=atoi(token);
@@ -126,7 +126,7 @@ game translate_save(char * fileopen){ //pour les sauvegardes + solutions
    
    fgets(l,10,gametxt);
    for(int i=0; i<tab[0]; i++){
-      fgets(l,17,gametxt);
+      fgets(l,255,gametxt);
       char * token = strtok(l," ");
       while(token != NULL){
          tmp=atoi(token);
@@ -144,7 +144,7 @@ game translate_save(char * fileopen){ //pour les sauvegardes + solutions
    }
 
    fclose(gametxt);
-   //free(tabnode);
+   free(tabnode);
    for (int i = 0 ; i < tab[0]; i++) delete_node(nodes[i]);
    free(tab);
    free(l);
