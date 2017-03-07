@@ -83,8 +83,8 @@ bool solver_r(game g,int node_num,int dir){
 
 
 int main(int argc, char *argv[]) {
-  if( argc != 3){
-    printf("Erreur nombre d'argument");
+  if( argc != 2){
+    printf("UTILISATION ./hashi_solve <nom_du_fichier>");
     return EXIT_FAILURE;
   }
   

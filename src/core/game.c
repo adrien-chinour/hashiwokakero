@@ -31,29 +31,29 @@ game new_game (int nb_nodes, node *nodes, int nb_max_bridges, int nb_dir){
   for(int i = 0; i < nb_nodes; i++){
     new_nodes[i] = new_node(get_x(nodes[i]), get_y(nodes[i]), get_required_degree(nodes[i]));
   }
-	g->nodes = new_nodes;
+  g->nodes = new_nodes;
 
-	int **bridges;
-	bridges = (int**) malloc(nb_nodes*sizeof(int*)); 
+  int **bridges;
+  bridges = (int**) malloc(nb_nodes*sizeof(int*)); 
   assert( bridges != NULL);
-	for(int i = 0; i < nb_nodes; i++){
-		bridges[i] = (int*) malloc(nb_dir*sizeof(int)); 
+  for(int i = 0; i < nb_nodes; i++){
+    bridges[i] = (int*) malloc(nb_dir*sizeof(int)); 
     assert( bridges[i] != NULL);
-	}
+  }
 
-	for(int i = 0; i < nb_nodes; i++){
-		for(int j = 0; j < nb_dir; j++){
-			bridges[i][j] = 0;
-		}
-	}
+  for(int i = 0; i < nb_nodes; i++){
+    for(int j = 0; j < nb_dir; j++){
+      bridges[i][j] = 0;
+    }
+  }
 
-	g->bridges = bridges;
+  g->bridges = bridges;
 
-	return g;
+  return g;
 }
 
 int game_nb_nodes (cgame g){
-   return g->nb_nodes;
+  return g->nb_nodes;
 }
 
 int game_nb_dir (cgame g){
@@ -65,33 +65,33 @@ int game_nb_max_bridges (cgame g){
 }
 
 void delete_game (game g){
-   for(int i = 0; i < g->nb_nodes; i++){
-     free(g->bridges[i]);
-     delete_node(g->nodes[i]);
-   }
-   free(g->nodes);
-   free(g->bridges);
-   free(g);
-   g = NULL;
+  for(int i = 0; i < g->nb_nodes; i++){
+    free(g->bridges[i]);
+    delete_node(g->nodes[i]);
+  }
+  free(g->nodes);
+  free(g->bridges);
+  free(g);
+  g = NULL;
 }
 
 game copy_game (cgame g_src){
 
-	game g = (game) malloc(sizeof(struct game_s));
+  game g = (game) malloc(sizeof(struct game_s));
   assert(g != NULL);
 	
-	g->nb_nodes = g_src->nb_nodes;
+  g->nb_nodes = g_src->nb_nodes;
   g->nb_dir = g_src->nb_dir;
   g->nb_max_bridges = g_src->nb_max_bridges;
 
 	
   // allocation et initialisation de nodes[nb_nodes]
-	node *new_nodes = (node*) malloc(game_nb_nodes(g)*sizeof(node));
+  node *new_nodes = (node*) malloc(game_nb_nodes(g)*sizeof(node));
   assert(new_nodes != NULL);
   for(int i = 0; i < game_nb_nodes(g); i++){
     new_nodes[i] = new_node(get_x(g_src->nodes[i]), get_y(g_src->nodes[i]), get_required_degree(g_src->nodes[i]));
   }
-	g->nodes = new_nodes;
+  g->nodes = new_nodes;
 
   // allocation et initialisation de bridges[nb_nodes][nb_dir]
   int **bridges;
@@ -101,15 +101,15 @@ game copy_game (cgame g_src){
     bridges[i] = malloc(game_nb_dir(g)*sizeof(int)); 
     assert(bridges[i] != NULL);
   }
-	for(int i = 0; i < game_nb_nodes(g); i++){
-		for(int j = 0; j < game_nb_dir(g); j++){
-			bridges[i][j] = g_src->bridges[i][j];
-		}
-	}
+  for(int i = 0; i < game_nb_nodes(g); i++){
+    for(int j = 0; j < game_nb_dir(g); j++){
+      bridges[i][j] = g_src->bridges[i][j];
+    }
+  }
 
-	g->bridges = bridges;
+  g->bridges = bridges;
 
-	return g;
+  return g;
 }
 
 node game_node (cgame g, int node_num){
@@ -132,35 +132,35 @@ int get_neighbour_dir (cgame g, int node_num, dir d);
 
 
 static int inverse_dir(dir d){
-   int back;
-   switch(d)
-   {
-      case NORTH:
-         back = SOUTH;
-         break;
-	case SOUTH:
-           back = NORTH;
-           break;
-      case EAST:
-         back = WEST;
-         break;
-      case WEST:
-         back = EAST;
-	break;
-      case NW:
-         back = SE;
-         break;
-      case SW:
-         back = NE;
-         break;
-      case SE:
-         back = NW;
-         break;
-	case NE:
-           back = SW;
-           break;
-   }
-   return back;
+  int back;
+  switch(d)
+    {
+    case NORTH:
+      back = SOUTH;
+      break;
+    case SOUTH:
+      back = NORTH;
+      break;
+    case EAST:
+      back = WEST;
+      break;
+    case WEST:
+      back = EAST;
+      break;
+    case NW:
+      back = SE;
+      break;
+    case SW:
+      back = NE;
+      break;
+    case SE:
+      back = NW;
+      break;
+    case NE:
+      back = SW;
+      break;
+    }
+  return back;
 }
 
 void add_bridge_dir (game g, int node_num, dir d){
@@ -171,22 +171,22 @@ void add_bridge_dir (game g, int node_num, dir d){
 }
 
 void del_bridge_dir (game g, int node_num, dir d){
-   if(g->bridges[node_num][d] != 0){
-      g->bridges[get_neighbour_dir(g,node_num,d)][inverse_dir(d)]--;
-      g->bridges[node_num][d]--;
-   }
+  if(g->bridges[node_num][d] != 0){
+    g->bridges[get_neighbour_dir(g,node_num,d)][inverse_dir(d)]--;
+    g->bridges[node_num][d]--;
+  }
 }
 
 int get_degree_dir (cgame g, int node_num, dir d){
-   return g->bridges[node_num][d];
+  return g->bridges[node_num][d];
 }
 
 int get_degree(cgame g, int node_num){
-   int k = 0;
-   for(int i = 0; i < game_nb_dir(g); i++){
-     k = k + g->bridges[node_num][i];
-   }
-   return k;
+  int k = 0;
+  for(int i = 0; i < game_nb_dir(g); i++){
+    k = k + g->bridges[node_num][i];
+  }
+  return k;
 }
 
 //cette fonction est écrite plus bas, elle est référencée ici
@@ -196,7 +196,7 @@ int get_neighbour_dir (cgame g, int node_num, dir d){
   node n = game_node(g, node_num);
   
   switch(d){
-    case NORTH:
+  case NORTH:
     {
       int max_y = 0;
       
@@ -215,7 +215,7 @@ int get_neighbour_dir (cgame g, int node_num, dir d){
       break;
     }
     
-    case NE:
+  case NE:
     {
       int max_x = 0, max_y = 0;
       
@@ -229,52 +229,52 @@ int get_neighbour_dir (cgame g, int node_num, dir d){
       int y = get_y(n)+1, x = get_x(n)+1;
       
       while (x <= max_x && y <= max_y && game_get_node_number(g,x,y) == -1){
-       x++;
-       y++;  
-     }
-     if(game_get_node_number(g,x,y) != -1)
-      return game_get_node_number(g,x,y);
-    break;
-  }
+	x++;
+	y++;  
+      }
+      if(game_get_node_number(g,x,y) != -1)
+	return game_get_node_number(g,x,y);
+      break;
+    }
 
   case EAST: 
-  {
-    int max_x = 0;
+    {
+      int max_x = 0;
 
-    for(int i = 0; i < g->nb_nodes; i++){
-      if(get_x(g->nodes[i]) > max_x)
-        max_x = get_x(g->nodes[i]);
+      for(int i = 0; i < g->nb_nodes; i++){
+	if(get_x(g->nodes[i]) > max_x)
+	  max_x = get_x(g->nodes[i]);
+      }
+
+      int x = get_x(n)+1;
+
+      while (x <= max_x && game_get_node_number(g,x,get_y(n)) == -1){
+	x++;
+      }
+      if(game_get_node_number(g,x,get_y(n)) != -1)
+	return game_get_node_number(g,x,get_y(n));
+      break; 
     }
-
-    int x = get_x(n)+1;
-
-    while (x <= max_x && game_get_node_number(g,x,get_y(n)) == -1){
-      x++;
-    }
-    if(game_get_node_number(g,x,get_y(n)) != -1)
-      return game_get_node_number(g,x,get_y(n));
-    break; 
-  }
 
   case SE:
-  {
-    int max_x = 0;
+    {
+      int max_x = 0;
 
-    for(int i = 0; i < g->nb_nodes; i++){
-     if(get_x(g->nodes[i]) > max_x)
-      max_x = get_x(g->nodes[i]);
-  }
+      for(int i = 0; i < g->nb_nodes; i++){
+	if(get_x(g->nodes[i]) > max_x)
+	  max_x = get_x(g->nodes[i]);
+      }
 
-  int x = get_x(n)+1, y = get_y(n)-1;
+      int x = get_x(n)+1, y = get_y(n)-1;
 
-  while (x <= max_x && y >= 0 && game_get_node_number(g,x,y) == -1){
-    x++;
-    y--;  
-  }
-  if(game_get_node_number(g,x,y) != -1)
-    return game_get_node_number(g,x,y);
-  break;
-  }
+      while (x <= max_x && y >= 0 && game_get_node_number(g,x,y) == -1){
+	x++;
+	y--;  
+      }
+      if(game_get_node_number(g,x,y) != -1)
+	return game_get_node_number(g,x,y);
+      break;
+    }
   
   case SOUTH:
     {
@@ -354,7 +354,7 @@ static void explore(cgame g, int node_num, bool connected[]){
   for(int i = 0; i < game_nb_dir(g); i++){
     if(get_degree_dir(g, node_num, i) != 0){
       if(connected[get_neighbour_dir(g, node_num, i)] == false)
-         explore(g, get_neighbour_dir(g, node_num, i), connected);
+	explore(g, get_neighbour_dir(g, node_num, i), connected);
     }
   }   
 }
@@ -392,10 +392,10 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
   if(get_neighbour_dir(g, node_num, d) == -1) return false;
     
   //si le noeud a atteint le nombre maximum de ponts
-  //if(get_degree(g, node_num) >= get_required_degree(game_node(g, node_num))) return false;
+  if(get_degree(g, node_num) >= get_required_degree(game_node(g, node_num))) return false;
 
   //si le voisin a atteint le nombre max de pont
-  //if(get_degree(g,get_neighbour_dir(g, node_num, d)) >= get_required_degree(game_node(g, get_neighbour_dir(g, node_num, d)))) return false;
+  if(get_degree(g,get_neighbour_dir(g, node_num, d)) >= get_required_degree(game_node(g, get_neighbour_dir(g, node_num, d)))) return false;
 
   //si le noeud a atteint le maximum de pont dans une direction
   if(get_degree_dir(g, node_num, d) >= game_nb_max_bridges(g)) return false;
@@ -428,9 +428,9 @@ bool can_add_bridge_dir (cgame g, int node_num, dir d){
   }
 
   /*  Intersection entre [AB] et [CD] ?
-    Vrai ssi  vectoriel(vecteur(AB),vecteur(CD)) != 0  => signifie qu'ils ne sont pas // 
-              && vectoriel(vecteur(AB),vecteur(AD)) * vectoriel(vecteur(AB),vecteur(AC)) < 0 => signifie que les deux vecteurs se croisent sur [CD]
-    Le premier test est effectué dans le deuxième if et le deuxieme dans le troisième if (phrase nul a chier)
+      Vrai ssi  vectoriel(vecteur(AB),vecteur(CD)) != 0  => signifie qu'ils ne sont pas // 
+      && vectoriel(vecteur(AB),vecteur(AD)) * vectoriel(vecteur(AB),vecteur(AC)) < 0 => signifie que les deux vecteurs se croisent sur [CD]
+      Le premier test est effectué dans le deuxième if et le deuxieme dans le troisième if (phrase nul a chier)
   */
 
   /*il manque un test par rapport au nombre de ponts aussi */
