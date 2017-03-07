@@ -68,6 +68,7 @@ game solver(game g){
   g = evidence(g);
   if(game_over(g)){
     return g;
+  }
   else
     return g; 
 }
