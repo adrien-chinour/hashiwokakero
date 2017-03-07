@@ -91,10 +91,6 @@ game reset_node(game g, int node_num){
   return g;
 }
 
-/*
-  Applique la possibilité donnée par tab sur le node n dans le game g
-*/
- 
 game apply_possibility(int * tab, game g, int node_num){
   g = reset_node(g,node_num);
   for(int i = 0; i < game_nb_dir(g); i++){
@@ -108,24 +104,19 @@ game apply_possibility(int * tab, game g, int node_num){
 bool check_possibility(int * tab, game g, int node_num){
   int somme = 0;
   for(int i = 0; i < game_nb_dir(g); i++){
-    if(tab[i] > 0 && can_add_bridge_dir(g, node_num, i) == false){
+    if(tab[i] > 0 && !can_add_bridge_dir(g, node_num, i)){
       return false;
     }
-    somme += tab[i]; 
+    if(can_add_bridge_dir(g,node_num,i) && tab[i] > get_required_degree(game_node(g,get_neighbour_dir(g,node_num,i))))
+      return false;
+    somme = somme + tab[i];
   }
   if(somme != get_required_degree(game_node(g,node_num)))
     return false;
   return true;
 }	 
-	 
 
-/*
-  Fonction utilisée par create_possibilities pour générer les variantes de tab
-  La fonction génère la variante du tableau dans l'ordre lexicographique
-  Plus de détail : https://www.nayuki.io/page/next-lexicographical-permutation-algorithm
-  Le probleme est les doublons générés lorsque deux nombres sont identiques...
-*/
-static int * next_possibility (int * tab, int n, int max){
+int * next_possibility (int * tab, int n, int max){
   int * next_tab = malloc(sizeof(int)*n);
   int i = 0;
   while(tab[i] == max){
@@ -145,12 +136,6 @@ static int * next_possibility (int * tab, int n, int max){
   return next_tab;
 }
 
-
-/*
-  Retourne une SList
-  chaque élément de la liste contient un tableau qui caractérise une possibilté
-  exemeple : [1;2;0;0] -> Un pont au nord et deux a l'ouest
- */
 SList  create_possibilities(game g, int node_num){
   SList list = slist_create_empty();
   /* Générer toute les combinaisons possibles et les stocker dans la liste */
@@ -171,10 +156,28 @@ SList  create_possibilities(game g, int node_num){
   return list;
 }
 
-/*
-  Fonction principal elle effectue les appelles a toute les fonctions 
-  et vérifie la validiter d'une combinaison
-*/
+game solve_recursive(game g, int node_num, SList * combinaison, SList * start){
+  if (game_over(g)) {return g;}
+  
+  else if(slist_next(combinaison[node_num]) == NULL){
+    printf("%d\n",node_num);
+    combinaison[node_num] = start[node_num];
+    return solve_recursive(
+			   apply_possibility(slist_data(combinaison[node_num]),g,node_num),
+			   node_num+1,
+			   combinaison,
+			   start);
+  }
+  else {
+    combinaison[node_num] = slist_next(combinaison[node_num]);
+    return solve_recursive(
+			   apply_possibility(slist_data(combinaison[node_num]),g,node_num),
+			   node_num,
+			   combinaison,
+			   start);
+  }
+}
+
 game solve (game g){
 
   SList * combinaison = malloc(sizeof(SList)*game_nb_nodes(g));
@@ -186,28 +189,18 @@ game solve (game g){
   for(int i = 0; i < game_nb_nodes(g); i++){
     combinaison[i] = create_possibilities(g,i);
     start[i] = combinaison[i];
+  }
+  for(int i = 0; i < game_nb_nodes(g); i++){
     g = apply_possibility(slist_data(combinaison[i]),g,i);
   }
+    
   printf("fin initialisation\n");
-  
-  /* L'indice du noeud à modifier */
-  int num = 0;
 
   /* On boucle jusqu'à la bonne combinaison :) */
-  while(!game_over(g)){
-    while(slist_next(combinaison[num]) == NULL){
-      if(num == game_nb_nodes(g)-1){
-	printf("Aucune solution trouvé :'(\n");
-	return g;
-      }
-      combinaison[num] = start[num];
-      g = apply_possibility(slist_data(combinaison[num]),g,num);
-      num++;
-    }
-    combinaison[num] = slist_next(combinaison[num]);
-    g = apply_possibility(slist_data(combinaison[num]),g,num);
-    num = 0;
-  }
+  g = solve_recursive(g,0,combinaison,start);
+
+  //faire une fonction qui free tout
+  
   return g;
 }
 
