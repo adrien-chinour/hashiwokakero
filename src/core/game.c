@@ -168,8 +168,6 @@ void add_bridge_dir (game g, int node_num, dir d){
     g->bridges[node_num][d]++;
     g->bridges[get_neighbour_dir(g, node_num, d)][inverse_dir(d)]++;
   }
-  else
-      printf("Err: in game.c -> add_bridge_dir : Impossible d'ajouter un pont\n");
 }
 
 void del_bridge_dir (game g, int node_num, dir d){

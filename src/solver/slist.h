@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-typedef int* data_type;
+typedef int data_type;
 typedef struct SList *SList;
 
 // returns an empty list

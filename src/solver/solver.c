@@ -7,7 +7,6 @@
 #include "../core/node.h"
 #include "../core/game.h"
 #include "../core/file.h"
-#include "slist.h"
 
 //cette fonction compte le nombre de voisins d'une île
 int nb_neighbours(game g, int num)
@@ -82,127 +81,6 @@ bool solver_r(game g,int node_num,int dir){
 }
 
 
-game reset_node(game g, int node_num){
-  for(int i = 0; i < game_nb_dir(g); i++){
-    while(get_degree_dir(g, node_num, i) > 0){
-      del_bridge_dir(g,node_num, i);
-    }
-  }
-  return g;
-}
-
-game apply_possibility(int * tab, game g, int node_num){
-  g = reset_node(g,node_num);
-  for(int i = 0; i < game_nb_dir(g); i++){
-    for(int j = 0; j < tab[i]; j++){
-      add_bridge_dir(g, node_num, i);
-    }
-  }
-  return g;
-}
-
-bool check_possibility(int * tab, game g, int node_num){
-  int somme = 0;
-  for(int i = 0; i < game_nb_dir(g); i++){
-    if(tab[i] > 0 && !can_add_bridge_dir(g, node_num, i)){
-      return false;
-    }
-    if(can_add_bridge_dir(g,node_num,i) && tab[i] > get_required_degree(game_node(g,get_neighbour_dir(g,node_num,i))))
-      return false;
-    somme = somme + tab[i];
-  }
-  if(somme != get_required_degree(game_node(g,node_num)))
-    return false;
-  return true;
-}	 
-
-int * next_possibility (int * tab, int n, int max){
-  int * next_tab = malloc(sizeof(int)*n);
-  int i = 0;
-  while(tab[i] == max){
-    if(i == n-1){
-      next_tab[0] = -1;
-      return next_tab;
-    }
-    next_tab[i] = 0;
-    i++;
-  }
-  next_tab[i] = tab[i]+1;
-  i++;
-  while(i<n){
-    next_tab[i] = tab[i];
-    i++;
-  }
-  return next_tab;
-}
-
-SList  create_possibilities(game g, int node_num){
-  SList list = slist_create_empty();
-  /* Générer toute les combinaisons possibles et les stocker dans la liste */
-  int n = game_nb_dir(g);
-  int max = game_nb_max_bridges(g);
-  int * tab = malloc(sizeof(int)*n);
-  for(int i = 0; i < n; i++){
-    tab[i] = 0;
-  }
-  while(tab[0] != -1){
-    if(check_possibility(tab,g,node_num)){
-       list = slist_prepend(list, tab);
-       printf("%d,%d,%d,%d\n",tab[0],tab[1],tab[2],tab[3]);
-    }
-    tab = next_possibility(tab, n, max);
-  }
-  printf("generation des possibilitées de %d terminée\n",node_num);
-  return list;
-}
-
-game solve_recursive(game g, int node_num, SList * combinaison, SList * start){
-  if (game_over(g)) {return g;}
-  
-  else if(slist_next(combinaison[node_num]) == NULL){
-    printf("%d\n",node_num);
-    combinaison[node_num] = start[node_num];
-    return solve_recursive(
-			   apply_possibility(slist_data(combinaison[node_num]),g,node_num),
-			   node_num+1,
-			   combinaison,
-			   start);
-  }
-  else {
-    combinaison[node_num] = slist_next(combinaison[node_num]);
-    return solve_recursive(
-			   apply_possibility(slist_data(combinaison[node_num]),g,node_num),
-			   node_num,
-			   combinaison,
-			   start);
-  }
-}
-
-game solve (game g){
-
-  SList * combinaison = malloc(sizeof(SList)*game_nb_nodes(g));
-  SList * start = malloc(sizeof(SList)*game_nb_nodes(g));
-  /* 
-     On alloue les tableaux de possibilités 
-     et on applique les premières possibilités sur chaque noeud 
-  */
-  for(int i = 0; i < game_nb_nodes(g); i++){
-    combinaison[i] = create_possibilities(g,i);
-    start[i] = combinaison[i];
-  }
-  for(int i = 0; i < game_nb_nodes(g); i++){
-    g = apply_possibility(slist_data(combinaison[i]),g,i);
-  }
-    
-  printf("fin initialisation\n");
-
-  /* On boucle jusqu'à la bonne combinaison :) */
-  g = solve_recursive(g,0,combinaison,start);
-
-  //faire une fonction qui free tout
-  
-  return g;
-}
 
 int main(int argc, char *argv[]) {
   if( argc != 3){
@@ -212,20 +90,14 @@ int main(int argc, char *argv[]) {
   
   game g = translate_game(argv[1]);
 
-  if(atoi(argv[2]) == 1){
-    if(solver_r(g,0,-1))
-      printf("solution found !\n");
-    else
-      printf("solution not found !\n");
-    if(game_over(g))
-      printf("ok\n");
-    else
-      printf("not ok\n");
-  }
-
-  if(atoi(argv[2]) == 2){
-    g = solve(g);
-  }
+  if(solver_r(g,0,-1))
+    printf("solution found !\n");
+  else
+    printf("solution not found !\n");
+  if(game_over(g))
+    printf("ok\n");
+  else
+    printf("not ok\n");
   
   char * save = malloc(sizeof(char)*100);
   sprintf(save, "%s.solved",argv[1]);
