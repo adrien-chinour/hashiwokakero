@@ -8,11 +8,45 @@
 #include "../core/game.h"
 #include "../core/file.h"
 
+int get_nb_neighbours(game g, int num)
+{
+  //le compteur de voisins de num va incrémenter à chaque voisin vu
+  int neighbours = 0;
+  
+  for(int i = 0; i < game_nb_dir(g); i++)
+    {
+      if(get_neighbour_dir(g, num, i) != -1)
+	neighbours++;
+    }
+  return neighbours;
+}
+
 game evidence(game g){
   
   int node_num = 0;
   bool modif = true; int nb_modif = 0;
   int * tab = malloc(sizeof(int)*game_nb_dir(g));
+
+  for(int i = 0; i < game_nb_nodes(g); i++) {
+    float n = (float) get_required_degree(game_node(g, i))/game_nb_max_bridges(g);
+    float m = (float) get_nb_neighbours(g, i);
+    printf("%f\n",n);
+    if(n >= m) {
+      for(int j = 0; j < game_nb_dir(g); j++){
+	if(can_add_bridge_dir(g, i, j)){
+	  add_bridge_dir(g, i, j);
+	}
+      }
+    }
+    
+    else if(get_nb_neighbours(g, i) == 1){
+      for(int j = 0; j < game_nb_dir(g); j++){
+	for(int k = 0; k < game_nb_max_bridges(g); k++){
+	  add_bridge_dir(g, i, j);
+	}
+      }
+    }
+  }
   
   while(modif){
     /* Initialisation des variables */
@@ -77,39 +111,9 @@ game evidence(game g){
   return g;
 }
 
-game solver_recursive(game g, int node_num, int dir, bool recul){
-  if (game_over(g))
-    return g;
-  else if (!recul && can_add_bridge_dir(g, node_num, dir) ){
-    if(get_degree(g, node_num) < get_required_degree(game_node(g, node_num))){
-      while(can_add_bridge_dir(g, node_num, dir)){
-	add_bridge_dir(g, node_num, dir);
-      }
-      return solver_recursive(g,node_num,dir+1,false);
-    }
-    else
-      return solver_recursive(g,node_num+1,0,false);
-  }
-  else if (recul && can_add_bridge_dir(g, node_num, dir) ){
-    int other_dir = dir-1;
-    while(!can_add_bridge_dir(g,node_num,other_dir)){
-      if(other_dir == 0)
-	other_dir = game_nb_dir(g);
-      other_dir--;
-    }
-    del_bridge_dir(g, node_num, other_dir);
-    add_bridge_dir(g, node_num, dir);
-    return solver_recursive(g, node_num+1, 0, false);
-  }
-  else if (dir != game_nb_dir(g)-1)
-    return solver_recursive(g, node_num, dir+1, false);
-  else
-    return solver_recursive(g, node_num-1, 0, true);
-}
-
-game solver(game g){
+game solver(game g, int argc, char *argv[]){
   g = evidence(g);
-  //g = solver_recursive(g,0,0,false);
+  //solver_recursive(g,0,0);
   return g; 
 }
 
@@ -121,7 +125,7 @@ int main(int argc, char *argv[]) {
   
   game g = translate_game(argv[1]);
 
-  g = solver(g);
+  g = solver(g,argc,argv);
   printf("Solution trouvé!\n");
   
   char * save = malloc(sizeof(char)*100);
