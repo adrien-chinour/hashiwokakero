@@ -63,6 +63,7 @@ bool solver_r(game g,int node_num,int dir){
       else{
         if(dir>=0){
           del_bridge_dir(g,node_num,dir); //revenir en arrière
+
         }
       }
     } 
@@ -78,6 +79,10 @@ bool solver_r(game g,int node_num,int dir){
       }
     }
   }
+  if(game_over(g))
+     return true;
+  else
+     del_bridge_dir(g, node_num, dir);
 }
 
 
