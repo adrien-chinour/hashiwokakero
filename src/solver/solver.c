@@ -8,45 +8,6 @@
 #include "../core/game.h"
 #include "../core/file.h"
 
-//cette fonction compte le nombre de voisins d'une île
-int nb_neighbours(game g, int num)
-{
-  //le compteur de voisins de num va incrémenter à chaque voisin vu
-  int neighbours = 0;
-  
-  for(int i = 0; i < game_nb_dir(g); i++)
-    {
-      if(get_neighbour_dir(g, num, i) != -1)
-	neighbours++;
-    }
-  return neighbours;
-}
-
-void evidence(game g)
-{
-  //on parcours chaque node
-  for(int i = 0; i < game_nb_nodes(g); i++)
-    {
-      //on regarde dans toutes les directions
-      for(int j = 0; j < game_nb_dir(g); j++)
-	{
-	  //solution évidente 1: degré de l'île = nombre de voisins * nombre de ponts maximum
-	  if(get_required_degree(game_node(g,i)) == nb_neighbours(g, i) * game_nb_max_bridges(g) && can_add_bridge_dir(g, i, j))
-	    {
-	      for(int k = 0; k < game_nb_max_bridges(g); k++)
-	        add_bridge_dir(g, i, j);
-	    }
-	  //solution évidente 2: il n'y a qu'un voisin
-	  else if(nb_neighbours(g, i) == 1)
-	    {
-	      for(int k = 0; k < game_nb_max_bridges(g); k++)
-	        add_bridge_dir(g, i, j);
-	    }
-	  
-	}
-    }
-}
-
 bool solver_r(game g,int node_num,int dir){
   //si le nombre de ponts max d'une ile et atteint
   if(get_required_degree(game_node(g,node_num))==get_degree(g,node_num)){
@@ -83,31 +44,37 @@ bool solver_r(game g,int node_num,int dir){
      return true;
   else
      del_bridge_dir(g, node_num, dir);
+  return false;
 }
 
-
-
 int main(int argc, char *argv[]) {
-  if( argc != 2){
-    printf("UTILISATION ./hashi_solve <nom_du_fichier>");
+  if( argc < 2){
+    printf("UTILISATION ./hashi_solve <nom_du_fichier> <nom_de_sauvegarde>");
     return EXIT_FAILURE;
   }
   
   game g = translate_game(argv[1]);
 
-  if(solver_r(g,0,-1))
-    printf("solution found !\n");
-  else
-    printf("solution not found !\n");
-  if(game_over(g))
-    printf("ok\n");
-  else
-    printf("not ok\n");
+  if(solver_r(g,0,-1)){
+    printf("Solution trouvé!\n");
+    if(game_over(g))
+      printf("solution correct\n");
+    else
+      printf("Solution incorrect\n");
+  }
+  else {
+    printf("Aucune solution.\n");
+    return EXIT_SUCCESS;
+  }
   
   char * save = malloc(sizeof(char)*100);
-  sprintf(save, "%s.solved",argv[1]);
-  write_save(g,save);
-  //printf("solution found !\n");
+  if(argc > 2)
+    write_save(g,argv[2]);
+  else {
+    sprintf(save, "%s.solved",argv[1]);
+    write_save(g,save);
+  }
+  delete_game(g);
   free(save);
   return EXIT_SUCCESS;
 }

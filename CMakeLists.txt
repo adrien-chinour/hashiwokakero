@@ -13,7 +13,6 @@ find_package(SDL2_image REQUIRED)
 add_executable(hashi_text ${text_src_files}) # hashi_text
 add_executable(hashi_gui ${gui_src_files}) # hashi_gui
 add_executable(hashi_solve src/solver/solver.c)
-add_executable(hashi_solve2 src/solver/solver2.c src/solver/slist.c)
 
 
 add_library(hashi src/core/game.c src/core/node.c) # libhashi
@@ -33,10 +32,6 @@ target_link_libraries(hashi_gui
   ${SDL2_LIBRARY}
   ${SDL2_IMAGE_LIBRARY}
   ${SDL2_TTF_LIBRARY}) 
-
-target_link_libraries(hashi_solve2
-  hashi
-  hashi-tools)
 
 target_link_libraries(hashi_solve
   hashi
