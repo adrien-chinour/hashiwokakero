@@ -132,7 +132,7 @@ int get_neighbour_dir (cgame g, int node_num, dir d);
 
 
 static int inverse_dir(dir d){
-  int back;
+  int back = 0;
   switch(d)
     {
     case NORTH:
