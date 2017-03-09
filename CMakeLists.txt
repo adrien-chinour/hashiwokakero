@@ -4,7 +4,6 @@ project("hashi-tm2h" LANGUAGES C)
 # Ajout des fichiers .c pour les executables
 file( GLOB_RECURSE text_src_files src/text/* ) # adding files for text_src_files
 file( GLOB_RECURSE gui_src_files src/gui/* ) # adding files for gui_src_files
-file( GLOB_RECURSE solve_src_files src/solver/* )
 
 #Ajout des modules
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)

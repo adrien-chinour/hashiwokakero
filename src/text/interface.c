@@ -413,21 +413,21 @@ game game_select(){
   while(choice < 1 || choice > 7){
     char *value = (char*) malloc(4096*sizeof(char));
     printf("Selectionnez votre partie :\n");
-    printf("(Facile = 2 ponts max; Moyen = 3 ponts max; Difficile = 4 ponts max)\n");
-    printf("-> 1 : FACILE - 4DIRS \n-> 2 : FACILE - 8DIRS \n-> 3 : MOYEN - 4DIRS \n-> 4 : MOYEN - 8DIRS \n-> 5 : DIFFICILE - 4DIRS \n-> 6 : DIFFICILE - 8DIRS\n-> 7 : EXEMPLE GAGNE\n");
+    //printf("(Facile = 2 ponts max; Moyen = 3 ponts max; Difficile = 4 ponts max)\n");
+    printf("-> 1 : GAME DEFAULT \n-> 2 : GAME DEFAULT SOLVED \n-> 3 : GAME EASY \n-> 4 : GAME EASY SOLVED\n-> 5 : GAME MEDIUM \n-> 6 : GAME MEDIUM SOLVED \n 7 : EXEMPLE GAGNE\n");
     scanf("%s", value);
     choice = atoi(value);
     free(value);
   }
 
   switch(choice){
-     case 1: return translate_game("save/game_default.txt");
-     case 2: return generate_game(2,2,8,8);
-     case 3: return generate_game(3,3,4,7);
-     case 4: return generate_game(4,3,8,7);
-     case 5: return generate_game(5,4,4,9);
-     case 6: return translate_game("save/game_easy.txt");
-     case 7: return translate_save("save/default_solution.txt");
+  case 1: return translate_game("save/game_default.txt");
+  case 2: return translate_save("save/game_default.txt.solved");
+  case 3: return translate_game("save/game_easy.txt");
+  case 4: return translate_save("save/game_easy.txt.solved");
+  case 5: return translate_game("save/game_medium.txt");
+  case 6: return translate_save("save/game_medium.txt.solved");
+  case 7: return translate_save("save/default_solution.txt");
         
     default: printf("Erreur dans game_select\n"); exit(EXIT_FAILURE); break;
   }
