@@ -23,18 +23,15 @@ bool solver_r(game g,int node_num,int dir,bool * go){
       }
       //sinon quelque chose s'est mal passé, on supprime un pont
       else{
-        if(dir>=0){
-          del_bridge_dir(g,node_num,dir); //revenir en arrière
-
-        }
+         del_bridge_dir(g,node_num,dir); //revenir en arrière
       }
-    } 
+    }
   }
   //si le degré de l'ile vue n'est pas atteint
   else{
     //on regarde dans toutes les directions
     for(int d=0; d<game_nb_dir(g);d++){
-       if(can_add_bridge_dir(g,node_num,d)&&(!(get_required_degree(game_node(g,node_num))==get_degree(g,node_num)))&&(!(get_required_degree(game_node(g,get_neighbour_dir(g,node_num,d)))==get_degree(g,get_neighbour_dir(g,node_num,d))))){
+       if(can_add_bridge_dir(g,node_num,d)){
 	 //on peut poser un pont, on le pose et on relance la récursivité
         add_bridge_dir(g,node_num,d);
         solver_r(g,node_num,d,go);
@@ -59,26 +56,20 @@ int main(int argc, char *argv[]) {
   *go=false;
   
 
-  if(solver_r(g,0,-1,go)){
-    printf("Solution trouvé!\n");
-    if(game_over(g))
-      printf("solution correct\n");
-    else
-      printf("Solution incorrect\n");
-  }
-  else {
-    printf("Aucune solution.\n");
-    return EXIT_SUCCESS;
-  }
-  
-  char * save = malloc(sizeof(char)*100);
-  if(argc > 2)
-    write_save(g,argv[2]);
-  else {
-    sprintf(save, "%s.solved",argv[1]);
-    write_save(g,save);
-  }
-  delete_game(g);
-  free(save);
+  if(solver_r(g,0,-1,go))
+     printf("Solution trouvé!\n");
+  else 
+     printf("Aucune solution.\n");
   return EXIT_SUCCESS;
+
+char * save = malloc(sizeof(char)*100);
+if(argc > 2)
+   write_save(g,argv[2]);
+else {
+   sprintf(save, "%s.solved",argv[1]);
+   write_save(g,save);
+}
+delete_game(g);
+free(save);
+return EXIT_SUCCESS;
 }
