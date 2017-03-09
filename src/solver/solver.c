@@ -8,6 +8,113 @@
 #include "../core/game.h"
 #include "../core/file.h"
 
+/*
+  Permet de compter le nombre de voisins d'une île
+*/
+int get_nb_neighbours(game g, int num) {
+  int neighbours = 0;
+  for(int i = 0; i < game_nb_dir(g); i++){
+      if(get_neighbour_dir(g, num, i) != -1) neighbours++;
+  }
+  return neighbours;
+}
+
+/*
+  Permet d'ajouter les ponts obligatoires
+  Résoud game_easy en 0.003s
+*/
+void simple_bridges(game g){
+  
+  int node_num = 0, nb_modif = 0;
+  bool modif = true;
+  int * tab = malloc(sizeof(int)*game_nb_dir(g));
+
+  for(int i = 0; i < game_nb_nodes(g); i++) {
+    /* Initialisations des variables */
+    int n = get_required_degree(game_node(g, i))/game_nb_max_bridges(g) + get_required_degree(game_node(g, i))%game_nb_max_bridges(g);
+    int m = get_nb_neighbours(g, i);
+    
+    /* Si le noeud a au minimum 1 connexion avec chacun de ses voisins */
+    if(n == m) {
+      for(int j = 0; j < game_nb_dir(g); j++){
+	if(can_add_bridge_dir(g, i, j)){
+	  add_bridge_dir(g, i, j);
+	}
+      }
+    }
+    
+    /* Si le noeud n'a qu'un voisin */
+    else if(get_nb_neighbours(g, i) == 1){
+      for(int j = 0; j < game_nb_dir(g); j++){
+	for(int k = 0; k < game_nb_max_bridges(g); k++){
+	  add_bridge_dir(g, i, j);
+	}
+      }
+    }
+  }
+  
+  while(modif){
+    /* Initialisation des variables */
+    int somme = 0;
+    for(int i = 0; i < game_nb_dir(g); i++){
+      tab[i] = 0;
+    }
+
+    /* Boucle de test pour les solutions evidentes */
+    for(int dir = 0; dir < game_nb_dir(g); dir++){
+
+      /* pour eviter les appelles aux fonctions repetitif */
+      int degree = get_degree(g, node_num);
+      int required_degree = get_required_degree(game_node(g, node_num));
+      
+      // si on peut ajouter des ponts
+      if (can_add_bridge_dir(g,node_num,dir)){
+	int degree_neighbour = get_degree(g, get_neighbour_dir(g, node_num, dir));
+	int required_degree_neighbour = get_required_degree(game_node(g, get_neighbour_dir(g, node_num, dir)));
+       
+	// si le voisin a un degré inférieur au nombre de ponts max
+	if(required_degree_neighbour < game_nb_max_bridges(g)) {
+	  tab[dir] = required_degree_neighbour;
+	  somme += required_degree_neighbour;
+	}
+	
+	//si notre voisin peut compléter notre degré
+	else if (degree < required_degree && required_degree - degree <= required_degree_neighbour - degree_neighbour) {
+	  tab[dir] = required_degree - degree;
+	  somme += required_degree - degree;
+	  }
+	else {
+	  somme += game_nb_max_bridges(g);
+	  tab[dir] = game_nb_max_bridges(g);
+	}
+      }
+    }
+
+    /* On ajoute les ponts obligatoires si il y en a*/
+    if( somme > 0 && somme + get_degree(g, node_num) == get_required_degree(game_node(g, node_num)) ){
+      for(int i = 0; i < game_nb_dir(g); i++){
+	for(int j = 0; j < tab[i]; j++){
+	  add_bridge_dir(g, node_num,i);
+	}
+      }
+      nb_modif++;
+    }
+
+    /* test de fin de boucle while */
+    if(node_num == game_nb_nodes(g)-1){
+      if (nb_modif != 0){
+	nb_modif = 0;
+	node_num = -1;
+      }
+      else {
+	modif = false;
+      }
+    }
+    node_num++;
+  }
+  free(tab);
+}
+
 bool solver_r(game g,int node_num,int dir){
   //si le nombre de ponts max d'une ile et atteint
   if(get_required_degree(game_node(g,node_num))==get_degree(g,node_num)){
@@ -54,7 +161,8 @@ int main(int argc, char *argv[]) {
   }
   
   game g = translate_game(argv[1]);
-
+  simple_bridges(g);
+  
   if(solver_r(g,0,-1)){
     printf("Solution trouvé!\n");
     if(game_over(g))
