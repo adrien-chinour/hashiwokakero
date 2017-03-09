@@ -27,15 +27,14 @@ void simple_bridges(game g){
   
   int node_num = 0, nb_modif = 0;
   bool modif = true;
-  int * tab = malloc(sizeof(int)*game_nb_dir(g));
+  int * tab = calloc(game_nb_dir(g), sizeof(int));
 
   for(int i = 0; i < game_nb_nodes(g); i++) {
     /* Initialisations des variables */
     int n = get_required_degree(game_node(g, i))/game_nb_max_bridges(g) + get_required_degree(game_node(g, i))%game_nb_max_bridges(g);
-    int m = get_nb_neighbours(g, i);
     
     /* Si le noeud a au minimum 1 connexion avec chacun de ses voisins */
-    if(n == m) {
+    if(n == get_nb_neighbours(g, i)) {
       for(int j = 0; j < game_nb_dir(g); j++){
 	if(can_add_bridge_dir(g, i, j)){
 	  add_bridge_dir(g, i, j);
@@ -53,17 +52,14 @@ void simple_bridges(game g){
     }
   }
   
-  while(modif){
+  while(modif){ 
     /* Initialisation des variables */
     int somme = 0;
-    for(int i = 0; i < game_nb_dir(g); i++){
-      tab[i] = 0;
-    }
 
     /* Boucle de test pour les solutions evidentes */
     for(int dir = 0; dir < game_nb_dir(g); dir++){
 
-      /* pour eviter les appelles aux fonctions repetitif */
+      /* pour eviter les appelles aux fonctions repetitifs */
       int degree = get_degree(g, node_num);
       int required_degree = get_required_degree(game_node(g, node_num));
       
@@ -110,7 +106,7 @@ void simple_bridges(game g){
 	modif = false;
       }
     }
-    node_num++;
+      node_num++;
   }
   free(tab);
 }
