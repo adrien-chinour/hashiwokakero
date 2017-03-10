@@ -8,3 +8,8 @@ rm -f src/solver/*~
 rm -f src/gui/*~
 rm -f src/core/*~
 rm -f src/text/*~
+rm -f *~
+rm -f src/solver/*#*
+rm -f src/gui/*#*
+rm -f src/core/*#*
+rm -f src/text/*#*

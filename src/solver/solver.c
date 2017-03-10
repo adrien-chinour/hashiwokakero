@@ -151,7 +151,7 @@ int main(int argc, char *argv[]) {
   
   game g = translate_game(argv[1]);
   simple_bridges(g);
-
+  printf("ok");
   bool * go=malloc(sizeof(bool));
   *go=false;
 

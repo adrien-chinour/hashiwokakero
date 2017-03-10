@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 project("hashi-tm2h" LANGUAGES C)
+set(CMAKE_C_COMPILER gcc)
 
 # Ajout des fichiers .c pour les executables
 file( GLOB_RECURSE text_src_files src/text/* ) # adding files for text_src_files
@@ -11,18 +12,22 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 find_package(SDL2_image REQUIRED)
 
+# creation des librairies et executables
 add_executable(hashi_text ${text_src_files}) # hashi_text
 add_executable(hashi_gui ${gui_src_files}) # hashi_gui
 add_executable(hashi_solve src/solver/solver.c) #hashi_solve
-
 add_library(hashi src/core/game.c src/core/node.c) # libhashi
 add_library(hashi-tools src/core/file.c src/core/secure.c) # libhashi-tools
+
+#Pour installer les executables à la racine
+install(TARGETS hashi_gui hashi_text hashi_solve DESTINATION ${PROJECT_SOURCE_DIR})
 
 # optin de debugage
 option(ENABLE_DEBUG "debug options" ON)
 if(ENABLE_DEBUG)
   set(CMAKE_C_FLAGS "-std=c99 -g -fprofile-arcs -ftest-coverage -Wall")
-  set(CMAKE_C_FLAGS "-fprofile-arcs -ftest-coverage")
+  set(CMAKE_LD_FLAGS "-fprofile-arcs -ftest-coverage")
+  INCLUDE(CTest)
   INCLUDE(Dart)
 else()
   set(CMAKE_C_FLAGS "-std=c99 -O3 -Wall")
