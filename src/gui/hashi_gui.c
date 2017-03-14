@@ -6,8 +6,10 @@
 #include "model.h"
      
 /* **************************************************************** */
-     
-#define SCREEN_SIZE 500
+
+/* Format 16:9  */
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 720
 
 /* **************************************************************** */
      
@@ -17,18 +19,12 @@ int main(int argc, char * argv[]) {
   if(SDL_Init(SDL_INIT_VIDEO) != 0) ERROR("SDL_Init VIDEO"); 
   if(IMG_Init(IMG_INIT_PNG & IMG_INIT_PNG) != IMG_INIT_PNG) ERROR("IMG_Init PNG");
   if(TTF_Init() != 0) ERROR("TTF_Init");  
-
-  int screen_size;
-  if(argc > 1 && atoi(argv[1]) > 100 && atoi(argv[1]) < 4000)
-    screen_size = atoi(argv[1]);
-  else
-    screen_size = SCREEN_SIZE;
   
   /* create window and renderer */
   SDL_Window * win = SDL_CreateWindow("Hashiwokakero - TM2H",
 				      SDL_WINDOWPOS_UNDEFINED,
 				      SDL_WINDOWPOS_UNDEFINED,
-				      screen_size, screen_size,
+				      SCREEN_WIDTH, SCREEN_HEIGHT,
 				      SDL_WINDOW_SHOWN);
   if(!win) ERROR("SDL_CreateWindow");  
 

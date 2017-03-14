@@ -1,6 +1,0 @@
--> Corriger les tests d'erreurs d'allocation de la fonction init du fichier model
-( il ne faut pas seulement free(env) )
-
--> renommer model.c et model.h pour un nom plus adapté
-
--> Modifier le CMakeLists.txt pour qu'il génère les tests mais avec seulement un executable

@@ -29,9 +29,13 @@ struct Env_t {
   SDL_Texture * boat3;
   SDL_Texture * boat4;
   SDL_Texture ** text;
-  int max;
+  int max_x;
+  int max_y;
+  int margin_x;
+  int margin_y;
   game g;
   SDL_Point mouse;
+  int size;
 };
 
 
@@ -42,7 +46,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   game g = NULL;
   
   /* L'utilisateur a rentré un nom de fichier */
-  if(argc >= 3) game_file = argv[2];
+  if(argc == 2) game_file = argv[1];
   if (game_file != NULL) printf("%s\n",game_file); //debug
 
   /* On charge le game en fonction de ce que l'utilisateur demande*/
@@ -54,91 +58,97 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
 
   /*allocation de notre structure d'environnement*/
   Env * env = malloc(sizeof(struct Env_t));
-  if(env == NULL) {delete_game(g); return NULL;}
+  if(env == NULL) {delete_game(g); return NULL;} //ERREUR
 
   env->g = g;  
   int w, h;
   SDL_GetWindowSize(win, &w, &h);
-  int max = 0;
-
+  int max_x = 0;
+  int max_y = 0;
+  int margin_x = 0;
+  int margin_y = 0;
+  
   /* Init island texture from PNG image */
-
   env->island=malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
+  if(env->island == NULL) exit(EXIT_FAILURE); //ERREUR
 
-
-  for(int i = 0 ; i < game_nb_nodes(g) ; i++){ //à mettre dans l'autre boucle for
+  for(int i = 0 ; i < game_nb_nodes(g) ; i++){
     env->island[i] = IMG_LoadTexture(ren, ISLAND);
-    if(!env->island) ERROR("IMG_LoadTexture: %s\n", ISLAND);
+    if(!env->island) ERROR("IMG_LoadTexture: %s\n", ISLAND); //ERREUR
   }
 
   /* Init boat texture from PNG image */
   env->boat1 = IMG_LoadTexture(ren, BOAT1);
-  if(!env->boat1) ERROR("IMG_LoadTexture: %s\n", BOAT1);
+  if(!env->boat1) ERROR("IMG_LoadTexture: %s\n", BOAT1); //ERREUR
   env->boat2 = IMG_LoadTexture(ren, BOAT2);
-  if(!env->boat2) ERROR("IMG_LoadTexture: %s\n", BOAT2);
+  if(!env->boat2) ERROR("IMG_LoadTexture: %s\n", BOAT2); //ERREUR
   env->boat3 = IMG_LoadTexture(ren, BOAT3);
-  if(!env->boat3) ERROR("IMG_LoadTexture: %s\n", BOAT3);
+  if(!env->boat3) ERROR("IMG_LoadTexture: %s\n", BOAT3); //ERREUR
   env->boat4 = IMG_LoadTexture(ren, BOAT4);
-  if(!env->boat4) ERROR("IMG_LoadTexture: %s\n", BOAT4);
-
-  
+  if(!env->boat4) ERROR("IMG_LoadTexture: %s\n", BOAT4); //ERREUR
   
   SDL_Texture ** text = malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
-  if(text == NULL) {delete_game(g); free(env); return NULL;}
+  if(text == NULL) {delete_game(g); free(env); return NULL;} //ERREUR
   
   env->text = text;
   
   for(int i = 0 ; i < game_nb_nodes(g) ; i++){
     node n = game_node(g, i);
-    if(get_x(n) > max) max = get_x(n);
-    if(get_y(n) > max) max = get_y(n);
+    if(get_x(n) > max_x) max_x = get_x(n);
+    if(get_y(n) > max_y) max_y = get_y(n);
     SDL_Color color = { 0, 0, 0, 255 }; /* black color in RGBA */
     TTF_Font * font = TTF_OpenFont(FONT, FONTSIZE);
     if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
     TTF_SetFontStyle(font, TTF_STYLE_BOLD);
     char * degree = malloc(sizeof(char)*10);
     sprintf(degree, "%d", get_required_degree(n));
-    SDL_Surface * surf = TTF_RenderText_Blended(font, degree , color); // blended rendering for ultra nice text
+    SDL_Surface * surf = TTF_RenderText_Blended(font, degree , color);// blended rendering for ultra nice text
     //free(degree);
     env->text[i] = SDL_CreateTextureFromSurface(ren, surf);
     SDL_FreeSurface(surf);
     TTF_CloseFont(font);
   }
-  
-  env->max = max + 1;
 
+  env->max_x = max_x + 1;
+  env->max_y = max_y + 1;
+  
+  if(env->max_x * 9 > env->max_y * 16){
+    env->size = w /(env->max_x * 2);
+    margin_y = (h  - env->size * (env->max_y * 2)) / 2;
+  }
+  else {
+    env->size = h /(env->max_y * 2);
+    margin_x = (w  - env->size * (env->max_x * 2)) / 2;
+  }
+
+  env->margin_x = margin_x;
+  env->margin_y = margin_y;
+  
   return env;
 }
 
 void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   SDL_Rect rect;
   
-  int width, height, size;
-  SDL_GetWindowSize(win, &width, &height);
-  size = width/(env->max * 2);
+  int width, height;
   
-  /* background lines in white */
-  SDL_SetRenderDrawColor(ren , 255, 255, 255, 100);
-  for(int i = 1; i < env->max * 2; i++){
-    SDL_RenderDrawLine(ren, (i * size), 0, (i * size), width);
-    SDL_RenderDrawLine(ren, 0, (i * size), height, (i * size));
-  }
+  SDL_GetWindowSize(win, &width, &height);
 
   /* nodes */
   for(int i = 0; i < game_nb_nodes(env->g); i++){
     node n = game_node(env->g, i);
     
     /* texture */
-    rect.w = size;
-    rect.h = size;
-    rect.x = (get_x(n) * 2 + 1) * size - size / 2;
-    rect.y = (get_y(n) * 2 + 1) * size - size / 2;
+    rect.w = env->size;
+    rect.h = env->size;
+    rect.x = (get_x(n) * 2 + 1) * env->size - env->size / 2 + env->margin_x;
+    rect.y = (get_y(n) * 2 + 1) * env->size - env->size / 2 + env->margin_y;
     SDL_RenderCopy(ren, env->island[i], NULL, &(rect));
     
     /* degree */
     SDL_QueryTexture(env->text[i], NULL, NULL, &rect.w, &rect.h);
-    rect.x = (get_x(n) * 2 + 1) * size  - size / 2;
-    rect.y = (get_y(n) * 2 + 1) * size  - size / 2;
+    rect.x = (get_x(n) * 2 + 1) * env->size  - env->size / 2 + env->margin_x;
+    rect.y = (get_y(n) * 2 + 1) * env->size  - env->size / 2 + env->margin_y;
     SDL_RenderCopy(ren, env->text[i], NULL, &rect);
   }
   
@@ -170,14 +180,13 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   if(e->type == SDL_MOUSEBUTTONDOWN){
      SDL_GetMouseState(&env->mouse.x, &env->mouse.y);
      
-     int width, height, size;
+     int width, height;
      SDL_GetWindowSize(win, &width, &height);
-     size = width/(env->max * 2);
      
      int x = env->mouse.x;
      int y = env->mouse.y;
-     x = (((x + size / 2) / size)-1)/2;
-     y = (((y + size / 2) / size)-1)/2;
+     x = (((x + env->size / 2) / env->size)-1)/2;
+     y = (((y + env->size / 2) / env->size)-1)/2;
 
      env->island[game_get_node_number(env->g, x,y)]=env->boat1;
      
