@@ -6,7 +6,8 @@
 #include "model.h"
      
 /* **************************************************************** */
-     
+
+/* Format 16:9  */
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 
