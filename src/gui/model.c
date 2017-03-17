@@ -39,6 +39,8 @@ struct Env_t {
 };
 
 
+
+
      
 Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
 
@@ -88,7 +90,8 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   if(!env->boat4) ERROR("IMG_LoadTexture: %s\n", BOAT4); //ERREUR
   
   SDL_Texture ** text = malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
-  if(text == NULL) {delete_game(g); free(env); return NULL;} //ERREUR
+  
+  if(text == NULL) {delete_game(g); free(env); return NULL;} //ERREUR //SDLdeletetexture env->island
   
   env->text = text;
   
@@ -127,6 +130,15 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   return env;
 }
 
+int coordtopxx(int px, Env * env){
+   return (px * 2 + 1) * env->size  - env->size / 2 + env->margin_x;
+}
+
+int coordtopxy(int px, Env * env){
+   return (px * 2 + 1) * env->size  - env->size / 2 + env->margin_y;
+}
+
+
 void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   SDL_Rect rect;
   
@@ -141,14 +153,14 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
     /* texture */
     rect.w = env->size;
     rect.h = env->size;
-    rect.x = (get_x(n) * 2 + 1) * env->size - env->size / 2 + env->margin_x;
-    rect.y = (get_y(n) * 2 + 1) * env->size - env->size / 2 + env->margin_y;
+    rect.x = coordtopxx(get_x(n),env);
+    rect.y = coordtopxy(get_y(n),env);
     SDL_RenderCopy(ren, env->island[i], NULL, &(rect));
     
     /* degree */
     SDL_QueryTexture(env->text[i], NULL, NULL, &rect.w, &rect.h);
-    rect.x = (get_x(n) * 2 + 1) * env->size  - env->size / 2 + env->margin_x;
-    rect.y = (get_y(n) * 2 + 1) * env->size  - env->size / 2 + env->margin_y;
+    rect.x = coordtopxx(get_x(n),env);
+    rect.y = coordtopxy(get_y(n),env);
     SDL_RenderCopy(ren, env->text[i], NULL, &rect);
   }
   
@@ -168,6 +180,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   
 }
 
+
 bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   int w, h;
   SDL_GetWindowSize(win, &w, &h);
@@ -185,8 +198,8 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
      
      int x = env->mouse.x;
      int y = env->mouse.y;
-     x = (((x + env->size / 2) / env->size)-1)/2;
-     y = (((y + env->size / 2) / env->size)-1)/2;
+     x = (((x + env->size / 2) / env->size)-1)/2 - env->margin_x;
+     y = (((y + env->size / 2) / env->size)-1)/2 - env->margin_y;
 
      env->island[game_get_node_number(env->g, x,y)]=env->boat1;
      
