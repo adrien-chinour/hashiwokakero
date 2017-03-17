@@ -130,14 +130,21 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   return env;
 }
 
-int coordtopxx(int px, Env * env){
-   return (px * 2 + 1) * env->size  - env->size / 2 + env->margin_x;
+int coordtopxx(int coord, Env * env){
+   return (coord * 2 + 1) * env->size  - env->size / 2 + env->margin_x;
 }
 
-int coordtopxy(int px, Env * env){
-   return (px * 2 + 1) * env->size  - env->size / 2 + env->margin_y;
+int coordtopxy(int coord, Env * env){
+   return (coord * 2 + 1) * env->size  - env->size / 2 + env->margin_y;
 }
 
+int pxtocoordx(int px, Env * env){
+   return (((px+ env->size / 2 - env->margin_x) / env->size)-1)/2;
+}
+
+int pxtocoordy(int px, Env * env){
+   return (((px+ env->size / 2 - env->margin_y) / env->size)-1)/2;
+}
 
 void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   SDL_Rect rect;
@@ -198,8 +205,8 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
      
      int x = env->mouse.x;
      int y = env->mouse.y;
-     x = (((x + env->size / 2) / env->size)-1)/2 - env->margin_x;
-     y = (((y + env->size / 2) / env->size)-1)/2 - env->margin_y;
+     x = pxtocoordx(x, env);
+     y = pxtocoordy(y, env);
 
      env->island[game_get_node_number(env->g, x,y)]=env->boat1;
      
@@ -210,6 +217,7 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   }
   return false; 
 }
+
 
 void clean(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   for(int i = 0 ; i < game_nb_nodes(env->g) ; i++){
@@ -224,5 +232,3 @@ void clean(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   free(env->text);
   free(env);
 }
-
-
