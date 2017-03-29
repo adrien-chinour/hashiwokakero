@@ -13,7 +13,6 @@
 /* **************************************************************** */
 
 #define FONT "Arial.ttf"
-#define FONTSIZE 20
 #define ISLAND "img/island.png"
 #define BOAT1 "img/boat1.png"
 #define BOAT2 "img/boat2.png"
@@ -33,14 +32,20 @@ struct Env_t {
   int max_y;
   int margin_x;
   int margin_y;
+  int fontsize;
   game g;
   SDL_Point mouse;
   int size;
 };
 
 
+int coordtopxx(int coord, Env * env){
+   return (coord * 2 + 1) * env->size  - env->size / 2 + env->margin_x;
+}
 
-
+int coordtopxy(int coord, Env * env){
+   return (coord * 2 + 1) * env->size  - env->size / 2 + env->margin_y;
+}
      
 Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
 
@@ -99,17 +104,6 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
     node n = game_node(g, i);
     if(get_x(n) > max_x) max_x = get_x(n);
     if(get_y(n) > max_y) max_y = get_y(n);
-    SDL_Color color = { 0, 0, 0, 255 }; /* black color in RGBA */
-    TTF_Font * font = TTF_OpenFont(FONT, FONTSIZE);
-    if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
-    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
-    char * degree = malloc(sizeof(char)*10);
-    sprintf(degree, "%d", get_required_degree(n));
-    SDL_Surface * surf = TTF_RenderText_Blended(font, degree , color);// blended rendering for ultra nice text
-    //free(degree);
-    env->text[i] = SDL_CreateTextureFromSurface(ren, surf);
-    SDL_FreeSurface(surf);
-    TTF_CloseFont(font);
   }
 
   env->max_x = max_x + 1;
@@ -126,24 +120,24 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
 
   env->margin_x = margin_x;
   env->margin_y = margin_y;
+  env->fontsize = env->size/2;
+  
+  for(int i = 0 ; i < game_nb_nodes(g) ; i++){
+    node n = game_node(g, i);
+    SDL_Color color = { 200, 20, 0, 255 };
+    TTF_Font * font = TTF_OpenFont(FONT, env->fontsize);
+    if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
+    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
+    char * degree = malloc(sizeof(char)*10);
+    sprintf(degree, "%d", get_required_degree(n));
+    SDL_Surface * surf = TTF_RenderText_Blended(font, degree , color);// blended rendering for ultra nice text
+    //free(degree);
+    env->text[i] = SDL_CreateTextureFromSurface(ren, surf);
+    SDL_FreeSurface(surf);
+    TTF_CloseFont(font);
+  }
   
   return env;
-}
-
-int coordtopxx(int coord, Env * env){
-   return (coord * 2 + 1) * env->size  - env->size / 2 + env->margin_x;
-}
-
-int coordtopxy(int coord, Env * env){
-   return (coord * 2 + 1) * env->size  - env->size / 2 + env->margin_y;
-}
-
-int pxtocoordx(int px, Env * env){
-   return (((px+ env->size / 2 - env->margin_x) / env->size)-1)/2;
-}
-
-int pxtocoordy(int px, Env * env){
-   return (((px+ env->size / 2 - env->margin_y) / env->size)-1)/2;
 }
 
 void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
@@ -166,8 +160,8 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
     
     /* degree */
     SDL_QueryTexture(env->text[i], NULL, NULL, &rect.w, &rect.h);
-    rect.x = coordtopxx(get_x(n),env);
-    rect.y = coordtopxy(get_y(n),env);
+    rect.x = coordtopxx(get_x(n),env) + env->size/4;
+    rect.y = coordtopxy(get_y(n),env) + env->size/4;
     SDL_RenderCopy(ren, env->text[i], NULL, &rect);
   }
   
@@ -188,6 +182,8 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
 }
 
 
+
+
 bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   int w, h;
   SDL_GetWindowSize(win, &w, &h);
@@ -205,15 +201,20 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
      
      int x = env->mouse.x;
      int y = env->mouse.y;
-     x = pxtocoordx(x, env);
-     y = pxtocoordy(y, env);
-
-     env->island[game_get_node_number(env->g, x,y)]=env->boat1;
-     
+     for(int i = 0; i < game_nb_nodes(env->g); i++){
+       node n = game_node(env->g, i);
+       int coordX = coordtopxx(get_x(n), env);
+       int coordY = coordtopxy(get_y(n), env);
+       if(coordX < x && coordX+env->size > x && coordY < y && coordY+env->size > y){
+	 printf("%d,%d -> %d,%d\n",x,y,get_x(n),get_y(n));
+	 env->island[game_get_node_number(env->g, get_x(n),get_y(n))]=env->boat1;
+       }
+     }
   }
   if(e->type == SDL_MOUSEBUTTONUP){
      SDL_Point mousedir;
      SDL_GetMouseState(&mousedir.x, &mousedir.y);
+     
   }
   return false; 
 }
