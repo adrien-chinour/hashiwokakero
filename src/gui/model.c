@@ -137,7 +137,6 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
     TTF_CloseFont(font);
   }
   env->node = -1;
-
   return env;
 }
 
@@ -147,6 +146,8 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   int width, height;
   
   SDL_GetWindowSize(win, &width, &height);
+
+  SDL_SetRenderDrawColor(ren, 0, 0, 0, SDL_ALPHA_OPAQUE);
 
   /* nodes */
   for(int i = 0; i < game_nb_nodes(env->g); i++){
@@ -164,8 +165,45 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
     rect.x = coordtopxx(get_x(n),env) + env->size/4;
     rect.y = coordtopxy(get_y(n),env) + env->size/4;
     SDL_RenderCopy(ren, env->text[i], NULL, &rect);
+        
+    if(get_degree(env->g, i)){
+       for(int d=0;d<game_nb_dir(env->g);d++){
+          if(get_degree_dir(env->g, i, d)>0){
+             node cible = game_node(env->g,get_neighbour_dir(env->g, i, d));
+             int x = coordtopxx(get_x(n),env)+env->size/2;
+             int y = coordtopxy(get_y(n),env)+env->size/2;
+             int x1 = coordtopxx(get_x(cible),env)+env->size/2;
+             int y1 =coordtopxy(get_y(cible),env)+env->size/2;
+             
+             /*
+             switch(d){
+                case NORTH:
+                   rect.h = rect.y + coordtopxy(get_y(cible),env);
+                   rect.w = env->size;
+                   break;
+                case SOUTH:
+                   rect.h = coordtopxy(get_y(cible),env) - rect.y;
+                   rect.w = env->size;
+                   break;
+                case EAST:
+                   rect.h = env->size;
+                   rect.w = rect.x + coordtopxx(get_x(cible),env);
+                   break;
+                case WEST:
+                   rect.h = env->size;
+                   rect.w = coordtopxx(get_x(cible),env)-rect.y;
+                   break;
+             }
+             */
+             //rect.h = rect.y - coordtopxy(get_y(cible),env);
+             //rect.w = rect.x - coordtopxx(get_x(cible),env);
+             //SDL_RenderCopy(ren, env->boat3, NULL, &rect);
+             //SDL_RenderDrawRect(ren,&rect);
+             SDL_RenderDrawLine(ren, x, y, x1, y1);
+          }
+       }
+    }
   }
-  
   /* test boat texture */
   //boat1
   //rect.w = size/4; rect.h = size/2; rect.x = 10; rect.y = 10;
