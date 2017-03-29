@@ -34,17 +34,17 @@ struct Env_t {
   int margin_y;
   int fontsize;
   game g;
-  SDL_Point mouse;
+  int node;
   int size;
 };
 
 
 int coordtopxx(int coord, Env * env){
-   return (coord * 2 + 1) * env->size  - env->size / 2 + env->margin_x;
+  return (coord * 2 + 1) * env->size  - env->size / 2 + env->margin_x;
 }
 
 int coordtopxy(int coord, Env * env){
-   return (coord * 2 + 1) * env->size  - env->size / 2 + env->margin_y;
+  return (coord * 2 + 1) * env->size  - env->size / 2 + env->margin_y;
 }
      
 Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
@@ -136,7 +136,8 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
     SDL_FreeSurface(surf);
     TTF_CloseFont(font);
   }
-  
+  env->node = -1;
+
   return env;
 }
 
@@ -181,8 +182,39 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   
 }
 
+int get_node(int x, int y, Env * env){
+  for(int i = 0; i < game_nb_nodes(env->g); i++){
+    node n = game_node(env->g, i);
+    int coordX = coordtopxx(get_x(n), env);
+    int coordY = coordtopxy(get_y(n), env);
+    if(coordX < x && coordX+env->size > x && coordY < y && coordY+env->size > y){
+      return i;
+    }
+  }
+  return -1;
+}
 
-
+void make_connection(int node_num, Env * env){
+  if(env->node != -1 && node_num != -1){
+    for(int i = 0; i < game_nb_dir(env->g); i++){
+      if(get_neighbour_dir(env->g, node_num, i) == env->node){
+	printf("action entre le noeud %d et le noeud %d\n",env->node, node_num);
+	if(can_add_bridge_dir(env->g, node_num, i)){
+	  printf("ajout d'un pont\n");
+	  add_bridge_dir(env->g, node_num, i);
+	}
+	else {
+	  printf("suppresion des ponts\n");
+	  while(get_degree_dir(env->g, node_num, i) != 0){
+	    del_bridge_dir(env->g, node_num, i);
+	  }
+	}
+	env->node = -1;
+	break;
+      }
+    }
+  }
+}
 
 bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   int w, h;
@@ -192,38 +224,32 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   if (e->type == SDL_QUIT) {
     return true;
   }
-
+  
   if(e->type == SDL_MOUSEBUTTONDOWN){
-     SDL_GetMouseState(&env->mouse.x, &env->mouse.y);
-     
-     int width, height;
-     SDL_GetWindowSize(win, &width, &height);
-     
-     int x = env->mouse.x;
-     int y = env->mouse.y;
-     for(int i = 0; i < game_nb_nodes(env->g); i++){
-       node n = game_node(env->g, i);
-       int coordX = coordtopxx(get_x(n), env);
-       int coordY = coordtopxy(get_y(n), env);
-       if(coordX < x && coordX+env->size > x && coordY < y && coordY+env->size > y){
-	 printf("%d,%d -> %d,%d\n",x,y,get_x(n),get_y(n));
-	 env->island[game_get_node_number(env->g, get_x(n),get_y(n))]=env->boat1;
-       }
-     }
+    SDL_Point mousedir;
+    SDL_GetMouseState(&mousedir.x, &mousedir.y);
+    int node_num = get_node(mousedir.x, mousedir.y, env);
+    if(env->node == -1)
+      env->node = node_num;
+    else 
+      make_connection(node_num, env);
   }
+  
   if(e->type == SDL_MOUSEBUTTONUP){
-     SDL_Point mousedir;
-     SDL_GetMouseState(&mousedir.x, &mousedir.y);
-     
+    SDL_Point mousedir;
+    SDL_GetMouseState(&mousedir.x, &mousedir.y);
+    int node_num = get_node(mousedir.x,mousedir.y, env);
+    make_connection(node_num, env);
   }
+  
   return false; 
 }
 
 
 void clean(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   for(int i = 0 ; i < game_nb_nodes(env->g) ; i++){
-     //il faut rajouter le cas de island modifié
-     //SDL_DestroyTexture(env->island[0]);
+    //il faut rajouter le cas de island modifié
+    //SDL_DestroyTexture(env->island[0]);
   }
   SDL_DestroyTexture(env->boat1);
   SDL_DestroyTexture(env->boat2);
