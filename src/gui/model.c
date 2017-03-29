@@ -255,8 +255,8 @@ void make_connection(int node_num, Env * env){
 }
 
 bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
-  int w, h;
-  SDL_GetWindowSize(win, &w, &h);
+   int w, h;
+   SDL_GetWindowSize(win, &w, &h);
 
   /* generic events */
   if (e->type == SDL_QUIT) {
@@ -291,6 +291,47 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   }
 
   return false;
+
+   /* generic events */
+   if (e->type == SDL_QUIT) {
+      return true;
+   }
+
+   /* Android events */
+
+#ifdef __ANDROID__
+   else if (e->type == SDL_FINGERDOWN) {
+      int node_num = get_node(tfinger.x, tfinger.y, env);
+      if(env->node == -1)
+         env->node = node_num;
+      else
+         make_connection(node_num, env);
+   }
+   else if(e->type == SDL_FINGERUP){
+      int node_num = get_node(tfinger.x,tfinger.y, env);
+      make_connection(node_num, env);
+   }
+
+  #else
+   else if(e->type == SDL_MOUSEBUTTONDOWN){
+      SDL_Point mousedir;
+      SDL_GetMouseState(&mousedir.x, &mousedir.y);
+      int node_num = get_node(mousedir.x, mousedir.y, env);
+      if(env->node == -1)
+         env->node = node_num;
+      else
+         make_connection(node_num, env);
+   }
+
+   else if(e->type == SDL_MOUSEBUTTONUP){
+      SDL_Point mousedir;
+      SDL_GetMouseState(&mousedir.x, &mousedir.y);
+      int node_num = get_node(mousedir.x,mousedir.y, env);
+      make_connection(node_num, env);
+   }
+   #endif
+
+   return false;
 }
 
 
