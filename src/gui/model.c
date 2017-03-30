@@ -65,8 +65,8 @@ void init_window(int w, int h, Env * env){
 
    // definition de la taille de la police
    env->fontsize = env->size/6;
-
 }
+
 
 static int coordtopxx(int coord, Env * env){
    return (coord * 2 + 1) * env->size  - env->size / 2 + env->margin_x;

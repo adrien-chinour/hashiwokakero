@@ -34,14 +34,6 @@ void bridges_in_all_directions(game g)
 	}
       }
     }
-    //si le noeud n'a qu'un voisin, on lui pose forcément autant de pont que possible
-    else if(get_nb_neighbours(g, i) == 1){
-      for(int j = 0; j < game_nb_dir(g); j++){
-	for(int k = 0; k < game_nb_max_bridges(g); k++){
-	  add_bridge_dir(g, i, j);
-	}
-      }
-    }
   }
 }
 
@@ -115,31 +107,40 @@ void simple_bridges(game g){
   free(tab);
 }
 
-/*
+//START
 int * calcul_bridges_neighbours(int node_num, game g){
   int * bridges = malloc(sizeof(int)*game_nb_dir(g) +1);
   bridges[game_nb_dir(g)] = 0;
   for(int dir = 0; dir < game_nb_dir(g); dir++){
     if(can_add_bridge_dir(g, node_num, dir)){
+
+      //rdNode/rdOther : degré requis du noeud/voisin ; dN/d0 : nombre de ponts posés sur le noeud/voisin
+      int rdNode = get_required_degree(game_node(g, node_num));
+      int rdOther = get_required_degree(game_node(g, get_neighbour_dir(g, node_num, dir)));
+      int dN = get_degree(g, node_num);
+      int dO = get_degree(g, get_neighbour_dir(g, node_num, dir));
       
-      //cas ou le degre est egal au degre du voisin
-      if(get_required_degree(game_node(g, get_neighbour_dir(g, node_num, dir))) == get_required_degree(game_node(g, node_num)) && get_required_degree(game_node(g, node_num)) <= game_nb_max_bridges(g)){
-	bridges[dir] = get_required_degree(game_node(g, node_num))-1;
+      //cas ou le degre est egal au degre du voisin, sans dépasser le nombre de ponts max sur 1 direction
+      if(rdNode == rdOther && rdNode <= game_nb_max_bridges(g)){
+	bridges[dir] = rdNode - 1;
 	bridges[game_nb_dir(g)] += bridges[dir];
       }
-      //cas ou notre noeud à un degré inférieur au degré max
-      else if(get_required_degree(game_node(g, node_num)) - get_degree(g, node_num) < game_nb_max_bridges(g)){
-	bridges[dir] = get_required_degree(game_node(g, node_num)) - get_degree(g, node_num);
+      //cas ou notre noeud a un degré inférieur au nombre de ponts max sur 1 direction
+      //DEFAUT
+      else if(rdNode - dN < game_nb_max_bridges(g)){
+	bridges[dir] = rdNode - dN;
 	bridges[game_nb_dir(g)] += bridges[dir];
       }
       
-      //cas ou le degré du voisin est inférieur au degré max 
-      else if(get_required_degree(game_node(g, get_neighbour_dir(g, node_num, dir))) - get_degree(g, get_neighbour_dir(g, node_num, dir)) < game_nb_max_bridges(g)){
-	bridges[dir] = get_required_degree(game_node(g, get_neighbour_dir(g, node_num, dir))) - get_degree(g, get_neighbour_dir(g, node_num, dir));
+      //cas ou le degré du voisin est inférieur au nombre de ponts max sur 1 direction
+      //DEFAUT
+      else if(rdOther - dO < game_nb_max_bridges(g)){
+	bridges[dir] = rdOther - dO;
 	bridges[game_nb_dir(g)] += bridges[dir];
       }
      
-      //cas ou le degré du voisin est supérieur ou égal au degré max
+      //cas ou le degré du voisin est supérieur ou égal au nombre de ponts max sur 1 direction
+      //DEFAUT
       else {
 	bridges[dir] = game_nb_max_bridges(g);
 	bridges[game_nb_dir(g)] += bridges[dir];
@@ -151,6 +152,7 @@ int * calcul_bridges_neighbours(int node_num, game g){
   return bridges;
 }
 
+//fonction qui pose les ponts en fonction du tableau *bridges
 void apply_bridges_neighbours(game g, int node_num, int * bridges){
   for(int dir = 0; dir < game_nb_dir(g); dir++){
     for(int i = 0; i < bridges[dir]; i++){
@@ -161,24 +163,27 @@ void apply_bridges_neighbours(game g, int node_num, int * bridges){
 
 
 void auto_play(game g, int node_num, bool change){
+
+  //si on a vu chaque node
   if(node_num == game_nb_nodes(g)){
-    if (change)
+    //si on a posé des ponts, on recommence a regarder chaque node pour poser d'autres ponts
+    if(change)
       auto_play(g,0,false);
   }
-  else {
-    int * bridges = calcul_bridges_neighbours(node_num, g);
-    if (bridges[game_nb_dir(g)] == get_required_degree(game_node(g, node_num)) - get_degree(g, node_num)){
-      apply_bridges_neighbours(g, node_num, bridges);
-      free(bridges);
-      auto_play(g, node_num+1, true);
-    }
-    else{
-      free(bridges);
-      auto_play(g, node_num+1, change);
-    }
+  
+  int * bridges = calcul_bridges_neighbours(node_num, g);
+  
+  if(bridges[game_nb_dir(g)] == get_required_degree(game_node(g, node_num)) - get_degree(g, node_num)){
+    apply_bridges_neighbours(g, node_num, bridges);
+    free(bridges);
+    auto_play(g, node_num+1, true);
+  }
+  else{
+    free(bridges);
+    auto_play(g, node_num+1, change);
   }
 }
-*/
+//END
 
 bool solver_r(game g,int node_num,int dir,bool * go){
   if(get_required_degree(game_node(g,node_num))==get_degree(g,node_num)){
