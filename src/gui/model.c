@@ -12,7 +12,7 @@
 
 /* **************************************************************** */
 
-#define FONT "Arial.ttf"
+#define FONT "Luna.ttf"
 #define ISLAND "img/island.png"
 #define BOAT1 "img/boat1.png"
 #define BOAT2 "img/boat2.png"
@@ -64,7 +64,24 @@ void init_window(int w, int h, Env * env){
   env->margin_x = margin_x; env->margin_y = margin_y;
 
   // definition de la taille de la police
-  env->fontsize = env->size/2;
+  env->fontsize = env->size/6;
+
+  for(int i = 0 ; i < game_nb_nodes(env->g) ; i++){
+
+    node n = game_node(env->g, i);
+    SDL_Color color = { 231, 62, 1, 255 };
+    TTF_Font * font = TTF_OpenFont(FONT, env->fontsize);
+    if(!font) ERROR("erreur TTF_OpenFont: %s\n", FONT);
+    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
+    char * degree = malloc(sizeof(char)*10);
+    sprintf(degree, "%d", get_required_degree(n));
+    SDL_Surface * surf = TTF_RenderText_Blended(font, degree , color);// blended rendering for ultra nice text
+    //free(degree);
+    env->text[i] = SDL_CreateTextureFromSurface(ren, surf);
+    SDL_FreeSurface(surf);
+    TTF_CloseFont(font);
+  }
+
 }
 
 static int coordtopxx(int coord, Env * env){
@@ -129,7 +146,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
 
   for(int i = 0 ; i < game_nb_nodes(g) ; i++){
     node n = game_node(g, i);
-    SDL_Color color = { 200, 20, 0, 255 };
+    SDL_Color color = { 231, 62, 1, 255 };
     TTF_Font * font = TTF_OpenFont(FONT, env->fontsize);
     if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
     TTF_SetFontStyle(font, TTF_STYLE_BOLD);
@@ -171,8 +188,8 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
 
       /* degree */
       SDL_QueryTexture(env->text[i], NULL, NULL, &rect.w, &rect.h);
-      rect.x = coordtopxx(get_x(n),env) + env->size/4;
-      rect.y = coordtopxy(get_y(n),env) + env->size/4;
+      rect.x = coordtopxx(get_x(n),env) + env->size / 2;
+      rect.y = coordtopxy(get_y(n),env) + env->size / 2;
       SDL_RenderCopy(ren, env->text[i], NULL, &rect);
 
       if(get_degree(env->g, i)){
