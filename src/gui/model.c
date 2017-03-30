@@ -18,7 +18,7 @@
 #define BOAT2 "img/boat2.png"
 #define BOAT3 "img/boat3.png"
 #define BOAT4 "img/boat4.png"
-#define ISLANDSELECT "img/islandselect.png"
+#define ISLANDSELECT "img/island_selected.png"
 
 /* **************************************************************** */
 
@@ -65,22 +65,6 @@ void init_window(int w, int h, Env * env){
 
   // definition de la taille de la police
   env->fontsize = env->size/6;
-
-  for(int i = 0 ; i < game_nb_nodes(env->g) ; i++){
-
-    node n = game_node(env->g, i);
-    SDL_Color color = { 231, 62, 1, 255 };
-    TTF_Font * font = TTF_OpenFont(FONT, env->fontsize);
-    if(!font) ERROR("erreur TTF_OpenFont: %s\n", FONT);
-    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
-    char * degree = malloc(sizeof(char)*10);
-    sprintf(degree, "%d", get_required_degree(n));
-    SDL_Surface * surf = TTF_RenderText_Blended(font, degree , color);// blended rendering for ultra nice text
-    //free(degree);
-    env->text[i] = SDL_CreateTextureFromSurface(ren, surf);
-    SDL_FreeSurface(surf);
-    TTF_CloseFont(font);
-  }
 
 }
 
@@ -327,10 +311,11 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   if(e->type == SDL_MOUSEBUTTONDOWN){
     SDL_Point mousedir;
     SDL_GetMouseState(&mousedir.x, &mousedir.y);
-    int node_num = get_node(mousedir.x, mousedir.y, env); 
-    env->island[node_num] = env->islandselect;
-    if(env->node == -1)
-      env->node = node_num;
+    int node_num = get_node(mousedir.x, mousedir.y, env);
+    if(env->node == -1){
+       env->island[node_num] = env->islandselect;
+       env->node = node_num;
+    }
     else if(env->node == node_num){
        env->node = -1;
        env->island[node_num] = env->islandnonselect;
@@ -403,5 +388,4 @@ void clean(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   delete_game(env->g);
   free(env->text);
   free(env);
-  SDL_DestroyRenderer(ren);
 }
