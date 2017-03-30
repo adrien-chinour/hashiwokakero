@@ -18,7 +18,7 @@
 #define BOAT2 "img/boat2.png"
 #define BOAT3 "img/boat3.png"
 #define BOAT4 "img/boat4.png"
-#define ISLANDSELECT "img/islandselect.png"
+#define ISLANDSELECT "img/island_selected.png"
 
 /* **************************************************************** */
 
@@ -105,7 +105,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   if(env->island == NULL) exit(EXIT_FAILURE); //ERREUR
   env->islandnonselect = IMG_LoadTexture(ren, ISLAND);
   if(!env->island) ERROR("IMG_LoadTexture: %s\n", ISLAND); //ERREUR
-  
+
   for(int i = 0 ; i < game_nb_nodes(g) ; i++){
      env->island[i] = env->islandnonselect;
   }
@@ -235,7 +235,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
             }
          }
 
-         
+
          /* test boat texture */
          //boat1
          //rect.w = size/4; rect.h = size/2; rect.x = 10; rect.y = 10;
@@ -310,10 +310,11 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   if(e->type == SDL_MOUSEBUTTONDOWN){
     SDL_Point mousedir;
     SDL_GetMouseState(&mousedir.x, &mousedir.y);
-    int node_num = get_node(mousedir.x, mousedir.y, env); 
-    env->island[node_num] = env->islandselect;
-    if(env->node == -1)
-      env->node = node_num;
+    int node_num = get_node(mousedir.x, mousedir.y, env);
+    if(env->node == -1){
+       env->island[node_num] = env->islandselect;
+       env->node = node_num;
+    }
     else if(env->node == node_num){
        env->node = -1;
        env->island[node_num] = env->islandnonselect;
@@ -386,5 +387,4 @@ void clean(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   delete_game(env->g);
   free(env->text);
   free(env);
-  SDL_DestroyRenderer(ren);
 }
