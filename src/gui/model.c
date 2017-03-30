@@ -22,6 +22,18 @@
 
 /* **************************************************************** */
 
+
+
+
+struct boat{
+   SDL_Rect pos;
+   int dx;
+   int dy;
+   int cx;
+   int cy;
+   SDL_Texture * skin;
+};
+
 struct Env_t {
    SDL_Texture ** island; // texture ile
    SDL_Texture * boat1; SDL_Texture * boat2; // texture bateau
@@ -35,7 +47,38 @@ struct Env_t {
    game g; // la partie a afficher
    int node; // le noeud selectionné (evenement)
    int size; // taille d'une ile
+   int nbBoat;
+   struct boat ** list_boat;
 };
+
+
+struct boat * create_boat(int x, int y, int dx, int dy, int cx, int cy, int degree, Env * env){
+   struct boat*  new_boat = malloc(sizeof(struct boat));
+   new_boat->pos.x=x;
+   new_boat->pos.y=y;
+   new_boat->pos.w=env->size/2;
+   new_boat->pos.h=env->size/2;
+   new_boat->dx =dx;
+   new_boat->dy =dy;
+   new_boat->cx =cx;
+   new_boat->cy =cy;
+   if(degree == 1)
+      new_boat->skin = env->boat1;
+   else if(degree == 2)
+      new_boat->skin = env->boat2;
+   else if(degree == 3)
+      new_boat->skin = env->boat3;
+   else if(degree == 4)
+      new_boat->skin = env->boat4;
+   else{
+      free(new_boat);
+      return NULL;
+   }
+   return new_boat;
+}
+
+
+
 
 /*
   Initialisation des variables d'env en fonction de la taille de l'écran
@@ -43,6 +86,7 @@ struct Env_t {
 void init_window(int w, int h, Env * env){
    int max_x = 0; int max_y = 0;
    int margin_x = 0; int margin_y = 0;
+   
 
    // recupération de max_x et max_y
    for(int i = 0 ; i < game_nb_nodes(env->g) ; i++){
@@ -95,8 +139,12 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
    /*allocation de notre structure d'environnement*/
    Env * env = malloc(sizeof(struct Env_t));
    if(env == NULL) {delete_game(g); return NULL;} //ERREUR
+   
 
    env->g = g;
+   env->nbBoat = 0;
+   env->list_boat = malloc(sizeof(struct boat*)*game_nb_nodes(env->g)*game_nb_dir(env->g)*game_nb_max_bridges(env->g));
+   
    int w, h;
    SDL_GetWindowSize(win, &w, &h);
    init_window(w,h,env);
@@ -159,7 +207,11 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
 
    int x,y,x1,y1;
    int dx =0,dy=0,dx1=0,dy1=0;
-   
+
+
+   env->list_boat[0] = create_boat(50,50,2,2,100,100,1,env);
+
+   SDL_RenderCopy(ren, env->boat1, NULL, &rect);
    /* nodes */
    for(int i = 0; i < game_nb_nodes(env->g); i++){
       node n = game_node(env->g, i);
@@ -352,6 +404,29 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
       }
    }
 
+
+
+   /* generic events */
+   if (e->type == SDL_QUIT) {
+      return true;
+   }
+
+   /* Android events */
+
+#ifdef __ANDROID__
+   else if (e->type == SDL_FINGERDOWN) {
+      int node_num = get_node(tfinger.x, tfinger.y, env);
+      if(env->node == -1)
+         env->node = node_num;
+      else
+         make_connection(node_num, env);
+   }
+   else if(e->type == SDL_FINGERUP){
+      int node_num = get_node(tfinger.x,tfinger.y, env);
+      make_connection(node_num, env);
+   }
+
+#else
    if(e->type == SDL_MOUSEBUTTONDOWN){
       SDL_Point mousedir;
       SDL_GetMouseState(&mousedir.x, &mousedir.y);
@@ -376,47 +451,8 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
    }
 
    return false;
-
-   /* generic events */
-   if (e->type == SDL_QUIT) {
-      return true;
-   }
-
-   /* Android events */
-
-#ifdef __ANDROID__
-   else if (e->type == SDL_FINGERDOWN) {
-      int node_num = get_node(tfinger.x, tfinger.y, env);
-      if(env->node == -1)
-         env->node = node_num;
-      else
-         make_connection(node_num, env);
-   }
-   else if(e->type == SDL_FINGERUP){
-      int node_num = get_node(tfinger.x,tfinger.y, env);
-      make_connection(node_num, env);
-   }
-
-#else
-   else if(e->type == SDL_MOUSEBUTTONDOWN){
-      SDL_Point mousedir;
-      SDL_GetMouseState(&mousedir.x, &mousedir.y);
-      int node_num = get_node(mousedir.x, mousedir.y, env);
-      if(env->node == -1)
-         env->node = node_num;
-      else
-         make_connection(node_num, env);
-   }
-
-   else if(e->type == SDL_MOUSEBUTTONUP){
-      SDL_Point mousedir;
-      SDL_GetMouseState(&mousedir.x, &mousedir.y);
-      int node_num = get_node(mousedir.x,mousedir.y, env);
-      make_connection(node_num, env);
-   }
+   
 #endif
-
-   return false;
 }
 
 
