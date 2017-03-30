@@ -271,7 +271,7 @@ void make_connection(int node_num, Env * env){
       if(get_neighbour_dir(env->g, node_num, i) == env->node){
 	if(can_add_bridge_dir(env->g, node_num, i)){
 	  add_bridge_dir(env->g, node_num, i);
-          env->island[get_neighbour_dir(env->g, node_num, i)] = env->islandnonselect;
+          env->island[env->node] = env->islandnonselect;
           env->island[node_num]=env->islandnonselect;
 	}
 	else {
@@ -314,6 +314,10 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
     env->island[node_num] = env->islandselect;
     if(env->node == -1)
       env->node = node_num;
+    else if(env->node == node_num){
+       env->node = -1;
+       env->island[node_num] = env->islandnonselect;
+    }
     else
       make_connection(node_num, env);
   }
