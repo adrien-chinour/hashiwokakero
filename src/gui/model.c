@@ -51,7 +51,6 @@ struct Env_t {
    struct boat ** list_boat;
 };
 
-
 struct boat * create_boat(int x, int y, int dx, int dy, int cx, int cy, int degree, Env * env){
    struct boat*  new_boat = malloc(sizeof(struct boat));
    new_boat->pos.x=x;
@@ -83,10 +82,32 @@ struct boat * create_boat(int x, int y, int dx, int dy, int cx, int cy, int degr
 /*
   Initialisation des variables d'env en fonction de la taille de l'écran
 */
-void init_window(int w, int h, Env * env){
-   int max_x = 0; int max_y = 0;
-   int margin_x = 0; int margin_y = 0;
-   
+
+void print_degree(int node_num, SDL_Renderer* ren,  Env * env){
+  SDL_Surface * surf;
+  SDL_Color color_menthe = { 22,184,78,255 }; //couleur menthe
+  SDL_Color color_corail = { 231,62,1,255 }; //couleur corail
+  node n = game_node(env->g, node_num);
+  TTF_Font * font = TTF_OpenFont(FONT, env->fontsize);
+  if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
+  TTF_SetFontStyle(font, TTF_STYLE_BOLD);
+  char * degree = malloc(sizeof(char)*10);
+  sprintf(degree, "%d", get_required_degree(n));
+  if(get_required_degree(game_node(env->g, node_num)) == get_degree(env->g, node_num))
+    surf = TTF_RenderText_Blended(font, degree , color_menthe);
+  else
+    surf = TTF_RenderText_Blended(font, degree , color_corail);
+  env->text[node_num] = SDL_CreateTextureFromSurface(ren, surf);
+  SDL_FreeSurface(surf);
+  TTF_CloseFont(font);
+}
+
+/*
+  Initialisation des variables d'env en fonction de la taille de l'écran
+*/
+void init_window(int w, int h, SDL_Renderer* ren, Env * env){
+  int max_x = 0; int max_y = 0;
+  int margin_x = 0; int margin_y = 0;
 
    // recupération de max_x et max_y
    for(int i = 0 ; i < game_nb_nodes(env->g) ; i++){
@@ -97,18 +118,18 @@ void init_window(int w, int h, Env * env){
    env->max_x = max_x + 1; env->max_y = max_y + 1;
 
 // definiton de la marge
-   if(env->max_x * h > env->max_y * w){
-      env->size = w /(env->max_x * 2);
-      margin_y = (h  - env->size * (env->max_y * 2)) / 2;
-   }
-   else {
-      env->size = h /(env->max_y * 2);
-      margin_x = (w  - env->size * (env->max_x * 2)) / 2;
-   }
-   env->margin_x = margin_x; env->margin_y = margin_y;
+  if(env->max_x * h > env->max_y * w){
+    env->size = w /(env->max_x * 2);
+    margin_y = (h  - env->size * (env->max_y * 2)) / 2;
+  }
+  else {
+    env->size = h /(env->max_y * 2);
+    margin_x = (w  - env->size * (env->max_x * 2)) / 2;
+  }
+  env->margin_x = margin_x; env->margin_y = margin_y;
 
-   // definition de la taille de la police
-   env->fontsize = env->size/6;
+  // definition de la taille de la police
+  env->fontsize = env->size/6;
 }
 
 
@@ -121,7 +142,6 @@ static int coordtopxy(int coord, Env * env){
 }
 
 Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
-
    char * game_file = NULL;
    game g = NULL;
 
@@ -147,7 +167,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
    
    int w, h;
    SDL_GetWindowSize(win, &w, &h);
-   init_window(w,h,env);
+   init_window(w,h,ren,env);
 
    /* Init island texture from PNG image */
    env->island=malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
@@ -208,10 +228,10 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
    int x,y,x1,y1;
    int dx =0,dy=0,dx1=0,dy1=0;
 
-
    env->list_boat[0] = create_boat(50,50,2,2,100,100,1,env);
 
    SDL_RenderCopy(ren, env->boat1, NULL, &rect);
+
    /* nodes */
    for(int i = 0; i < game_nb_nodes(env->g); i++){
       node n = game_node(env->g, i);
@@ -225,8 +245,8 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
 
       /* degree */
       SDL_QueryTexture(env->text[i], NULL, NULL, &rect.w, &rect.h);
-      rect.x = coordtopxx(get_x(n),env) + env->size / 2;
-      rect.y = coordtopxy(get_y(n),env) + env->size / 2;
+      rect.x = coordtopxx(get_x(n),env) + env->size /1.5;
+      rect.y = coordtopxy(get_y(n),env) + env->size /1.5;
       SDL_RenderCopy(ren, env->text[i], NULL, &rect);
 
       if(get_degree(env->g, i)){
@@ -362,54 +382,55 @@ int get_node(int x, int y, Env * env){
    return -1;
 }
 
-void make_connection(int node_num, Env * env){
-   if(env->node != -1 && node_num != -1){
-      for(int i = 0; i < game_nb_dir(env->g); i++){
-         if(get_neighbour_dir(env->g, node_num, i) == env->node){
-            if(can_add_bridge_dir(env->g, node_num, i)){
-               add_bridge_dir(env->g, node_num, i);
-               env->island[env->node] = env->islandnonselect;
-               env->island[node_num]=env->islandnonselect;
-            }
-            else {
-               while(get_degree_dir(env->g, node_num, i) != 0){
-                  env->island[get_neighbour_dir(env->g, node_num, i)] = env->islandnonselect;
-                  env->island[node_num]=env->islandnonselect;
-                  del_bridge_dir(env->g, node_num, i);
-               }
-            }
-            env->node = -1;
-            break;
-         }
+void make_connection(int node_num, SDL_Renderer * ren, Env * env){
+  if(env->node != -1 && node_num != -1){
+    for(int i = 0; i < game_nb_dir(env->g); i++){
+      if(get_neighbour_dir(env->g, node_num, i) == env->node){
+        if(can_add_bridge_dir(env->g, node_num, i)){
+          add_bridge_dir(env->g, node_num, i);
+          env->island[env->node] = env->islandnonselect;
+          env->island[node_num]=env->islandnonselect;
+          print_degree(node_num, ren, env);
+        }
+        else {
+          while(get_degree_dir(env->g, node_num, i) != 0){
+            env->island[get_neighbour_dir(env->g, node_num, i)] = env->islandnonselect;
+            env->island[node_num]=env->islandnonselect;
+            del_bridge_dir(env->g, node_num, i);
+            print_degree(node_num, ren, env);
+          }
+        }
+        print_degree(env->node, ren ,env);
+        env->node = -1;
+        break;
       }
-   }
+    }
+
+  }
 }
 
 bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
    int w, h;
    SDL_GetWindowSize(win, &w, &h);
 
-   /* generic events */
-   if (e->type == SDL_QUIT) {
-      return true;
-   }
-
-   if(e->type == SDL_WINDOWEVENT){
-      int width, height;
-      switch (e->window.event) {
-         case SDL_WINDOWEVENT_RESIZED:
-            SDL_GetWindowSize(win, &width, &height);
-            init_window(width,height,env);
-            break;
-      }
-   }
-
-
 
    /* generic events */
    if (e->type == SDL_QUIT) {
       return true;
    }
+   
+  if(e->type == SDL_WINDOWEVENT){
+    int width, height;
+    switch (e->window.event) {
+      case SDL_WINDOWEVENT_RESIZED:
+        SDL_GetWindowSize(win, &width, &height);
+        init_window(width,height,ren,env);
+        for(int i = 0; i < game_nb_nodes(env->g); i++){
+          print_degree(i, ren, env);
+        }
+        break;
+    }
+  }
 
    /* Android events */
 
@@ -419,11 +440,11 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
       if(env->node == -1)
          env->node = node_num;
       else
-         make_connection(node_num, env);
+         make_connection(node_num, ren, env);
    }
    else if(e->type == SDL_FINGERUP){
       int node_num = get_node(tfinger.x,tfinger.y, env);
-      make_connection(node_num, env);
+      make_connection(node_num, ren, env);
    }
 
 #else
@@ -440,14 +461,14 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
          env->island[node_num] = env->islandnonselect;
       }
       else
-         make_connection(node_num, env);
+         make_connection(node_num, ren, env);
    }
 
    if(e->type == SDL_MOUSEBUTTONUP){
       SDL_Point mousedir;
       SDL_GetMouseState(&mousedir.x, &mousedir.y);
       int node_num = get_node(mousedir.x,mousedir.y, env);
-      make_connection(node_num, env);
+      make_connection(node_num, ren, env);
    }
 
    return false;
