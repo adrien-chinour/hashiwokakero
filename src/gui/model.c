@@ -41,109 +41,109 @@ struct Env_t {
   Initialisation des variables d'env en fonction de la taille de l'écran
 */
 void init_window(int w, int h, Env * env){
-  int max_x = 0; int max_y = 0;
-  int margin_x = 0; int margin_y = 0;
+   int max_x = 0; int max_y = 0;
+   int margin_x = 0; int margin_y = 0;
 
-  // recupération de max_x et max_y
-  for(int i = 0 ; i < game_nb_nodes(env->g) ; i++){
-    node n = game_node(env->g, i);
-    if(get_x(n) > max_x) max_x = get_x(n);
-    if(get_y(n) > max_y) max_y = get_y(n);
-  }
-  env->max_x = max_x + 1; env->max_y = max_y + 1;
+   // recupération de max_x et max_y
+   for(int i = 0 ; i < game_nb_nodes(env->g) ; i++){
+      node n = game_node(env->g, i);
+      if(get_x(n) > max_x) max_x = get_x(n);
+      if(get_y(n) > max_y) max_y = get_y(n);
+   }
+   env->max_x = max_x + 1; env->max_y = max_y + 1;
 
 // definiton de la marge
-  if(env->max_x * h > env->max_y * w){
-    env->size = w /(env->max_x * 2);
-    margin_y = (h  - env->size * (env->max_y * 2)) / 2;
-  }
-  else {
-    env->size = h /(env->max_y * 2);
-    margin_x = (w  - env->size * (env->max_x * 2)) / 2;
-  }
-  env->margin_x = margin_x; env->margin_y = margin_y;
+   if(env->max_x * h > env->max_y * w){
+      env->size = w /(env->max_x * 2);
+      margin_y = (h  - env->size * (env->max_y * 2)) / 2;
+   }
+   else {
+      env->size = h /(env->max_y * 2);
+      margin_x = (w  - env->size * (env->max_x * 2)) / 2;
+   }
+   env->margin_x = margin_x; env->margin_y = margin_y;
 
-  // definition de la taille de la police
-  env->fontsize = env->size/6;
+   // definition de la taille de la police
+   env->fontsize = env->size/6;
 
 }
 
 static int coordtopxx(int coord, Env * env){
-  return (coord * 2 + 1) * env->size  - env->size / 2 + env->margin_x;
+   return (coord * 2 + 1) * env->size  - env->size / 2 + env->margin_x;
 }
 
 static int coordtopxy(int coord, Env * env){
-  return (coord * 2 + 1) * env->size  - env->size / 2 + env->margin_y;
+   return (coord * 2 + 1) * env->size  - env->size / 2 + env->margin_y;
 }
 
 Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
 
-  char * game_file = NULL;
-  game g = NULL;
+   char * game_file = NULL;
+   game g = NULL;
 
-  /* L'utilisateur a rentré un nom de fichier */
-  if(argc == 2) game_file = argv[1];
-  if (game_file != NULL) printf("%s\n",game_file); //debug
+   /* L'utilisateur a rentré un nom de fichier */
+   if(argc == 2) game_file = argv[1];
+   if (game_file != NULL) printf("%s\n",game_file); //debug
 
-  /* On charge le game en fonction de ce que l'utilisateur demande*/
-  if(game_file != NULL) {g = translate_game(game_file); }
-  else {g = translate_game("save/game_default.txt"); }
+   /* On charge le game en fonction de ce que l'utilisateur demande*/
+   if(game_file != NULL) {g = translate_game(game_file); }
+   else {g = translate_game("save/game_default.txt"); }
 
-  /* test retour fonction translate*/
-  if (g == NULL) return NULL;
+   /* test retour fonction translate*/
+   if (g == NULL) return NULL;
 
-  /*allocation de notre structure d'environnement*/
-  Env * env = malloc(sizeof(struct Env_t));
-  if(env == NULL) {delete_game(g); return NULL;} //ERREUR
+   /*allocation de notre structure d'environnement*/
+   Env * env = malloc(sizeof(struct Env_t));
+   if(env == NULL) {delete_game(g); return NULL;} //ERREUR
 
-  env->g = g;
-  int w, h;
-  SDL_GetWindowSize(win, &w, &h);
-  init_window(w,h,env);
+   env->g = g;
+   int w, h;
+   SDL_GetWindowSize(win, &w, &h);
+   init_window(w,h,env);
 
-  /* Init island texture from PNG image */
-  env->island=malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
-  if(env->island == NULL) exit(EXIT_FAILURE); //ERREUR
-  env->islandnonselect = IMG_LoadTexture(ren, ISLAND);
-  if(!env->island) ERROR("IMG_LoadTexture: %s\n", ISLAND); //ERREUR
+   /* Init island texture from PNG image */
+   env->island=malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
+   if(env->island == NULL) exit(EXIT_FAILURE); //ERREUR
+   env->islandnonselect = IMG_LoadTexture(ren, ISLAND);
+   if(!env->island) ERROR("IMG_LoadTexture: %s\n", ISLAND); //ERREUR
 
-  for(int i = 0 ; i < game_nb_nodes(g) ; i++){
-     env->island[i] = env->islandnonselect;
-  }
+   for(int i = 0 ; i < game_nb_nodes(g) ; i++){
+      env->island[i] = env->islandnonselect;
+   }
 
-  /* Init boat texture from PNG image */
-  env->boat1 = IMG_LoadTexture(ren, BOAT1);
-  if(!env->boat1) ERROR("IMG_LoadTexture: %s\n", BOAT1); //ERREUR
-  env->boat2 = IMG_LoadTexture(ren, BOAT2);
-  if(!env->boat2) ERROR("IMG_LoadTexture: %s\n", BOAT2); //ERREUR
-  env->boat3 = IMG_LoadTexture(ren, BOAT3);
-  if(!env->boat3) ERROR("IMG_LoadTexture: %s\n", BOAT3); //ERREUR
-  env->boat4 = IMG_LoadTexture(ren, BOAT4);
-  if(!env->boat4) ERROR("IMG_LoadTexture: %s\n", BOAT4); //ERREUR
-  env->islandselect = IMG_LoadTexture(ren,ISLANDSELECT);
+   /* Init boat texture from PNG image */
+   env->boat1 = IMG_LoadTexture(ren, BOAT1);
+   if(!env->boat1) ERROR("IMG_LoadTexture: %s\n", BOAT1); //ERREUR
+   env->boat2 = IMG_LoadTexture(ren, BOAT2);
+   if(!env->boat2) ERROR("IMG_LoadTexture: %s\n", BOAT2); //ERREUR
+   env->boat3 = IMG_LoadTexture(ren, BOAT3);
+   if(!env->boat3) ERROR("IMG_LoadTexture: %s\n", BOAT3); //ERREUR
+   env->boat4 = IMG_LoadTexture(ren, BOAT4);
+   if(!env->boat4) ERROR("IMG_LoadTexture: %s\n", BOAT4); //ERREUR
+   env->islandselect = IMG_LoadTexture(ren,ISLANDSELECT);
 
-  SDL_Texture ** text = malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
+   SDL_Texture ** text = malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
 
-  if(text == NULL) {delete_game(g); free(env); return NULL;} //ERREUR //SDLdeletetexture env->island
+   if(text == NULL) {delete_game(g); free(env); return NULL;} //ERREUR //SDLdeletetexture env->island
 
-  env->text = text;
+   env->text = text;
 
-  for(int i = 0 ; i < game_nb_nodes(g) ; i++){
-    node n = game_node(g, i);
-    SDL_Color color = { 231, 62, 1, 255 };
-    TTF_Font * font = TTF_OpenFont(FONT, env->fontsize);
-    if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
-    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
-    char * degree = malloc(sizeof(char)*10);
-    sprintf(degree, "%d", get_required_degree(n));
-    SDL_Surface * surf = TTF_RenderText_Blended(font, degree , color);// blended rendering for ultra nice text
-    //free(degree);
-    env->text[i] = SDL_CreateTextureFromSurface(ren, surf);
-    SDL_FreeSurface(surf);
-    TTF_CloseFont(font);
-  }
-  env->node = -1;
-  return env;
+   for(int i = 0 ; i < game_nb_nodes(g) ; i++){
+      node n = game_node(g, i);
+      SDL_Color color = { 231, 62, 1, 255 };
+      TTF_Font * font = TTF_OpenFont(FONT, env->fontsize);
+      if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
+      TTF_SetFontStyle(font, TTF_STYLE_BOLD);
+      char * degree = malloc(sizeof(char)*10);
+      sprintf(degree, "%d", get_required_degree(n));
+      SDL_Surface * surf = TTF_RenderText_Blended(font, degree , color);// blended rendering for ultra nice text
+      //free(degree);
+      env->text[i] = SDL_CreateTextureFromSurface(ren, surf);
+      SDL_FreeSurface(surf);
+      TTF_CloseFont(font);
+   }
+   env->node = -1;
+   return env;
 }
 
 void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
@@ -158,7 +158,8 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
    SDL_SetRenderDrawColor(ren, 0, 0, 0, SDL_ALPHA_OPAQUE);
 
    int x,y,x1,y1;
-
+   int dx =0,dy=0,dx1=0,dy1=0;
+   
    /* nodes */
    for(int i = 0; i < game_nb_nodes(env->g); i++){
       node n = game_node(env->g, i);
@@ -188,51 +189,94 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
                      y = coordtopxy(get_y(n),env)+env->size;
                      x1 = coordtopxx(get_x(cible),env)+env->size/2;
                      y1 =coordtopxy(get_y(cible),env);
+                     dx =env->size/10;
+                     dy =0;
+                     dx1= env->size/10;
+                     dy1= 0;
                      break;
                   case WEST:
                      x = coordtopxx(get_x(n),env);
                      y = coordtopxy(get_y(n),env)+env->size/2;
                      x1 = coordtopxx(get_x(cible),env)+env->size;
                      y1 =coordtopxy(get_y(cible),env)+env->size/2;
+                     dx =0;
+                     dy =env->size/10 ;
+                     dx1=0;
+                     dy1= env->size/10;
                      break;
                   case SOUTH:
                      x = coordtopxx(get_x(n),env)+env->size/2;
                      y = coordtopxy(get_y(n),env);
                      x1 = coordtopxx(get_x(cible),env)+env->size/2;
                      y1 =coordtopxy(get_y(cible),env)+env->size;
+                     dx =env->size/10;
+                     dy =0;
+                     dx1= env->size/10;
+                     dy1=0;
                      break;
                   case EAST:
                      x = coordtopxx(get_x(n),env)+env->size;
                      y = coordtopxy(get_y(n),env)+env->size/2;
                      x1 = coordtopxx(get_x(cible),env);
                      y1 =coordtopxy(get_y(cible),env)+env->size/2;
+                     dx =0;
+                     dy =env->size/10 ;
+                     dx1=0;
+                     dy1= env->size/10;
                      break;
                   case NW:
                      x = coordtopxx(get_x(n),env);
                      y = coordtopxy(get_y(n),env)+env->size;
                      x1 = coordtopxx(get_x(cible),env)+env->size;
                      y1 =coordtopxy(get_y(cible),env);
+                     dx =env->size/10;
+                     dy =env->size/10 ;
+                     dx1= env->size/10;
+                     dy1= env->size/10;
                      break;
                   case SW:
                      x = coordtopxx(get_x(n),env);
                      y = coordtopxy(get_y(n),env);
                      x1 = coordtopxx(get_x(cible),env)+env->size;
                      y1 =coordtopxy(get_y(cible),env)+env->size;
+                     dx =-env->size/10;
+                     dy =env->size/10 ;
+                     dx1= -env->size/10;
+                     dy1= env->size/10;
                      break;
                   case SE:
                      x = coordtopxx(get_x(n),env)+env->size;
                      y = coordtopxy(get_y(n),env);
                      x1 = coordtopxx(get_x(cible),env);
                      y1 =coordtopxy(get_y(cible),env)+env->size;
+                     dx =env->size/10;
+                     dy =env->size/10 ;
+                     dx1= env->size/10;
+                     dy1= env->size/10;
                      break;
                   case NE:
                      x = coordtopxx(get_x(n),env)+env->size;
                      y = coordtopxy(get_y(n),env)+env->size;
                      x1 = coordtopxx(get_x(cible),env);
                      y1 =coordtopxy(get_y(cible),env);
+                     dx =-env->size/10;
+                     dy =env->size/10 ;
+                     dx1= -env->size/10;
+                     dy1= env->size/10;
                      break;
                }
-               SDL_RenderDrawLine(ren, x, y, x1, y1);
+               int degree = get_degree_dir(env->g, i, d);
+               x = x+(dx*degree)/2;
+               y = y+(dy*degree)/2;
+               x1 = x1+(dx1*degree)/2;
+               y1 = y1+(dy1*degree)/2;
+               for(int j =0; j<get_degree_dir(env->g, i, d);j++){
+                  SDL_RenderDrawLine(ren, x, y, x1, y1);
+                  x = x-dx;
+                  y = y-dy;
+                  x1 = x1-dx1;
+                  y1 = y1-dy1;
+               }
             }
          }
 
@@ -255,83 +299,83 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
 }
 
 int get_node(int x, int y, Env * env){
-  for(int i = 0; i < game_nb_nodes(env->g); i++){
-    node n = game_node(env->g, i);
-    int coordX = coordtopxx(get_x(n), env);
-    int coordY = coordtopxy(get_y(n), env);
-    if(coordX < x && coordX+env->size > x && coordY < y && coordY+env->size > y){
-      return i;
-    }
-  }
-  return -1;
+   for(int i = 0; i < game_nb_nodes(env->g); i++){
+      node n = game_node(env->g, i);
+      int coordX = coordtopxx(get_x(n), env);
+      int coordY = coordtopxy(get_y(n), env);
+      if(coordX < x && coordX+env->size > x && coordY < y && coordY+env->size > y){
+         return i;
+      }
+   }
+   return -1;
 }
 
 void make_connection(int node_num, Env * env){
-  if(env->node != -1 && node_num != -1){
-    for(int i = 0; i < game_nb_dir(env->g); i++){
-      if(get_neighbour_dir(env->g, node_num, i) == env->node){
-	if(can_add_bridge_dir(env->g, node_num, i)){
-	  add_bridge_dir(env->g, node_num, i);
-          env->island[env->node] = env->islandnonselect;
-          env->island[node_num]=env->islandnonselect;
-	}
-	else {
-	  while(get_degree_dir(env->g, node_num, i) != 0){
-             env->island[get_neighbour_dir(env->g, node_num, i)] = env->islandnonselect;
-             env->island[node_num]=env->islandnonselect;
-             del_bridge_dir(env->g, node_num, i);
-	  }
-	}
-	env->node = -1;
-	break;
+   if(env->node != -1 && node_num != -1){
+      for(int i = 0; i < game_nb_dir(env->g); i++){
+         if(get_neighbour_dir(env->g, node_num, i) == env->node){
+            if(can_add_bridge_dir(env->g, node_num, i)){
+               add_bridge_dir(env->g, node_num, i);
+               env->island[env->node] = env->islandnonselect;
+               env->island[node_num]=env->islandnonselect;
+            }
+            else {
+               while(get_degree_dir(env->g, node_num, i) != 0){
+                  env->island[get_neighbour_dir(env->g, node_num, i)] = env->islandnonselect;
+                  env->island[node_num]=env->islandnonselect;
+                  del_bridge_dir(env->g, node_num, i);
+               }
+            }
+            env->node = -1;
+            break;
+         }
       }
-    }
-  }
+   }
 }
 
 bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
    int w, h;
    SDL_GetWindowSize(win, &w, &h);
 
-  /* generic events */
-  if (e->type == SDL_QUIT) {
-    return true;
-  }
+   /* generic events */
+   if (e->type == SDL_QUIT) {
+      return true;
+   }
 
-  if(e->type == SDL_WINDOWEVENT){
-    int width, height;
-    switch (e->window.event) {
-      case SDL_WINDOWEVENT_RESIZED:
-        SDL_GetWindowSize(win, &width, &height);
-        init_window(width,height,env);
-        break;
-    }
-  }
+   if(e->type == SDL_WINDOWEVENT){
+      int width, height;
+      switch (e->window.event) {
+         case SDL_WINDOWEVENT_RESIZED:
+            SDL_GetWindowSize(win, &width, &height);
+            init_window(width,height,env);
+            break;
+      }
+   }
 
-  if(e->type == SDL_MOUSEBUTTONDOWN){
-    SDL_Point mousedir;
-    SDL_GetMouseState(&mousedir.x, &mousedir.y);
-    int node_num = get_node(mousedir.x, mousedir.y, env);
-    if(env->node == -1){
-       env->island[node_num] = env->islandselect;
-       env->node = node_num;
-    }
-    else if(env->node == node_num){
-       env->node = -1;
-       env->island[node_num] = env->islandnonselect;
-    }
-    else
+   if(e->type == SDL_MOUSEBUTTONDOWN){
+      SDL_Point mousedir;
+      SDL_GetMouseState(&mousedir.x, &mousedir.y);
+      int node_num = get_node(mousedir.x, mousedir.y, env);
+      if(env->node == -1){
+         env->island[node_num] = env->islandselect;
+         env->node = node_num;
+      }
+      else if(env->node == node_num){
+         env->node = -1;
+         env->island[node_num] = env->islandnonselect;
+      }
+      else
+         make_connection(node_num, env);
+   }
+
+   if(e->type == SDL_MOUSEBUTTONUP){
+      SDL_Point mousedir;
+      SDL_GetMouseState(&mousedir.x, &mousedir.y);
+      int node_num = get_node(mousedir.x,mousedir.y, env);
       make_connection(node_num, env);
-  }
+   }
 
-  if(e->type == SDL_MOUSEBUTTONUP){
-    SDL_Point mousedir;
-    SDL_GetMouseState(&mousedir.x, &mousedir.y);
-    int node_num = get_node(mousedir.x,mousedir.y, env);
-    make_connection(node_num, env);
-  }
-
-  return false;
+   return false;
 
    /* generic events */
    if (e->type == SDL_QUIT) {
@@ -353,7 +397,7 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
       make_connection(node_num, env);
    }
 
-  #else
+#else
    else if(e->type == SDL_MOUSEBUTTONDOWN){
       SDL_Point mousedir;
       SDL_GetMouseState(&mousedir.x, &mousedir.y);
@@ -370,22 +414,22 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
       int node_num = get_node(mousedir.x,mousedir.y, env);
       make_connection(node_num, env);
    }
-   #endif
+#endif
 
    return false;
 }
 
 
 void clean(SDL_Window* win, SDL_Renderer* ren, Env * env) {
-  for(int i = 0 ; i < game_nb_nodes(env->g) ; i++){
-    //il faut rajouter le cas de island modifié
-    //SDL_DestroyTexture(env->island[0]);
-  }
-  SDL_DestroyTexture(env->boat1);
-  SDL_DestroyTexture(env->boat2);
-  SDL_DestroyTexture(env->boat3);
-  SDL_DestroyTexture(env->boat4);
-  delete_game(env->g);
-  free(env->text);
-  free(env);
+   for(int i = 0 ; i < game_nb_nodes(env->g) ; i++){
+      //il faut rajouter le cas de island modifié
+      //SDL_DestroyTexture(env->island[0]);
+   }
+   SDL_DestroyTexture(env->boat1);
+   SDL_DestroyTexture(env->boat2);
+   SDL_DestroyTexture(env->boat3);
+   SDL_DestroyTexture(env->boat4);
+   delete_game(env->g);
+   free(env->text);
+   free(env);
 }
