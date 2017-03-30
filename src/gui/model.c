@@ -65,23 +65,6 @@ void init_window(int w, int h, Env * env){
 
   // definition de la taille de la police
   env->fontsize = env->size/6;
-
-  for(int i = 0 ; i < game_nb_nodes(env->g) ; i++){
-
-    node n = game_node(env->g, i);
-    SDL_Color color = { 231, 62, 1, 255 };
-    TTF_Font * font = TTF_OpenFont(FONT, env->fontsize);
-    if(!font) ERROR("erreur TTF_OpenFont: %s\n", FONT);
-    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
-    char * degree = malloc(sizeof(char)*10);
-    sprintf(degree, "%d", get_required_degree(n));
-    SDL_Surface * surf = TTF_RenderText_Blended(font, degree , color);// blended rendering for ultra nice text
-    //free(degree);
-    env->text[i] = SDL_CreateTextureFromSurface(ren, surf);
-    SDL_FreeSurface(surf);
-    TTF_CloseFont(font);
-  }
-
 }
 
 static int coordtopxx(int coord, Env * env){
