@@ -470,14 +470,16 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   #ifdef __ANDROID__
   else if (e->type == SDL_FINGERDOWN) {
     int node_num = get_node(tfinger.x, tfinger.y, env);
-    if(env->node == -1)
-    env->node = node_num;
-    else
-    make_connection(node_num, ren, env);
-  }
-  else if(e->type == SDL_FINGERUP){
-    int node_num = get_node(tfinger.x,tfinger.y, env);
-    make_connection(node_num, ren, env);
+    if(node_num != -1){
+      if(env->node == -1)
+        env->node = node_num;
+      else
+        make_connection(node_num, ren, env);
+    }
+    else if(e->type == SDL_FINGERUP){
+      int node_num = get_node(tfinger.x,tfinger.y, env);
+      make_connection(node_num, ren, env);
+    }
   }
 
   #else
