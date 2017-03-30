@@ -22,38 +22,35 @@
 /* **************************************************************** */
 
 struct Env_t {
-  SDL_Texture ** island;
-  SDL_Texture * boat1;
-  SDL_Texture * boat2;
-  SDL_Texture * boat3;
-  SDL_Texture * boat4;
-  SDL_Texture ** text;
-  int max_x;
-  int max_y;
-  int margin_x;
-  int margin_y;
-  int fontsize;
-  game g;
-  int node;
-  int size;
+  SDL_Texture ** island; // texture ile
+  SDL_Texture * boat1; SDL_Texture * boat2; // texture bateau
+  SDL_Texture * boat3; SDL_Texture * boat4; //texture bateau
+  SDL_Texture ** text; // texture texte (degré)
+  int fontsize; // taille de la police (degré)
+  int max_x; int max_y; // coordonnees maxmum des iles
+  int margin_x; int margin_y; // marge pour centrer la partie
+  game g; // la partie a afficher
+  int node; // le noeud selectionné (evenement)
+  int size; // taille d'une ile
 };
 
+/*
+  Initialisation des variables d'env en fonction de la taille de l'écran
+*/
 void init_window(int w, int h, Env * env){
-  int max_x = 0;
-  int max_y = 0;
-  int margin_x = 0;
-  int margin_y = 0;
+  int max_x = 0; int max_y = 0;
+  int margin_x = 0; int margin_y = 0;
 
+  // recupération de max_x et max_y
   for(int i = 0 ; i < game_nb_nodes(env->g) ; i++){
     node n = game_node(env->g, i);
     if(get_x(n) > max_x) max_x = get_x(n);
     if(get_y(n) > max_y) max_y = get_y(n);
   }
+  env->max_x = max_x + 1; env->max_y = max_y + 1;
 
-  env->max_x = max_x + 1;
-  env->max_y = max_y + 1;
-
-  if(env->max_x * 9 > env->max_y * 16){
+// definiton de la marge
+  if(env->max_x * h > env->max_y * w){
     env->size = w /(env->max_x * 2);
     margin_y = (h  - env->size * (env->max_y * 2)) / 2;
   }
@@ -61,9 +58,9 @@ void init_window(int w, int h, Env * env){
     env->size = h /(env->max_y * 2);
     margin_x = (w  - env->size * (env->max_x * 2)) / 2;
   }
+  env->margin_x = margin_x; env->margin_y = margin_y;
 
-  env->margin_x = margin_x;
-  env->margin_y = margin_y;
+  // definition de la taille de la police
   env->fontsize = env->size/2;
 }
 
@@ -159,20 +156,20 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
    /* nodes */
    for(int i = 0; i < game_nb_nodes(env->g); i++){
       node n = game_node(env->g, i);
-    
+
       /* texture */
       rect.w = env->size;
       rect.h = env->size;
       rect.x = coordtopxx(get_x(n),env);
       rect.y = coordtopxy(get_y(n),env);
       SDL_RenderCopy(ren, env->island[i], NULL, &(rect));
-    
+
       /* degree */
       SDL_QueryTexture(env->text[i], NULL, NULL, &rect.w, &rect.h);
       rect.x = coordtopxx(get_x(n),env) + env->size/4;
       rect.y = coordtopxy(get_y(n),env) + env->size/4;
       SDL_RenderCopy(ren, env->text[i], NULL, &rect);
-        
+
       if(get_degree(env->g, i)){
          for(int d=0;d<game_nb_dir(env->g);d++){
             if(get_degree_dir(env->g, i, d)>0){
