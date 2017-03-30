@@ -485,16 +485,18 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
     SDL_Point mousedir;
     SDL_GetMouseState(&mousedir.x, &mousedir.y);
     int node_num = get_node(mousedir.x, mousedir.y, env);
-    if(env->node == -1){
-      env->island[node_num] = env->islandselect;
-      env->node = node_num;
+    if(node_num !=-1){
+      if(env->node == -1){
+        env->island[node_num] = env->islandselect;
+        env->node = node_num;
+      }
+      else if(env->node == node_num){
+        env->node = -1;
+        env->island[node_num] = env->islandnonselect;
+      }
+      else
+        make_connection(node_num, ren, env);
     }
-    else if(env->node == node_num){
-      env->node = -1;
-      env->island[node_num] = env->islandnonselect;
-    }
-    else
-    make_connection(node_num, ren, env);
   }
 
   if(e->type == SDL_MOUSEBUTTONUP){
