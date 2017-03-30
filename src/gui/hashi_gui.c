@@ -32,6 +32,20 @@ int main(int argc, char * argv[]) {
 
   SDL_Renderer * ren = SDL_CreateRenderer(win, -1,
 					  SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+  
+  SDL_RWops *io = SDL_RWFromFile("img/icone.bmp", "rb");
+  if(io != NULL){
+    SDL_Surface *surface =  SDL_LoadBMP_RW(io,1);
+    if(surface == NULL){
+      SDL_RWclose(io);
+    }
+    else{
+      SDL_SetWindowIcon(win, surface);
+    }
+    SDL_FreeSurface(surface);
+  }
+
   if(!ren) ERROR("SDL_CreateWindow");
 
   /* add game menu here */

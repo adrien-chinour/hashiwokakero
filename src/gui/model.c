@@ -347,6 +347,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
       }
 
       //timer
+
       SDL_Color color = {255, 203, 96, 255};
       TTF_Font * font = TTF_OpenFont(FONT, env->fontsize*2);
       if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
@@ -386,19 +387,6 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
         TTF_CloseFont(font);
       }
 
-      /* test boat texture */
-      //boat1
-      //rect.w = size/4; rect.h = size/2; rect.x = 10; rect.y = 10;
-      //SDL_RenderCopy(ren, env->boat1, NULL, &(rect));
-      //boat2
-      //rect.w = size/4; rect.h = size/2; rect.x = 10; rect.y = 10;
-      //SDL_RenderCopy(ren, env->boat2, NULL, &(rect));
-      //boat3
-      //rect.w = size/4; rect.h = size/2; rect.x = 10; rect.y = 10;
-      //SDL_RenderCopy(ren, env->boat3, NULL, &(rect));
-      //boat4
-      //rect.w = size/4; rect.h = size/2; rect.x = 10; rect.y = 10;
-      //SDL_RenderCopy(ren, env->boat4, NULL, &(rect));
     }
   }
 }
