@@ -24,10 +24,12 @@
 
 struct boat{
   SDL_Rect pos;
-  int dx;
-  int dy;
   int cx;
   int cy;
+  int dx;
+  int dy;
+  int cx1;
+  int cy1;
   SDL_Texture * skin;
 };
 
@@ -52,12 +54,14 @@ struct boat * create_boat(int x, int y, int dx, int dy, int cx, int cy, int degr
   struct boat*  new_boat = malloc(sizeof(struct boat));
   new_boat->pos.x=x;
   new_boat->pos.y=y;
+  new_boat->cx = x;
+  new_boat->cy = y;
   new_boat->pos.w=env->size/2;
   new_boat->pos.h=env->size/2;
   new_boat->dx =dx;
   new_boat->dy =dy;
-  new_boat->cx =cx;
-  new_boat->cy =cy;
+  new_boat->cx1 =cx;
+  new_boat->cy1 =cy;
   if(degree == 1)
   new_boat->skin = env->boat1;
   else if(degree == 2)
@@ -205,6 +209,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   }
 
   env->node = -1;
+  env->list_boat[0] =NULL;
   return env;
 }
 
@@ -222,7 +227,17 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   int x,y,x1,y1;
   int dx =0,dy=0,dx1=0,dy1=0;
 
-  env->list_boat[0] = create_boat(50,50,2,2,100,100,1,env);
+  if(env->list_boat[0]==NULL)
+    env->list_boat[0] = create_boat(50,50,-1,-1,100,100,1,env);
+
+  if(((env->list_boat[0]->pos.x - env->list_boat[0]->dx)%env->list_boat[0]->cx <=  env->list_boat[0]->dx) ||(env->list_boat[0]->pos.x - env->list_boat[0]->dx)%env->list_boat[0]->cx1 <=  env->list_boat[0]->dx){
+      env->list_boat[0]->dx = -env->list_boat[0]->dx;
+      env->list_boat[0]->dy = -env->list_boat[0]->dy;
+   }
+   env->list_boat[0]->pos.x = env->list_boat[0]->pos.x - env->list_boat[0]->dx;
+   env->list_boat[0]->pos.y = env->list_boat[0]->pos.y - env->list_boat[0]->dy;
+   SDL_RenderCopy(ren, env->boat1, NULL,&(env->list_boat[0]->pos));
+
 
   SDL_RenderCopy(ren, env->boat1, NULL, &rect);
 

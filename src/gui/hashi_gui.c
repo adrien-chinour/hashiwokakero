@@ -37,12 +37,8 @@ int main(int argc, char * argv[]) {
   SDL_RWops *io = SDL_RWFromFile("img/icone.bmp", "rb");
   if(io != NULL){
     SDL_Surface *surface =  SDL_LoadBMP_RW(io,1);
-    if(surface == NULL){
-      SDL_RWclose(io);
-    }
-    else{
+    if(surface != NULL)
       SDL_SetWindowIcon(win, surface);
-    }
     SDL_FreeSurface(surface);
   }
 
