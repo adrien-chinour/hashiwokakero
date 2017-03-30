@@ -106,7 +106,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   if(env->island == NULL) exit(EXIT_FAILURE); //ERREUR
   env->islandnonselect = IMG_LoadTexture(ren, ISLAND);
   if(!env->island) ERROR("IMG_LoadTexture: %s\n", ISLAND); //ERREUR
-  
+
   for(int i = 0 ; i < game_nb_nodes(g) ; i++){
      env->island[i] = env->islandnonselect;
   }
@@ -236,7 +236,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
             }
          }
 
-         
+
          /* test boat texture */
          //boat1
          //rect.w = size/4; rect.h = size/2; rect.x = 10; rect.y = 10;
