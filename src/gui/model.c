@@ -18,20 +18,23 @@
 #define BOAT2 "img/boat2.png"
 #define BOAT3 "img/boat3.png"
 #define BOAT4 "img/boat4.png"
+#define ISLANDSELECT "img/islandselect.png"
 
 /* **************************************************************** */
 
 struct Env_t {
-  SDL_Texture ** island; // texture ile
-  SDL_Texture * boat1; SDL_Texture * boat2; // texture bateau
-  SDL_Texture * boat3; SDL_Texture * boat4; //texture bateau
-  SDL_Texture ** text; // texture texte (degré)
-  int fontsize; // taille de la police (degré)
-  int max_x; int max_y; // coordonnees maxmum des iles
-  int margin_x; int margin_y; // marge pour centrer la partie
-  game g; // la partie a afficher
-  int node; // le noeud selectionné (evenement)
-  int size; // taille d'une ile
+   SDL_Texture ** island; // texture ile
+   SDL_Texture * boat1; SDL_Texture * boat2; // texture bateau
+   SDL_Texture * boat3; SDL_Texture * boat4; //texture bateau
+   SDL_Texture ** text; // texture texte (degré)
+   SDL_Texture * islandnonselect;
+   SDL_Texture * islandselect;
+   int fontsize; // taille de la police (degré)
+   int max_x; int max_y; // coordonnees maxmum des iles
+   int margin_x; int margin_y; // marge pour centrer la partie
+   game g; // la partie a afficher
+   int node; // le noeud selectionné (evenement)
+   int size; // taille d'une ile
 };
 
 /*
@@ -64,11 +67,11 @@ void init_window(int w, int h, Env * env){
   env->fontsize = env->size/2;
 }
 
-int coordtopxx(int coord, Env * env){
+static int coordtopxx(int coord, Env * env){
   return (coord * 2 + 1) * env->size  - env->size / 2 + env->margin_x;
 }
 
-int coordtopxy(int coord, Env * env){
+static int coordtopxy(int coord, Env * env){
   return (coord * 2 + 1) * env->size  - env->size / 2 + env->margin_y;
 }
 
@@ -100,10 +103,11 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   /* Init island texture from PNG image */
   env->island=malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
   if(env->island == NULL) exit(EXIT_FAILURE); //ERREUR
-
+  env->islandnonselect = IMG_LoadTexture(ren, ISLAND);
+  if(!env->island) ERROR("IMG_LoadTexture: %s\n", ISLAND); //ERREUR
+  
   for(int i = 0 ; i < game_nb_nodes(g) ; i++){
-    env->island[i] = IMG_LoadTexture(ren, ISLAND);
-    if(!env->island) ERROR("IMG_LoadTexture: %s\n", ISLAND); //ERREUR
+     env->island[i] = env->islandnonselect;
   }
 
   /* Init boat texture from PNG image */
@@ -115,6 +119,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   if(!env->boat3) ERROR("IMG_LoadTexture: %s\n", BOAT3); //ERREUR
   env->boat4 = IMG_LoadTexture(ren, BOAT4);
   if(!env->boat4) ERROR("IMG_LoadTexture: %s\n", BOAT4); //ERREUR
+  env->islandselect = IMG_LoadTexture(ren,ISLANDSELECT);
 
   SDL_Texture ** text = malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
 
@@ -229,6 +234,8 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
                SDL_RenderDrawLine(ren, x, y, x1, y1);
             }
          }
+
+         
          /* test boat texture */
          //boat1
          //rect.w = size/4; rect.h = size/2; rect.x = 10; rect.y = 10;
@@ -264,10 +271,14 @@ void make_connection(int node_num, Env * env){
       if(get_neighbour_dir(env->g, node_num, i) == env->node){
 	if(can_add_bridge_dir(env->g, node_num, i)){
 	  add_bridge_dir(env->g, node_num, i);
+          env->island[get_neighbour_dir(env->g, node_num, i)] = env->islandnonselect;
+          env->island[node_num]=env->islandnonselect;
 	}
 	else {
 	  while(get_degree_dir(env->g, node_num, i) != 0){
-	    del_bridge_dir(env->g, node_num, i);
+             env->island[get_neighbour_dir(env->g, node_num, i)] = env->islandnonselect;
+             env->island[node_num]=env->islandnonselect;
+             del_bridge_dir(env->g, node_num, i);
 	  }
 	}
 	env->node = -1;
@@ -299,7 +310,8 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   if(e->type == SDL_MOUSEBUTTONDOWN){
     SDL_Point mousedir;
     SDL_GetMouseState(&mousedir.x, &mousedir.y);
-    int node_num = get_node(mousedir.x, mousedir.y, env);
+    int node_num = get_node(mousedir.x, mousedir.y, env); 
+    env->island[node_num] = env->islandselect;
     if(env->node == -1)
       env->node = node_num;
     else
@@ -370,4 +382,5 @@ void clean(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   delete_game(env->g);
   free(env->text);
   free(env);
+  SDL_DestroyRenderer(ren);
 }
