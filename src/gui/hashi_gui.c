@@ -1,7 +1,7 @@
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>  // required to load transparent texture from PNG
-#include <SDL2/SDL_ttf.h>    // required to use TTF fonts
+#include <SDL.h>
+#include <SDL_image.h>  // required to load transparent texture from PNG
+#include <SDL_ttf.h>    // required to use TTF fonts
 #include <stdio.h>
 #include <stdbool.h>
 
@@ -34,6 +34,16 @@ int main(int argc, char * argv[]) {
 
   SDL_Renderer * ren = SDL_CreateRenderer(win, -1,
 					  SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+  
+  SDL_RWops *io = SDL_RWFromFile("img/icone.bmp", "rb");
+  if(io != NULL){
+    SDL_Surface *surface =  SDL_LoadBMP_RW(io,1);
+    if(surface != NULL)
+      SDL_SetWindowIcon(win, surface);
+    SDL_FreeSurface(surface);
+  }
+
   if(!ren) ERROR("SDL_CreateWindow");
 
   /* add game menu here */
