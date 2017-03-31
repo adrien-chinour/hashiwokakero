@@ -4,7 +4,9 @@
 #include <SDL2/SDL_ttf.h>    // required to use TTF fonts
 #include <stdio.h>
 #include <stdbool.h>
+
 #include "model.h"
+#include "menu.h"
 
 /* **************************************************************** */
 
