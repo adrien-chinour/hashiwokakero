@@ -12,6 +12,8 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 find_package(SDL2_image REQUIRED)
 
+include_directories(${SDL2_INCLUDE_DIR}) # pour trouver le repertoire sans SDL2
+
 # creation des librairies et executables
 add_executable(hashi_text ${text_src_files}) # hashi_text
 add_executable(hashi_gui ${gui_src_files}) # hashi_gui

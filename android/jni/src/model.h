@@ -6,9 +6,6 @@
 #include <SDL.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include "../core/game.h"
-#include "../core/node.h"
-#include "../core/file.h"
 
 typedef struct Env_t Env;
 
@@ -16,12 +13,18 @@ typedef struct Env_t Env;
      
 #ifdef __ANDROID__ 
 #define PRINT(STR, ...) do { SDL_Log(STR, ##__VA_ARGS__);  } while(0)
-#define ERROR(STR, ...) do { SDL_Log(STR, ##__VA_ARGS__); exit(EXIT_FAILURE); } while(0) 
-// #define LOG(TAG, STR, ...) __android_log_print(ANDROID_LOG_VERBOSE, TAG ,STR, ##__VA_ARGS__)
-# else
+#define ERROR(STR, ...) do { SDL_Log(STR, ##__VA_ARGS__); exit(EXIT_FAILURE); } while(0)
+#else
 #define PRINT(STR, ...) do { printf(STR, ##__VA_ARGS__); } while(0)
 #define ERROR(STR, ...) do { fprintf(stderr, STR, ##__VA_ARGS__); exit(EXIT_FAILURE); } while(0)
 #endif
+
+/* **************************************************************** */
+     
+#define APP_NAME "SDL2 Demo"
+#define SCREEN_WIDTH 600
+#define SCREEN_HEIGHT 600
+#define DELAY 100
 
 /* **************************************************************** */
 

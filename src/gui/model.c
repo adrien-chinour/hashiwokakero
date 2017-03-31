@@ -1,6 +1,6 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>  // required to load transparent texture from PNG
-#include <SDL2/SDL_ttf.h>    // required to use TTF fonts
+#include <SDL.h>
+#include <SDL_image.h>  // required to load transparent texture from PNG
+#include <SDL_ttf.h>    // required to use TTF fonts
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -471,8 +471,9 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   /* Android events */
 
   #ifdef __ANDROID__
+
   else if (e->type == SDL_FINGERDOWN) {
-    int node_num = get_node(tfinger.x, tfinger.y, env);
+    int node_num = get_node(e->tfinger.x*w, e->tfinger.y*h, env);
     if(node_num != -1){
       if(env->node == -1)
         env->node = node_num;
@@ -480,7 +481,7 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
         make_connection(node_num, ren, env);
     }
     else if(e->type == SDL_FINGERUP){
-      int node_num = get_node(tfinger.x,tfinger.y, env);
+      int node_num = get_node(e->tfinger.x*w,e->tfinger.y*h, env);
       make_connection(node_num, ren, env);
     }
   }

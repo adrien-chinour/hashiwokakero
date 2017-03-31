@@ -1,7 +1,7 @@
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>  // required to load transparent texture from PNG
-#include <SDL2/SDL_ttf.h>    // required to use TTF fonts
+#include <SDL.h>
+#include <SDL_image.h>  // required to load transparent texture from PNG
+#include <SDL_ttf.h>    // required to use TTF fonts
 #include <stdio.h>
 #include <stdbool.h>
 #include "model.h"
