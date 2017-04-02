@@ -48,6 +48,7 @@ struct Env_t {
   int size; // taille d'une ile
   int nbBoat;
   struct boat ** list_boat;
+  SDL_Texture * game_win;
 };
 
 struct boat * create_boat(int x, int y, int dx, int dy, int cx, int cy, int degree, Env * env){
@@ -63,13 +64,13 @@ struct boat * create_boat(int x, int y, int dx, int dy, int cx, int cy, int degr
   new_boat->cx1 =cx;
   new_boat->cy1 =cy;
   if(degree == 1)
-  new_boat->skin = env->boat1;
+    new_boat->skin = env->boat1;
   else if(degree == 2)
-  new_boat->skin = env->boat2;
+    new_boat->skin = env->boat2;
   else if(degree == 3)
-  new_boat->skin = env->boat3;
+    new_boat->skin = env->boat3;
   else if(degree == 4)
-  new_boat->skin = env->boat4;
+    new_boat->skin = env->boat4;
   else{
     free(new_boat);
     return NULL;
@@ -78,7 +79,7 @@ struct boat * create_boat(int x, int y, int dx, int dy, int cx, int cy, int degr
 }
 
 /*
-Initialisation des variables d'env en fonction de la taille de l'écran
+  Initialisation des variables d'env en fonction de la taille de l'écran
 */
 void print_degree(int node_num, SDL_Renderer* ren,  Env * env){
   SDL_Surface * surf;
@@ -91,9 +92,9 @@ void print_degree(int node_num, SDL_Renderer* ren,  Env * env){
   char * degree = malloc(sizeof(char)*10);
   sprintf(degree, "%d", get_required_degree(n));
   if(get_required_degree(game_node(env->g, node_num)) == get_degree(env->g, node_num))
-  surf = TTF_RenderText_Blended(font, degree , color_menthe);
+    surf = TTF_RenderText_Blended(font, degree , color_menthe);
   else
-  surf = TTF_RenderText_Blended(font, degree , color_corail);
+    surf = TTF_RenderText_Blended(font, degree , color_corail);
   env->text[node_num] = SDL_CreateTextureFromSurface(ren, surf);
   SDL_FreeSurface(surf);
   TTF_CloseFont(font);
@@ -179,7 +180,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   Env * env = malloc(sizeof(struct Env_t));
   if(env == NULL) {delete_game(g); return NULL;} //ERREUR
 
-
+  env->game_win = NULL;
   env->g = g;
   env->nbBoat = 0;
   env->list_boat = malloc(sizeof(struct boat*)*game_nb_nodes(env->g)*game_nb_dir(env->g)*game_nb_max_bridges(env->g));
@@ -410,27 +411,34 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
       TTF_CloseFont(font);
 
 
-      if(game_over(env->g)){
-        SDL_Color color = {255, 203, 96, 255};
-        TTF_Font * font = TTF_OpenFont(FONT, env->fontsize*4);
-        if(!font) SDL_Log("TTF_OpenFont: %s\n", FONT);
-        TTF_SetFontStyle(font, TTF_STYLE_BOLD);
-        int last = time;
-        char * end_message = malloc(sizeof(char)*100);
-        sprintf(end_message, "Victoire ! Temps : %d sec.", last/1000);
-        SDL_Surface * surf = TTF_RenderText_Blended(font, end_message, color);
-        SDL_Texture * end_texture = SDL_CreateTextureFromSurface(ren, surf);
+
+      if(env->game_win){
         rect.w = env->size*6;
         rect.h = env->size*2;
         rect.x = width /2 - (rect.w / 2);
         rect.y = height /2 - (rect.h / 2);
-        SDL_RenderCopy(ren, end_texture, NULL, &(rect));
-        free(end_message);
-        SDL_FreeSurface(surf);
-        TTF_CloseFont(font);
+        SDL_RenderCopy(ren, env->game_win, NULL, &(rect));
       }
-
     }
+  }
+}
+
+static void game_finish(Env * env, SDL_Renderer * ren){ //note pour plus tard: pour avoir le dernier temps il faut mettre le temps dans la variable d'environnement ou en faire un variable globale
+  if(game_over(env->g)){
+    SDL_Color color = {255, 203, 96, 255};
+    TTF_Font * font = TTF_OpenFont(FONT, env->fontsize*4);
+    if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
+    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
+    //int last = time;
+    //char * end_message = malloc(sizeof(char)*100);
+    //sprintf(end_message, "Victoire ! Temps : %d sec.", last/1000);
+    char * end_message = "Victoire !";
+    SDL_Surface * surf = TTF_RenderText_Blended(font, end_message, color);
+    SDL_Texture * end_texture = SDL_CreateTextureFromSurface(ren, surf);
+    env->game_win = end_texture;
+    //free(end_message);
+    SDL_FreeSurface(surf);
+    TTF_CloseFont(font);
   }
 }
 
@@ -455,6 +463,7 @@ void make_connection(int node_num, SDL_Renderer * ren, Env * env){
           env->island[env->node] = env->islandnonselect;
           env->island[node_num]=env->islandnonselect;
           print_degree(node_num, ren, env);
+          game_finish(env,ren);
         }
         else {
           while(get_degree_dir(env->g, node_num, i) != 0){
@@ -548,10 +557,11 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
 
 
 void clean(SDL_Window* win, SDL_Renderer* ren, Env * env) {
-  for(int i = 0 ; i < game_nb_nodes(env->g) ; i++){
-    //il faut rajouter le cas de island modifié
-    //SDL_DestroyTexture(env->island[0]);
+  for(int i = 0; i<game_nb_nodes(env->g);i++){
+    SDL_DestroyTexture(env->text[i]);
   }
+  SDL_DestroyTexture(env->islandnonselect);
+  SDL_DestroyTexture(env->islandselect);
   SDL_DestroyTexture(env->boat1);
   SDL_DestroyTexture(env->boat2);
   SDL_DestroyTexture(env->boat3);
