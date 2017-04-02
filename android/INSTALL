@@ -1,0 +1,8 @@
+installation de  l'appli sur android:
+. env.sh
+./download.sh
+ndk-build
+ant debug
+* branchement du smartphone ou lancement de l'emulateur *
+ant debug install
+

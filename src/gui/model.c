@@ -86,7 +86,7 @@ void print_degree(int node_num, SDL_Renderer* ren,  Env * env){
   SDL_Color color_corail = { 231,62,1,255 }; //couleur corail
   node n = game_node(env->g, node_num);
   TTF_Font * font = TTF_OpenFont(FONT, env->fontsize);
-  if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
+  if(!font) SDL_Log("TTF_OpenFont: %s\n", FONT);
   TTF_SetFontStyle(font, TTF_STYLE_BOLD);
   char * degree = malloc(sizeof(char)*10);
   sprintf(degree, "%d", get_required_degree(n));
@@ -142,16 +142,38 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   char * game_file = NULL;
   game g = NULL;
 
+
+
   /* L'utilisateur a rentré un nom de fichier */
   if(argc == 2) game_file = argv[1];
   if (game_file != NULL) printf("%s\n",game_file); //debug
 
-  /* On charge le game en fonction de ce que l'utilisateur demande*/
-  if(game_file != NULL) {g = translate_game(game_file); }
-  else {g = translate_game("save/game_default.txt"); }
+
+
+  //il y a une erreur sur le chargement de la map sur android
+
+  #ifdef __ANDROID__
+  /*
+    g = translate_game("game_default.txt");
+    if(g == NULL) SDL_Log("erreur lecture fichier");
+    */
+    int vals[7][3] = {{0,0,3},{0,1,5},{0,2,2},{1,1,1},{1,2,2},{2,0,2},{2,2,3}};
+    node nodes[7];
+    for (int i = 0 ; i < 7; i++)
+      nodes[i] = new_node(vals[i][0],vals[i][1],vals[i][2]);
+    g = new_game(7, nodes,2,4);
+    for (int i = 0 ; i < 7; i++)
+      delete_node(nodes[i]);
+    if(g == NULL) SDL_Log("erreur g");
+  #else
+    /* On charge le game en fonction de ce que l'utilisateur demande*/
+    if(game_file != NULL) {g = translate_game(game_file); }
+    else {g = translate_game("save/game_default.txt"); }
+  #endif
 
   /* test retour fonction translate*/
   if (g == NULL) return NULL;
+
 
   /*allocation de notre structure d'environnement*/
   Env * env = malloc(sizeof(struct Env_t));
@@ -162,15 +184,18 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   env->nbBoat = 0;
   env->list_boat = malloc(sizeof(struct boat*)*game_nb_nodes(env->g)*game_nb_dir(env->g)*game_nb_max_bridges(env->g));
 
+
+
   int w, h;
   SDL_GetWindowSize(win, &w, &h);
+
   init_window(w,h,ren,env);
 
   /* Init island texture from PNG image */
   env->island=malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
   if(env->island == NULL) exit(EXIT_FAILURE); //ERREUR
   env->islandnonselect = IMG_LoadTexture(ren, ISLAND);
-  if(!env->island) ERROR("IMG_LoadTexture: %s\n", ISLAND); //ERREUR
+  if(!env->island) SDL_Log("IMG_LoadTexture: %s\n", ISLAND); //ERREUR
 
   for(int i = 0 ; i < game_nb_nodes(g) ; i++){
     env->island[i] = env->islandnonselect;
@@ -178,13 +203,13 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
 
   /* Init boat texture from PNG image */
   env->boat1 = IMG_LoadTexture(ren, BOAT1);
-  if(!env->boat1) ERROR("IMG_LoadTexture: %s\n", BOAT1); //ERREUR
+  if(!env->boat1) SDL_Log("IMG_LoadTexture: %s\n", BOAT1); //ERREUR
   env->boat2 = IMG_LoadTexture(ren, BOAT2);
-  if(!env->boat2) ERROR("IMG_LoadTexture: %s\n", BOAT2); //ERREUR
+  if(!env->boat2) SDL_Log("IMG_LoadTexture: %s\n", BOAT2); //ERREUR
   env->boat3 = IMG_LoadTexture(ren, BOAT3);
-  if(!env->boat3) ERROR("IMG_LoadTexture: %s\n", BOAT3); //ERREUR
+  if(!env->boat3) SDL_Log("IMG_LoadTexture: %s\n", BOAT3); //ERREUR
   env->boat4 = IMG_LoadTexture(ren, BOAT4);
-  if(!env->boat4) ERROR("IMG_LoadTexture: %s\n", BOAT4); //ERREUR
+  if(!env->boat4) SDL_Log("IMG_LoadTexture: %s\n", BOAT4); //ERREUR
   env->islandselect = IMG_LoadTexture(ren,ISLANDSELECT);
 
   SDL_Texture ** text = malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
@@ -197,7 +222,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
     node n = game_node(g, i);
     SDL_Color color = { 231, 62, 1, 255 };
     TTF_Font * font = TTF_OpenFont(FONT, env->fontsize);
-    if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
+    if(!font) SDL_Log("TTF_OpenFont: %s\n", FONT);
     TTF_SetFontStyle(font, TTF_STYLE_BOLD);
     char * degree = malloc(sizeof(char)*10);
     sprintf(degree, "%d", get_required_degree(n));
@@ -210,6 +235,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
 
   env->node = -1;
   env->list_boat[0] =NULL;
+
   return env;
 }
 
@@ -218,6 +244,8 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   SDL_Rect rect;
 
   int width, height;
+
+  SDL_Log("render");
 
   SDL_GetWindowSize(win, &width, &height);
 
@@ -365,7 +393,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
 
       SDL_Color color = {255, 203, 96, 255};
       TTF_Font * font = TTF_OpenFont(FONT, env->fontsize*2);
-      if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
+      if(!font) SDL_Log("TTF_OpenFont: %s\n", FONT);
       TTF_SetFontStyle(font, TTF_STYLE_BOLD);
       char * timer = malloc(sizeof(char)*100);
       int time = SDL_GetTicks();
@@ -385,7 +413,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
       if(game_over(env->g)){
         SDL_Color color = {255, 203, 96, 255};
         TTF_Font * font = TTF_OpenFont(FONT, env->fontsize*4);
-        if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
+        if(!font) SDL_Log("TTF_OpenFont: %s\n", FONT);
         TTF_SetFontStyle(font, TTF_STYLE_BOLD);
         int last = time;
         char * end_message = malloc(sizeof(char)*100);
@@ -449,6 +477,8 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   int w, h;
   SDL_GetWindowSize(win, &w, &h);
 
+  SDL_Log("process");
+
 
   /* generic events */
   if (e->type == SDL_QUIT) {
@@ -511,10 +541,9 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
     int node_num = get_node(mousedir.x,mousedir.y, env);
     make_connection(node_num, ren, env);
   }
+  #endif
 
   return false;
-
-  #endif
 }
 
 
