@@ -20,6 +20,8 @@
 #define BOAT3 "img/boat3.png"
 #define BOAT4 "img/boat4.png"
 #define ISLANDSELECT "img/island_selected.png"
+#define SOLVE "img/solve.png"
+#define SAVE "img/save.png"
 
 /* **************************************************************** */
 
@@ -50,6 +52,8 @@ struct Env_t {
   int nbBoat;
   struct boat ** list_boat;
   SDL_Texture * game_win;
+  SDL_Texture * solve;
+  SDL_Texture * save;
 };
 
 struct boat * create_boat(int x, int y, int dx, int dy, int cx, int cy, int degree, Env * env){
@@ -114,7 +118,7 @@ void init_window(int w, int h, SDL_Renderer* ren, Env * env){
     if(get_x(n) > max_x) max_x = get_x(n);
     if(get_y(n) > max_y) max_y = get_y(n);
   }
-  env->max_x = max_x + 1; env->max_y = max_y + 1;
+  env->max_x = max_x + 1; env->max_y = max_y + 2;
 
   // definiton de la marge
   if(env->max_x * h > env->max_y * w){
@@ -186,6 +190,12 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   if(env->island == NULL) exit(EXIT_FAILURE); //ERREUR
   env->islandnonselect = IMG_LoadTexture(ren, ISLAND);
   if(!env->island) SDL_Log("IMG_LoadTexture: %s\n", ISLAND); //ERREUR
+
+  env->solve = IMG_LoadTexture(ren, SOLVE);
+  if(!env->solve) SDL_Log("IMG_LoadTexture: %s\n", SOLVE);
+
+  env->save = IMG_LoadTexture(ren, SAVE);
+  if(!env->save) SDL_Log("IMG_LoadTexture: %s\n", SAVE);
 
   for(int i = 0 ; i < game_nb_nodes(g) ; i++){
     env->island[i] = env->islandnonselect;
@@ -378,7 +388,6 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
       }
 
       //timer
-
       SDL_Color color = {255, 203, 96, 255};
       TTF_Font * font = TTF_OpenFont(FONT, env->fontsize*2);
       if(!font) SDL_Log("TTF_OpenFont: %s\n", FONT);
@@ -397,7 +406,19 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
       SDL_FreeSurface(surf);
       TTF_CloseFont(font);
 
+      //solver
+      rect.w = env->size/2;
+      rect.h = env->size/2;
+      rect.x = env->size/4;
+      rect.y = height-env->size + env->size/4;
+      SDL_RenderCopy(ren, env->solve, NULL, &(rect));
 
+      //save
+      rect.w = env->size/2;
+      rect.h = env->size/2;
+      rect.x = env->size;
+      rect.y = height-env->size + env->size/4;
+      SDL_RenderCopy(ren, env->save, NULL, &(rect));
 
       if(env->game_win){
         rect.w = env->size*6;
