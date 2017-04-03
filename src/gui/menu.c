@@ -1,6 +1,6 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>  // required to load transparent texture from PNG
-#include <SDL2/SDL_ttf.h>    // required to use TTF fonts     
+#include <SDL.h>
+#include <SDL_image.h>  // required to load transparent texture from PNG
+#include <SDL_ttf.h>    // required to use TTF fonts     
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,7 +16,7 @@
 #define NB_BOARDS 4
 
 /* **************************************************************** */
-     
+
 struct Env_m {
   SDL_Texture * background;
   SDL_Texture * board; // texture planche
@@ -25,12 +25,12 @@ struct Env_m {
   int *x; int *y; // coordonnees des planches
   int width_b;
   int height_b;
-}; 
-     
+};
+
 /* **************************************************************** */
 
 Envm * init_menu(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[])
-{  
+{
   Envm * env = malloc(sizeof(struct Env_m));
 
   /* get current window size */
@@ -47,7 +47,7 @@ Envm * init_menu(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[])
 
   //e = nombre de pixels entre 2 planches (espace)
   int e = h/(2*(NB_BOARDS));
-  
+
   /* init positions */
   for(int i = 0; i < NB_BOARDS; i++)
     {
@@ -58,13 +58,13 @@ Envm * init_menu(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[])
       int g = env->y[i];
       printf("g = %d\n", g);
     }
-  
+
   /* INIT TEXTURES */
 
   /* init background texture from PNG image */
   env->background = IMG_LoadTexture(ren, BACKGROUND);
   if(!env->background) ERROR("IMG_LoadTexture: %s\n", BACKGROUND);
-  
+
   /* Init board texture from PNG image */
   env->board= IMG_LoadTexture(ren,BOARD);
   if(!env->board) ERROR("IMG_LoadTexture: %s\n", BOARD);
@@ -93,30 +93,30 @@ Envm * init_menu(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[])
 	  choice = "charger";
 	  break;
 	}
-      
-      
+
+
       SDL_Surface * surf = TTF_RenderText_Blended(font, choice , color);
       env->text[i] = SDL_CreateTextureFromSurface(ren, surf);
       SDL_FreeSurface(surf);
     }
-  
+
   TTF_CloseFont(font);
-  
+
   return env;
 }
-     
+
 /* **************************************************************** */
-     
+
 void render_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env)
 {
   /* RENDER TEXTURES */
 
-  SDL_Rect rect;  
- 
+  SDL_Rect rect;
+
   /* get current window size */
   int w, h;
   SDL_GetWindowSize(win, &w, &h);
-    
+
   /* render background texture */
   SDL_RenderCopy(ren, env->background, NULL, NULL); /* stretch it */
 
@@ -124,30 +124,30 @@ void render_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env)
       /* render board texture */
       rect.w = env->width_b;
       rect.h = env->height_b;
-      rect.x = env->x[i]; rect.y = env->y[i]; 
+      rect.x = env->x[i]; rect.y = env->y[i];
       SDL_RenderCopy(ren, env->board, NULL, &rect);
-      
+
       /* render text texture */
       SDL_QueryTexture(env->text[i], NULL, NULL, &rect.w, &rect.h);
-      rect.x = env->x[i]; rect.y = env->y[i]; 
+      rect.x = env->x[i]; rect.y = env->y[i];
       SDL_RenderCopy(ren, env->text[i], NULL, &rect);
     }
 }
-     
+
 /* **************************************************************** */
-     
-     
+
+
 bool process_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env, SDL_Event * e)
-{     
+{
 
   if (e->type == SDL_QUIT) {
     return true;
   }
-  
+
 
   /* PUT YOUR CODE HERE TO PROCESS EVENTS */
-  
-  return false; 
+
+  return false;
 }
 
 /* **************************************************************** */
@@ -158,5 +158,5 @@ void clean_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env)
 
   free(env);
 }
-     
+
 /* **************************************************************** */

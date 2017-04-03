@@ -193,12 +193,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
 void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
 
    SDL_Rect rect;
-
-   int width, height;
-
-   SDL_GetWindowSize(win, &width, &height);
-
-
+   int width, height; SDL_GetWindowSize(win, &width, &height);
    SDL_SetRenderDrawColor(ren, 0, 0, 0, SDL_ALPHA_OPAQUE);
    SDL_SetRenderDrawBlendMode(ren,SDL_BLENDMODE_ADD);
 
@@ -318,7 +313,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
    char * timer = malloc(sizeof(char)*100);
    int time = SDL_GetTicks();
-   sprintf(timer, "Time : %d sec.", time/1000);
+   sprintf(timer, "Time : %ds", time/1000);
    SDL_Surface * surf = TTF_RenderText_Blended(font, timer , color);
    SDL_Texture * timer_texture = SDL_CreateTextureFromSurface(ren, surf);
    rect.w = env->size*2;
@@ -345,10 +340,10 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
       SDL_RenderCopy(ren, env->save, NULL, &(rect));
 
    if(env->game_win){
-      rect.w = env->size*6;
-      rect.h = env->size*2;
-      rect.x = width /2 - (rect.w / 2);
-      rect.y = height /2 - (rect.h / 2);
+      rect.w = env->size*3;
+      rect.h = env->size;
+      rect.x = width/2 - (rect.w / 2);
+      rect.y = height - rect.h*2;
       SDL_RenderCopy(ren, env->game_win, NULL, &(rect));
    }
 }
@@ -359,14 +354,10 @@ static void game_finish(Env * env, SDL_Renderer * ren){ //note pour plus tard: p
     TTF_Font * font = TTF_OpenFont(FONT, env->fontsize*4);
     if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
     TTF_SetFontStyle(font, TTF_STYLE_BOLD);
-    //int last = time;
-    //char * end_message = malloc(sizeof(char)*100);
-    //sprintf(end_message, "Victoire ! Temps : %d sec.", last/1000);
     char * end_message = "Victoire !";
     SDL_Surface * surf = TTF_RenderText_Blended(font, end_message, color);
     SDL_Texture * end_texture = SDL_CreateTextureFromSurface(ren, surf);
     env->game_win = end_texture;
-    //free(end_message);
     SDL_FreeSurface(surf);
     TTF_CloseFont(font);
   }
@@ -533,10 +524,13 @@ void button_action(SDL_Window* win, SDL_Renderer* ren, Env * env, int x , int y)
       *go=false;
       solver_r(env->g,0,-1,go);
       free(go);
+      for(int i = 0; i < game_nb_nodes(env->g); i++){
+         print_degree(i, ren,  env);
+      }
+      game_finish(env, ren);
     }
     else if (x >env->size && x < env->size+env->size/2){
-      //save file
-      printf("non pris en charge pour le moment\n");
+      write_save(env->g, "save/game_save.txt");
     }
   }
 }
@@ -606,6 +600,7 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
 #ifdef __ANDROID__
 
   else if (e->type == SDL_FINGERDOWN) {
+    button_action(win, ren, env, e->tfinger.x*w, e->tfinger.y*h);
      int node_num = get_node(e->tfinger.x*w, e->tfinger.y*h, env);
      if(node_num !=-1){
         if(env->node == -1){
@@ -628,9 +623,8 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   else if (e->type == SDL_FINGERMOTION){
      int node_num = get_node(e->tfinger.x*w,e->tfinger.y*h, env);
      if(node_num != -1){
-
+       finger_slide_dir(env,e,node_num);
      }
-
   }
 
   #else
