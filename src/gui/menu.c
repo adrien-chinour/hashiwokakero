@@ -1,6 +1,6 @@
 #include <SDL.h>
 #include <SDL_image.h>  // required to load transparent texture from PNG
-#include <SDL_ttf.h>    // required to use TTF fonts     
+#include <SDL_ttf.h>    // required to use TTF fonts
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,7 +22,7 @@ struct Env_m {
   SDL_Texture * board; // texture planche
   SDL_Texture ** text; // texture texte (degré)
   int fontsize; // taille de la police (degré)
-  int *x; int *y; // coordonnees des planches
+  int x; int *y; // coordonnees des planches
   int width_b;
   int height_b;
 };
@@ -52,8 +52,7 @@ Envm * init_menu(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[])
   for(int i = 0; i < NB_BOARDS; i++)
     {
       //pour récupérer la taile d'une image int SDL_QueryTexture(env->board, NULL, NULL, X, Y)
-
-      env->x[i] = w/4;
+      env->x = w/4;
       env->y[i] = (i*(h-e))/NB_BOARDS + e/2;
       int g = env->y[i];
       printf("g = %d\n", g);
@@ -76,7 +75,6 @@ Envm * init_menu(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[])
   TTF_SetFontStyle(font, TTF_STYLE_BOLD); // TTF_STYLE_ITALIC | TTF_STYLE_NORMAL
   for(int i = 0; i < NB_BOARDS; i++)
     {
-
       char * choice;
       switch(i)
 	{
@@ -93,8 +91,6 @@ Envm * init_menu(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[])
 	  choice = "charger";
 	  break;
 	}
-
-
       SDL_Surface * surf = TTF_RenderText_Blended(font, choice , color);
       env->text[i] = SDL_CreateTextureFromSurface(ren, surf);
       SDL_FreeSurface(surf);
@@ -124,12 +120,12 @@ void render_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env)
       /* render board texture */
       rect.w = env->width_b;
       rect.h = env->height_b;
-      rect.x = env->x[i]; rect.y = env->y[i];
+      rect.x = env->x; rect.y = env->y[i];
       SDL_RenderCopy(ren, env->board, NULL, &rect);
 
       /* render text texture */
       SDL_QueryTexture(env->text[i], NULL, NULL, &rect.w, &rect.h);
-      rect.x = env->x[i]; rect.y = env->y[i];
+      rect.x = env->x; rect.y = env->y[i]; 
       SDL_RenderCopy(ren, env->text[i], NULL, &rect);
     }
 }
@@ -155,6 +151,9 @@ bool process_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env, SDL_Event * e)
 void clean_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env)
 {
   /* PUT YOUR CODE HERE TO CLEAN MEMORY */
+   SDL_DestroyTexture(env->board);
+   SDL_DestroyTexture(env->background);
+
 
   free(env);
 }
