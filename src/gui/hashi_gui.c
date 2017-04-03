@@ -35,7 +35,7 @@ int main(int argc, char * argv[]) {
   SDL_Renderer * ren = SDL_CreateRenderer(win, -1,
 					  SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-  
+  /*creation icone*/ 
   SDL_RWops *io = SDL_RWFromFile("img/icone.bmp", "rb");
   if(io != NULL){
     SDL_Surface *surface =  SDL_LoadBMP_RW(io,1);
@@ -46,37 +46,39 @@ int main(int argc, char * argv[]) {
 
   if(!ren) ERROR("SDL_CreateWindow");
 
-  /* initialize menu environment */
-  Envm * envm = init_menu(win, ren, argc, argv);
-  if (envm == NULL){
-    fprintf(stderr, "Initialisation de l'environnement impossible\n");
-    exit(EXIT_FAILURE);
-  }
-
-  /* main render loop */
   bool quit = false;
-  while (!quit) {
+  if(argc < 2){
+     /* initialize menu environment */
+     Envm * envm = init_menu(win, ren, argc, argv);
+     if (envm == NULL){
+        fprintf(stderr, "Initialisation de l'environnement impossible\n");
+        exit(EXIT_FAILURE);
+     }
 
-    /* manage events */
-    SDL_Event e;
-    while (SDL_PollEvent(&e)) {
-      /* process your events */
-      quit = process_menu(win, ren, envm, &e);
-      if(quit) break;
-    }
+     /* main render loop */
+     while (!quit) {
 
-    /* background in white */
-    SDL_SetRenderDrawColor(ren, 0, 204, 255, SDL_ALPHA_OPAQUE);
-    SDL_RenderClear(ren);
+        /* manage events */
+        SDL_Event e;
+        while (SDL_PollEvent(&e)) {
+           /* process your events */
+           quit = process_menu(win, ren, envm, &e);
+           if(quit) break;
+        }
 
-    /* render all what you want */
-    render_menu(win, ren, envm);
-    SDL_RenderPresent(ren);
-    SDL_Delay(10);
+        /* background in white */
+        SDL_SetRenderDrawColor(ren, 0, 204, 255, SDL_ALPHA_OPAQUE);
+        SDL_RenderClear(ren);
+
+        /* render all what you want */
+        render_menu(win, ren, envm);
+        SDL_RenderPresent(ren);
+        SDL_Delay(10);
+     }
+
+     /* clean your environment */
+     clean_menu(win, ren, envm);
   }
-
-  /* clean your environment */
-  clean_menu(win, ren, envm);
 
   /* add game menu here */
   //exemple : char * game_file = display_game_menu();

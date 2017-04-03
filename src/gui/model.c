@@ -555,7 +555,6 @@ void finger_slide_dir(Env * env, SDL_Event * e, int n){
       if(e->tfinger.dy < -sensibility)
          add_bridge_dir(env->g, n, SOUTH);
    }
-
    else{
       if(e->tfinger.dx > sensibility && e->tfinger.dy > sensibility){
          add_bridge_dir(env->g, n, NW);

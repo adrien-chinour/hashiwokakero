@@ -143,6 +143,7 @@ bool process_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env, SDL_Event * e)
   if (e->type == SDL_QUIT) {
     return true;
   }
+  
 
   /* PUT YOUR CODE HERE TO PROCESS EVENTS */
   
