@@ -14,7 +14,6 @@
 #define BACKGROUND "img/background.png"
 #define BOARD "img/board.png"
 #define NB_BOARDS 4
-#define DIVIDE 4
 
 /* **************************************************************** */
      
@@ -45,14 +44,19 @@ Envm * init_menu(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[])
   env->x = malloc(NB_BOARDS*sizeof(int));
   env->y = malloc(NB_BOARDS*sizeof(int));
   env->text = malloc(NB_BOARDS*sizeof(SDL_Texture*));
+
+  //e = nombre de pixels entre 2 planches (espace)
+  int e = h/(2*(NB_BOARDS));
   
   /* init positions */
   for(int i = 0; i < NB_BOARDS; i++)
     {
       //pour récupérer la taile d'une image int SDL_QueryTexture(env->board, NULL, NULL, X, Y)
 
-      env->x[i] = w/DIVIDE;
-      env->y[i] = (h*i)/(NB_BOARDS+2);
+      env->x[i] = w/4;
+      env->y[i] = (i*(h-e))/NB_BOARDS + e/2;
+      int g = env->y[i];
+      printf("g = %d\n", g);
     }
   
   /* INIT TEXTURES */
