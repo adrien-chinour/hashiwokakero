@@ -8,15 +8,15 @@
 #include <stdbool.h>
 #include "../core/game.h"
 #include "../core/node.h"
-#include "../core/file.h"
+#include "../tools/file.h"
 
 typedef struct Env_t Env;
 
 /* **************************************************************** */
-     
-#ifdef __ANDROID__ 
+
+#ifdef __ANDROID__
 #define PRINT(STR, ...) do { SDL_Log(STR, ##__VA_ARGS__);  } while(0)
-#define ERROR(STR, ...) do { SDL_Log(STR, ##__VA_ARGS__); exit(EXIT_FAILURE); } while(0) 
+#define ERROR(STR, ...) do { SDL_Log(STR, ##__VA_ARGS__); exit(EXIT_FAILURE); } while(0)
 // #define LOG(TAG, STR, ...) __android_log_print(ANDROID_LOG_VERBOSE, TAG ,STR, ##__VA_ARGS__)
 # else
 #define PRINT(STR, ...) do { printf(STR, ##__VA_ARGS__); } while(0)

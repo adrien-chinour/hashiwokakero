@@ -3,8 +3,8 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "node.h"
-#include "game.h"
+#include "../core/node.h"
+#include "../core/game.h"
 
 // Les tabeaux utilisés pour généré les games sont déclarés ici.
 int game1[7][3] = {{0,0,3},{0,2,5},{0,4,2},{2,2,1},{2,4,2},{4,0,2},{4,4,3}};
@@ -17,7 +17,7 @@ int game6[8][3] = {{0,0,6},{0,2,5},{0,4,4},{2,0,9},{2,2,7},{4,0,4},{4,2,3},{4,4,
 // fin déclaration des tableaux.
 
 game generate_game(int nb_game, int nb_max_bridges, int nb_dir, int nb_nodes){
-	
+
     node nodes[nb_nodes];
     for (int i = 0 ; i < nb_nodes; i++){
     	switch(nb_game){
@@ -33,7 +33,7 @@ game generate_game(int nb_game, int nb_max_bridges, int nb_dir, int nb_nodes){
     game g = new_game(nb_nodes, nodes, nb_max_bridges, nb_dir);
 
     for (int i = 0 ; i < nb_nodes; i++) delete_node(nodes[i]);
-    
+
     return g;
 }
 
@@ -107,7 +107,7 @@ game translate_save(char * fileopen){ //pour les sauvegardes + solutions
    c=0;
    int * tabnode = malloc(sizeof(int)*(3+tab[1]));
    node * nodes = malloc(sizeof(node)*(tab[0]));
-   
+
    for(int i=0; i<tab[0]; i++){
       fgets(l,255,gametxt);
       char * token = strtok(l," ");
@@ -121,9 +121,9 @@ game translate_save(char * fileopen){ //pour les sauvegardes + solutions
       nodes[i]=new_node(tabnode[0], tabnode[1], tabnode[2]);
    }
    game g = new_game(tab[0],nodes,tab[1],tab[2]);
-   
+
    rewind(gametxt);
-   
+
    fgets(l,10,gametxt);
    for(int i=0; i<tab[0]; i++){
       fgets(l,255,gametxt);
@@ -182,4 +182,3 @@ void write_game(game g){
    }
    fclose(gametxt);
 }
-

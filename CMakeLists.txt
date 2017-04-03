@@ -5,6 +5,7 @@ set(CMAKE_C_COMPILER gcc)
 # Ajout des fichiers .c pour les executables
 file( GLOB_RECURSE text_src_files src/text/* ) # adding files for text_src_files
 file( GLOB_RECURSE gui_src_files src/gui/* ) # adding files for gui_src_files
+file( GLOB_RECURSE solve_src_files src/solver/* )
 
 #Ajout des modules
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
@@ -17,9 +18,12 @@ include_directories(${SDL2_INCLUDE_DIR}) # pour trouver le repertoire sans SDL2
 # creation des librairies et executables
 add_executable(hashi_text ${text_src_files}) # hashi_text
 add_executable(hashi_gui ${gui_src_files}) # hashi_gui
-add_executable(hashi_solve src/solver/solver.c) #hashi_solve
+add_executable(hashi_solve ${solve_src_files}) #hashi_solve
 add_library(hashi src/core/game.c src/core/node.c) # libhashi
-add_library(hashi-tools src/core/file.c src/core/secure.c) # libhashi-tools
+add_library(hashi-tools src/tools/file.c
+												src/tools/secure.c
+												src/tools/generate.c
+												src/solver/solver.c) # libhashi-tools
 
 #Pour installer les executables à la racine
 install(TARGETS hashi_gui hashi_text hashi_solve DESTINATION ${PROJECT_SOURCE_DIR})
@@ -49,10 +53,9 @@ target_link_libraries(hashi_gui
   hashi-tools
   ${SDL2_LIBRARY}
   ${SDL2_IMAGE_LIBRARY}
-  ${SDL2_TTF_LIBRARY}) 
+  ${SDL2_TTF_LIBRARY})
 
 # linking libraries for hashi_solve
 target_link_libraries(hashi_solve
   hashi
   hashi-tools)
-

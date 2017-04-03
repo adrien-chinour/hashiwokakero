@@ -8,7 +8,8 @@
 #include "model.h"
 #include "../core/game.h"
 #include "../core/node.h"
-#include "../core/file.h"
+#include "../tools/file.h"
+#include "../tools/generate.h"
 
 /* **************************************************************** */
 
@@ -154,18 +155,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   //il y a une erreur sur le chargement de la map sur android
 
   #ifdef __ANDROID__
-  /*
-    g = translate_game("game_default.txt");
-    if(g == NULL) SDL_Log("erreur lecture fichier");
-    */
-    int vals[7][3] = {{0,0,3},{0,1,5},{0,2,2},{1,1,1},{1,2,2},{2,0,2},{2,2,3}};
-    node nodes[7];
-    for (int i = 0 ; i < 7; i++)
-      nodes[i] = new_node(vals[i][0],vals[i][1],vals[i][2]);
-    g = new_game(7, nodes,2,4);
-    for (int i = 0 ; i < 7; i++)
-      delete_node(nodes[i]);
-    if(g == NULL) SDL_Log("erreur g");
+    g = random_game(2,4);
   #else
     /* On charge le game en fonction de ce que l'utilisateur demande*/
     if(game_file != NULL) {g = translate_game(game_file); }
@@ -184,8 +174,6 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   env->g = g;
   env->nbBoat = 0;
   env->list_boat = malloc(sizeof(struct boat*)*game_nb_nodes(env->g)*game_nb_dir(env->g)*game_nb_max_bridges(env->g));
-
-
 
   int w, h;
   SDL_GetWindowSize(win, &w, &h);
@@ -245,8 +233,6 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   SDL_Rect rect;
 
   int width, height;
-
-  SDL_Log("render");
 
   SDL_GetWindowSize(win, &width, &height);
 

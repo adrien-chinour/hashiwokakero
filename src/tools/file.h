@@ -6,8 +6,8 @@
 #include <time.h>
 #include <stdbool.h>
 
-#include "node.h"
-#include "game.h"
+#include "../core/node.h"
+#include "../core/game.h"
 
 game generate_game(int game, int nb_max_bridges, int nb_dir, int nb_nodes);
 game translate_game(char * fileopen);

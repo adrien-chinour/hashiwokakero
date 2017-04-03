@@ -6,7 +6,7 @@
 
 #include "../core/node.h"
 #include "../core/game.h"
-#include "../core/file.h"
+#include "../tools/file.h"
 
 
 int get_nb_neighbours(game g, int num) {
@@ -22,10 +22,10 @@ int get_nb_neighbours(game g, int num) {
 void bridges_in_all_directions(game g)
 {
   for(int i = 0; i < game_nb_nodes(g); i++) {
-    
+
     //cette variable n voit combien de pont on peut poser vers les voisins du noeud
     int n = get_required_degree(game_node(g, i))/game_nb_max_bridges(g)+get_required_degree(game_node(g, i))%game_nb_max_bridges(g);
-    
+
     //pour chaque voisin du noeud, si on peut poser un pont évident vers lui, on le pose
     if(n == get_nb_neighbours(g, i)) {
       for(int j = 0; j < game_nb_dir(g); j++){
@@ -47,8 +47,8 @@ void simple_bridges(game g){
   int * tab = calloc(game_nb_dir(g), sizeof(int));
 
   bridges_in_all_directions(g);
-  
-  while(modif){ 
+
+  while(modif){
     // Initialisation des variables
     int somme = 0;
 
@@ -58,18 +58,18 @@ void simple_bridges(game g){
       // pour eviter les appelles aux fonctions repetitifs
       int degree = get_degree(g, node_num);
       int required_degree = get_required_degree(game_node(g, node_num));
-      
+
       // si on peut ajouter des ponts
       if (can_add_bridge_dir(g,node_num,dir)){
 	int degree_neighbour = get_degree(g, get_neighbour_dir(g, node_num, dir));
 	int required_degree_neighbour = get_required_degree(game_node(g, get_neighbour_dir(g, node_num, dir)));
-       
+
 	// si le voisin a un degré inférieur au nombre de ponts max
 	if(required_degree_neighbour < game_nb_max_bridges(g)) {
 	  tab[dir] = required_degree_neighbour;
 	  somme += required_degree_neighbour;
 	}
-	
+
 	//si notre voisin peut compléter notre degré
 	else if (degree < required_degree && required_degree - degree <= required_degree_neighbour - degree_neighbour) {
 	  tab[dir] = required_degree - degree;
@@ -119,7 +119,7 @@ int * calcul_bridges_neighbours(int node_num, game g){
       int rdOther = get_required_degree(game_node(g, get_neighbour_dir(g, node_num, dir)));
       int dN = get_degree(g, node_num);
       int dO = get_degree(g, get_neighbour_dir(g, node_num, dir));
-      
+
       //cas ou le degre est egal au degre du voisin, sans dépasser le nombre de ponts max sur 1 direction
       if(rdNode == rdOther && rdNode <= game_nb_max_bridges(g)){
 	bridges[dir] = rdNode - 1;
@@ -131,14 +131,14 @@ int * calcul_bridges_neighbours(int node_num, game g){
 	bridges[dir] = rdNode - dN;
 	bridges[game_nb_dir(g)] += bridges[dir];
       }
-      
+
       //cas ou le degré du voisin est inférieur au nombre de ponts max sur 1 direction
       //DEFAUT
       else if(rdOther - dO < game_nb_max_bridges(g)){
 	bridges[dir] = rdOther - dO;
 	bridges[game_nb_dir(g)] += bridges[dir];
       }
-     
+
       //cas ou le degré du voisin est supérieur ou égal au nombre de ponts max sur 1 direction
       //DEFAUT
       else {
@@ -170,9 +170,9 @@ void auto_play(game g, int node_num, bool change){
     if(change)
       auto_play(g,0,false);
   }
-  
+
   int * bridges = calcul_bridges_neighbours(node_num, g);
-  
+
   if(bridges[game_nb_dir(g)] == get_required_degree(game_node(g, node_num)) - get_degree(g, node_num)){
     apply_bridges_neighbours(g, node_num, bridges);
     free(bridges);
@@ -216,37 +216,4 @@ bool solver_r(game g,int node_num,int dir,bool * go){
     del_bridge_dir(g, node_num, dir);
   }
   return false;
-}
-
-int main(int argc, char *argv[]) {
-  if(argc < 2){
-    printf("UTILISATION ./hashi_solve <nom_du_fichier> <nom_de_sauvegarde>");
-    return EXIT_FAILURE;
-  }
-  
-  game g = translate_game(argv[1]);
-
-  //auto_play(g, 0, false); //non fonctionnel
-  simple_bridges(g);
-  
-  bool * go=malloc(sizeof(bool));
-  *go=false;
-  
-  if(solver_r(g,0,-1,go))
-    printf("Solution trouvé!\n");
-  else 
-    printf("Aucune solution.\n");
-  
-  char * save = malloc(sizeof(char)*100);
-  if(argc > 2)
-    write_save(g,argv[2]);
-  else {
-    sprintf(save, "%s.solved",argv[1]);
-    write_save(g,save);
-  }
-  
-  free(go);
-  delete_game(g);
-  free(save);
-  return EXIT_SUCCESS;
 }

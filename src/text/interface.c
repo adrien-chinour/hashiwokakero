@@ -7,8 +7,8 @@
 
 #include "../core/node.h"
 #include "../core/game.h"
-#include "../core/file.h"
-#include "../core/secure.h"
+#include "../tools/file.h"
+#include "../tools/secure.h"
 
 typedef struct s_map {
   int size;
@@ -43,11 +43,11 @@ void starting(void){
   printf("\033[1;3%dm                 \\:\\__\\      \\::/  /        |:|__|          \\:\\__\\  \n", rand() %7+1);
   printf("\033[1;3%dm                  \\/__/       \\/__/         |/__/            \\/__/      \n", rand() %7+1);
 
-  printf("\033[0;m \n"); 
+  printf("\033[0;m \n");
 }
 
 void draw_hashiMap(cgame g, hashiMap m){
-  
+
   // affichage coordonnées abscisses
   for(int i = 0; i < m->size; i++){
     if(i%2 == 0)
@@ -56,13 +56,13 @@ void draw_hashiMap(cgame g, hashiMap m){
       printf("   ");
   }
   printf("\n");
-  
+
   // affichage ligne abscisses
   for(int i = 0; i < m->size; i++){
     printf("---");
   }
   printf("\n");
-  
+
   //affichage de matrix
   for(int i = m->size-1; i >= 0; i--){
     for(int j = 0 ; j < m->size ; j++){
@@ -93,23 +93,23 @@ void draw_hashiMap(cgame g, hashiMap m){
     else
        printf("|\n\n");
   }
-  printf("(a = 1pont; b = 2ponts; ...)\n");  
+  printf("(a = 1pont; b = 2ponts; ...)\n");
 }
 
 void print_game(cgame g){
   for(int i = 0; i < game_nb_nodes(g); i++){
     if (get_required_degree(game_node(g, i)) == get_degree(g, i))
-      printf("\033[32mnode n°%d : x = %d , y = %d ; degré actuel : %d ; degré necessaire : %d\n", 
-                                                                i, 
-                                                                get_x(game_node(g, i)), 
-                                                                get_y(game_node(g, i)), 
+      printf("\033[32mnode n°%d : x = %d , y = %d ; degré actuel : %d ; degré necessaire : %d\n",
+                                                                i,
+                                                                get_x(game_node(g, i)),
+                                                                get_y(game_node(g, i)),
                                                                 get_degree(g, i),
                                                                 get_required_degree(game_node(g,i)));
     else
-      printf("\033[31mnode n°%d : x = %d , y = %d ; degré actuel : %d ; degré necessaire : %d\n", 
-                                                                i, 
-                                                                get_x(game_node(g, i)), 
-                                                                get_y(game_node(g, i)), 
+      printf("\033[31mnode n°%d : x = %d , y = %d ; degré actuel : %d ; degré necessaire : %d\n",
+                                                                i,
+                                                                get_x(game_node(g, i)),
+                                                                get_y(game_node(g, i)),
                                                                 get_degree(g, i),
                                                                 get_required_degree(game_node(g,i)));
   }
@@ -131,9 +131,9 @@ void add_bridge(game g, hashiMap m){
   int direction = 0;
   while(direction < 1 || direction > game_nb_dir(g)){
     char *value = (char*) malloc(4096*sizeof(char));
-    if(game_nb_dir(g) == 4) 
+    if(game_nb_dir(g) == 4)
       printf("Dans quelle direction ?\n 1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n");
-    else 
+    else
       printf("Dans quelle direction ?\n 1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n 5 = NW / 6 = SW / 7 = SE / 8 = NE\n");
     scanf("%s", value);
     direction = atoi(value);
@@ -229,9 +229,9 @@ void del_bridge(game g, hashiMap m){
   int direction = 0;
   while(direction < 1 || direction > game_nb_dir(g)){
     char *value = (char*) malloc(4096*sizeof(char));
-    if(game_nb_dir(g) == 4) 
+    if(game_nb_dir(g) == 4)
       printf("Dans quelle direction ?\n 1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n");
-    else 
+    else
       printf("Dans quelle direction ?\n 1 = NORD / 2 = OUEST / 3 = SUD / 4 = EST\n 5 = NW / 6 = SW / 7 = SE / 8 = NE\n");
     scanf("%s", value);
     direction = atoi(value);
@@ -245,7 +245,7 @@ void del_bridge(game g, hashiMap m){
     case 1: //NORTH
       i = get_y(game_node(g, node_num))*2+1;
       while(i < get_y(game_node(g, get_neighbour_dir(g, node_num, NORTH)))*2){
-        if(get_degree_dir(g, node_num, NORTH) == 0) 
+        if(get_degree_dir(g, node_num, NORTH) == 0)
           m->matrix[i][get_x(game_node(g, node_num))*2] = 0;
         else m->matrix[i][get_x(game_node(g, node_num))*2]--;
         i++;
@@ -326,7 +326,7 @@ void del_bridge(game g, hashiMap m){
 }
 
 hashiMap create_hashiMap(cgame g){
-  
+
   //récupération de size en fonction des coordonnées des nodes
   int size = 0;
   for(int i = 0; i < game_nb_nodes(g); i++){
@@ -337,7 +337,7 @@ hashiMap create_hashiMap(cgame g){
   //allocation de la map
   hashiMap m = (hashiMap) malloc(sizeof(struct s_map));
   assert(m != NULL);
-  
+
   //ajout de size
   m->size = size;
 
@@ -428,7 +428,7 @@ game game_select(){
   case 5: return translate_game("save/game_medium.txt");
   case 6: return translate_save("save/game_medium.txt.solved");
   case 7: return translate_save("save/default_solution.txt");
-        
+
     default: printf("Erreur dans game_select\n"); exit(EXIT_FAILURE); break;
   }
 }
