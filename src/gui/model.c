@@ -281,7 +281,6 @@ void make_connection(int node_num, SDL_Renderer * ren, Env * env){
       if(get_neighbour_dir(env->g, node_num, i) == env->node){
         if(can_add_bridge_dir(env->g, node_num, i)){
           add_bridge_dir(env->g, node_num, i);
-          env->island[env->node] = env->islandnonselect;
           env->island[node_num]=env->islandnonselect;
           print_degree(node_num, ren, env);
           game_finish(env,ren);
@@ -295,6 +294,7 @@ void make_connection(int node_num, SDL_Renderer * ren, Env * env){
           }
         }
         print_degree(env->node, ren ,env);
+        env->island[env->node] = env->islandnonselect;
         env->node = -1;
         break;
       }
@@ -438,20 +438,26 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
 
   /* Android events */
 
-  #ifdef __ANDROID__
+#ifdef __ANDROID__
 
   else if (e->type == SDL_FINGERDOWN) {
-    int node_num = get_node(e->tfinger.x*w, e->tfinger.y*h, env);
-    if(node_num != -1){
-      if(env->node == -1)
-        env->node = node_num;
-      else
-        make_connection(node_num, ren, env);
-    }
-    else if(e->type == SDL_FINGERUP){
-      int node_num = get_node(e->tfinger.x*w,e->tfinger.y*h, env);
-      make_connection(node_num, ren, env);
-    }
+     int node_num = get_node(e->tfinger.x*w, e->tfinger.y*h, env);
+     if(node_num !=-1){
+        if(env->node == -1){
+           env->island[node_num] = env->islandselect;
+           env->node = node_num;
+        }
+        else if(env->node == node_num){
+           env->node = -1;
+           env->island[node_num] = env->islandnonselect;
+        }
+        else
+           make_connection(node_num, ren, env);
+     }
+  }
+  else if(e->type == SDL_FINGERUP){
+     int node_num = get_node(e->tfinger.x*w,e->tfinger.y*h, env);
+     make_connection(node_num, ren, env);
   }
 
   #else
