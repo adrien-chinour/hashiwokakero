@@ -294,9 +294,12 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
                   rect.w = x1 -x;
                   break;
             }
-            SDL_RenderFillRect(ren,&rect);
-            SDL_RenderDrawRect(ren,&rect);
-            SDL_RenderDrawLine(ren, x,y, x1, y1);
+            if(game_nb_dir(env->g) == 4){
+               SDL_RenderFillRect(ren,&rect);
+               SDL_RenderDrawRect(ren,&rect);
+            }
+            else
+               SDL_RenderDrawLine(ren, x,y, x1, y1);
          }
       }
    }
@@ -538,6 +541,44 @@ void button_action(SDL_Window* win, SDL_Renderer* ren, Env * env, int x , int y)
   }
 }
 
+void finger_slide_dir(Env * env, SDL_Event * e, int n){
+   float sensibility = 0.1;
+   if(env->node != -1)
+      env->island[env->node] = env->islandnonselect;
+   if(game_nb_dir(env->g)==4){
+      if(e->tfinger.dx > sensibility)
+         add_bridge_dir(env->g, n, EAST);
+      if(e->tfinger.dx < -sensibility)
+         add_bridge_dir(env->g, n, WEST);
+      if(e->tfinger.dy > sensibility)
+         add_bridge_dir(env->g, n, NORTH);
+      if(e->tfinger.dy < -sensibility)
+         add_bridge_dir(env->g, n, SOUTH);
+   }
+
+   else{
+      if(e->tfinger.dx > sensibility && e->tfinger.dy > sensibility){
+         add_bridge_dir(env->g, n, NW);
+      }
+      if(e->tfinger.dx < -sensibility && e->tfinger.dy > sensibility){
+         add_bridge_dir(env->g, n, SW);
+      }
+      if(e->tfinger.dx > sensibility && e->tfinger.dy < -sensibility){
+         add_bridge_dir(env->g, n, NE);
+      }
+      if(e->tfinger.dx < -sensibility && e->tfinger.dy < -sensibility){
+         add_bridge_dir(env->g, n, SE);
+      }
+      if(e->tfinger.dx > sensibility)
+         add_bridge_dir(env->g, n, EAST);
+      if(e->tfinger.dx < -sensibility)
+         add_bridge_dir(env->g, n, WEST);
+      if(e->tfinger.dy > sensibility)
+         add_bridge_dir(env->g, n, NORTH);
+      if(e->tfinger.dy < -sensibility)
+         add_bridge_dir(env->g, n, SOUTH);
+   }
+}
 
 bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   int w, h;
@@ -583,6 +624,14 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   else if(e->type == SDL_FINGERUP){
      int node_num = get_node(e->tfinger.x*w,e->tfinger.y*h, env);
      make_connection(node_num, ren, env);
+  }
+
+  else if (e->type == SDL_FINGERMOTION){
+     int node_num = get_node(e->tfinger.x*w,e->tfinger.y*h, env);
+     if(node_num != -1){
+
+     }
+
   }
 
   #else
