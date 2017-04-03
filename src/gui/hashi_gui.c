@@ -52,12 +52,12 @@ int main(int argc, char * argv[]) {
         exit(EXIT_FAILURE);
      }
      /* main render loop */
-     while (!quit) {
+     while (!select) {
         /* manage events */
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
            /* process menu events */
-           quit = process_menu(win, ren, envm, &e);
+           select = process_menu(win, ren, envm, &e);
            if(quit) break;
         }
         SDL_RenderClear(ren);

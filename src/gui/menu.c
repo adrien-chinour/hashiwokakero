@@ -130,31 +130,52 @@ void render_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env)
    }
 }
 
+
+int select_button(Envm * env, int x, int y){
+  if(env->x <= x && x <= (env->x +env->width_b)){
+    for(int i =0;i<NB_BOARDS;i++){
+      if(env->y[i] <= y && y <= (env->y[i] + env->height_b))
+        return i+1;
+    }
+  return 0;
+  }
+}
 /* **************************************************************** */
      
      
 bool process_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env, SDL_Event * e){
-   
-   if (e->type == SDL_QUIT) {
-      return true;
-   }
-   else if(e->type == SDL_WINDOWEVENT){
-      int w,h;
-      SDL_GetWindowSize(win, &w, &h);
-      switch(e->window.event){
-         case SDL_WINDOWEVENT_RESIZED:
-            init_window_menu(w,h,ren,env);
-      }
-   
-   
+  int w,h;
+  SDL_GetWindowSize(win, &w, &h);
+  if (e->type == SDL_QUIT) {
+    return true;
+  }
+  else if(e->type == SDL_WINDOWEVENT){
+    switch(e->window.event){
+    case SDL_WINDOWEVENT_RESIZED:
+      init_window_menu(w,h,ren,env);
+    }
+  }
+  /* Android events */
 
-   }
+#ifdef __ANDROID__
+  else if(e->type == SDL_FINGERDOWN){
+    int selec =select_button(env,e->tfinger.x*w,e->tfinger.y*h);
+    if(selec)
+      return selec;
+  }
+#else
+  else if(e->type == SDL_MOUSEBUTTONDOWN){
+    SDL_Point mousedir;
+    SDL_GetMouseState(&mousedir.x, &mousedir.y);
+    int selec =select_button(env,mousedir.x,mousedir.y);
+    if(selec)
+      return selec;
+  }
+#endif
 
+  /* PUT YOUR CODE HERE TO PROCESS EVENTS */
   
-
-   /* PUT YOUR CODE HERE TO PROCESS EVENTS */
-  
-   return false;
+  return 0;
 }
 
 /* **************************************************************** */
@@ -170,5 +191,6 @@ void clean_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env)
    free(env->text);
    free(env);
 }
+
 
 /* **************************************************************** */
