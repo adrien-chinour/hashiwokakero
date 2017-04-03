@@ -21,12 +21,14 @@ node * generate_nodes(int nb_max_bridges, int nb_dir){
     for(int j = 0; j < 3; j++){
       int degree = rand()%(nb_max_bridges*nb_dir)+1;
       nodes[k] = new_node(i,j,degree);
+      k++;
     }
   }
   return nodes;
 }
 
 bool test_game(game g, int nb_max_bridges, int nb_dir){
+
   simple_bridges(g);
   bool * go=malloc(sizeof(bool));
   *go=false;
@@ -47,12 +49,17 @@ game random_game(int nb_max_bridges, int nb_dir){
   do {
     if(g != NULL) delete_game(g);
     node * nodes = generate_nodes(nb_max_bridges, nb_dir);
-    game g = new_game(9, nodes, nb_max_bridges, nb_dir);
-
+    g = new_game(9, nodes, nb_max_bridges, nb_dir);
     for(int i = 0; i < 9; i++)
       delete_node(nodes[i]);
     free(nodes);
+  } while(!test_game(g, nb_max_bridges, nb_dir));
+  for(int i = 0; i < game_nb_nodes(g); i++){
+    for(int j = 0; j < game_nb_dir(g); j++){
+      while(get_degree_dir(g, i, j) != 0){
+        del_bridge_dir(g, i, j);
+      }
+    }
   }
-  while(test_game(g, nb_max_bridges, nb_dir));
   return g;
 }

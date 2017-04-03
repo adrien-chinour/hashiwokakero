@@ -155,10 +155,8 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   //il y a une erreur sur le chargement de la map sur android
 
   #ifdef __ANDROID__
+    // generation aleatoire d'ue partie 3*3 à 9 noeud avec nb_dir = 4 et max_bridges = 2
     g = random_game(2,4);
-    for(int i = 0; i < game_nb_nodes(g); i++){
-      SDL_Log("%d\n", get_required_degree(game_node(g, i)));
-    }
   #else
     /* On charge le game en fonction de ce que l'utilisateur demande*/
     if(game_file != NULL) {g = translate_game(game_file); }
@@ -474,9 +472,6 @@ void make_connection(int node_num, SDL_Renderer * ren, Env * env){
 bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   int w, h;
   SDL_GetWindowSize(win, &w, &h);
-
-  SDL_Log("process");
-
 
   /* generic events */
   if (e->type == SDL_QUIT) {
