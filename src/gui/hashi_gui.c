@@ -1,3 +1,4 @@
+
 #include <SDL.h>
 #include <SDL_image.h>  // required to load transparent texture from PNG
 #include <SDL_ttf.h>    // required to use TTF fonts
@@ -5,7 +6,7 @@
 #include <stdbool.h>
 
 #include "model.h"
-//#include "menu.h"
+#include "menu.h"
 
 /* **************************************************************** */
 
@@ -17,11 +18,10 @@
 
 int main(int argc, char * argv[]) {
 
-
   /* initialize SDL2 and some extensions */
-  if(SDL_Init(SDL_INIT_VIDEO) != 0) SDL_Log("SDL_Init VIDEO");
-  if(IMG_Init(IMG_INIT_PNG & IMG_INIT_PNG) != IMG_INIT_PNG) SDL_Log("IMG_Init PNG");
-  if(TTF_Init() != 0) SDL_Log("TTF_Init");
+  if(SDL_Init(SDL_INIT_VIDEO) != 0) ERROR("SDL_Init VIDEO");
+  if(IMG_Init(IMG_INIT_PNG & IMG_INIT_PNG) != IMG_INIT_PNG) ERROR("IMG_Init PNG");
+  if(TTF_Init() != 0) ERROR("TTF_Init");
 
   /* create window and renderer */
   SDL_Window * win = SDL_CreateWindow("Hashiwokakero - TM2H",
@@ -30,15 +30,13 @@ int main(int argc, char * argv[]) {
 				      SCREEN_WIDTH, SCREEN_HEIGHT,
 				      SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
-  if(!win) SDL_Log("SDL_CreateWindow");
+  if(!win) ERROR("SDL_CreateWindow");
 
   SDL_Renderer * ren = SDL_CreateRenderer(win, -1,
 					  SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-
+  
   SDL_RWops *io = SDL_RWFromFile("img/icone.bmp", "rb");
-
-
   if(io != NULL){
     SDL_Surface *surface =  SDL_LoadBMP_RW(io,1);
     if(surface != NULL)
@@ -46,7 +44,39 @@ int main(int argc, char * argv[]) {
     SDL_FreeSurface(surface);
   }
 
-  if(!ren) SDL_Log("SDL_CreateWindow");
+  if(!ren) ERROR("SDL_CreateWindow");
+
+  /* initialize menu environment */
+  Envm * envm = init_menu(win, ren, argc, argv);
+  if (envm == NULL){
+    fprintf(stderr, "Initialisation de l'environnement impossible\n");
+    exit(EXIT_FAILURE);
+  }
+
+  /* main render loop */
+  bool quit = false;
+  while (!quit) {
+
+    /* manage events */
+    SDL_Event e;
+    while (SDL_PollEvent(&e)) {
+      /* process your events */
+      quit = process_menu(win, ren, envm, &e);
+      if(quit) break;
+    }
+
+    /* background in white */
+    SDL_SetRenderDrawColor(ren, 0, 204, 255, SDL_ALPHA_OPAQUE);
+    SDL_RenderClear(ren);
+
+    /* render all what you want */
+    render_menu(win, ren, envm);
+    SDL_RenderPresent(ren);
+    SDL_Delay(10);
+  }
+
+  /* clean your environment */
+  clean_menu(win, ren, envm);
 
   /* add game menu here */
   //exemple : char * game_file = display_game_menu();
@@ -60,7 +90,7 @@ int main(int argc, char * argv[]) {
   }
 
   /* main render loop */
-  bool quit = false;
+  quit = false;
   while (!quit) {
 
     /* manage events */
