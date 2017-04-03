@@ -30,6 +30,11 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env);
 void clean(SDL_Window* win, SDL_Renderer* ren, Env * env);
 bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e);
 
+static int coordtopxx(int coord, Env * env);
+static int coordtopxy(int coord, Env * env);
+void print_node_and_boats(Env * env, SDL_Renderer * ren);
+void print_node_and_bridges(Env * env, SDL_Renderer * ren);
+
 /* **************************************************************** */
 
 #endif
