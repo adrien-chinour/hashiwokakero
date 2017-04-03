@@ -18,6 +18,8 @@
 
 int main(int argc, char * argv[]) {
 
+
+
   /* initialize SDL2 and some extensions */
   if(SDL_Init(SDL_INIT_VIDEO) != 0) ERROR("SDL_Init VIDEO");
   if(IMG_Init(IMG_INIT_PNG & IMG_INIT_PNG) != IMG_INIT_PNG) ERROR("IMG_Init PNG");
@@ -35,7 +37,7 @@ int main(int argc, char * argv[]) {
   SDL_Renderer * ren = SDL_CreateRenderer(win, -1,
 					  SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-  /*creation icone*/ 
+  /*creation icone*/
   SDL_RWops *io = SDL_RWFromFile("img/icone.bmp", "rb");
   if(io != NULL){
     SDL_Surface *surface =  SDL_LoadBMP_RW(io,1);
@@ -47,6 +49,12 @@ int main(int argc, char * argv[]) {
   if(!ren) ERROR("SDL_CreateWindow");
 
   bool quit = false;
+
+  #ifdef __ANDROID__
+
+    //pas de menu
+
+  #else
   if(argc < 2){
      /* initialize menu environment */
      Envm * envm = init_menu(win, ren, argc, argv);
@@ -79,6 +87,8 @@ int main(int argc, char * argv[]) {
      /* clean your environment */
      clean_menu(win, ren, envm);
   }
+
+  #endif
 
   /* add game menu here */
   //exemple : char * game_file = display_game_menu();

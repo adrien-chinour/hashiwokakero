@@ -1,6 +1,6 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>  // required to load transparent texture from PNG
-#include <SDL2/SDL_ttf.h>    // required to use TTF fonts     
+#include <SDL.h>
+#include <SDL_image.h>  // required to load transparent texture from PNG
+#include <SDL_ttf.h>    // required to use TTF fonts
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,7 +16,7 @@
 #define NB_BOARDS 4
 
 /* **************************************************************** */
-     
+
 struct Env_m {
    SDL_Texture * background;
    SDL_Texture * board; // texture planche
@@ -27,13 +27,13 @@ struct Env_m {
    int height_b;
 };
 
-/******************************************************************/
+/* **************************************************************** */
 
 
 void init_window_menu(int w, int h, SDL_Renderer* ren, Envm * env){
    env->width_b = w/2;
    env->height_b = h/(NB_BOARDS+1);
-
+   
    // definition de la taille de la police
    env->fontsize = env->height_b;
    env->y = malloc(NB_BOARDS*sizeof(int));
@@ -99,9 +99,9 @@ Envm * init_menu(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]){
   
    return env;
 }
-     
+
 /* **************************************************************** */
-     
+
 void render_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env)
 {
    /* RENDER TEXTURES */
@@ -121,7 +121,7 @@ void render_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env)
       rect.h = env->height_b;
       rect.x = env->x; rect.y = env->y[i];
       SDL_RenderCopy(ren, env->board, NULL, &rect);
-      
+
       /* render text texture */
       //SDL_QueryTexture(env->text[i], NULL, NULL, &rect.w, &rect.h);
       rect.w = rect.w/2; rect.h = rect.h/2;
@@ -129,7 +129,7 @@ void render_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env)
       SDL_RenderCopy(ren, env->text[i], NULL, &rect);
    }
 }
-     
+
 /* **************************************************************** */
      
      
@@ -154,7 +154,7 @@ bool process_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env, SDL_Event * e)
 
    /* PUT YOUR CODE HERE TO PROCESS EVENTS */
   
-   return false; 
+   return false;
 }
 
 /* **************************************************************** */
@@ -170,5 +170,5 @@ void clean_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env)
    free(env->text);
    free(env);
 }
-     
+
 /* **************************************************************** */

@@ -3,15 +3,15 @@
 #ifndef MENU_H
 #define MENU_H
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <stdio.h>
 #include <stdbool.h>
 
 typedef struct Env_m Envm;
 
 /* **************************************************************** */
-     
-#ifdef __ANDROID__ 
+
+#ifdef __ANDROID__
 #define PRINT(STR, ...) do { SDL_Log(STR, ##__VA_ARGS__);  } while(0)
 #define ERROR(STR, ...) do { SDL_Log(STR, ##__VA_ARGS__); exit(EXIT_FAILURE); } while(0)
 #else
@@ -20,10 +20,8 @@ typedef struct Env_m Envm;
 #endif
 
 /* **************************************************************** */
-     
-#define APP_NAME "SDL2 Demo"
-#define SCREEN_WIDTH 600
-#define SCREEN_HEIGHT 600
+
+#define APP_NAME "hashiwokakero"
 #define DELAY 100
 
 /* **************************************************************** */
