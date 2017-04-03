@@ -38,7 +38,8 @@ struct Env_t {
   int size; // taille d'une ile
   SDL_Texture * game_win;
   SDL_Texture * solve;
-  SDL_Texture * save;
+   SDL_Texture * save;
+   SDL_Point mouse_pos;
 };
 
 
@@ -146,6 +147,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   env->island=malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
   if(env->island == NULL) exit(EXIT_FAILURE); //ERREUR
   env->islandnonselect = IMG_LoadTexture(ren, ISLAND);
+  SDL_SetTextureBlendMode(env->islandnonselect,SDL_BLENDMODE_BLEND);
   if(!env->island) SDL_Log("IMG_LoadTexture: %s\n", ISLAND); //ERREUR
 
   env->solve = IMG_LoadTexture(ren, SOLVE);
@@ -160,6 +162,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
 
 
   env->islandselect = IMG_LoadTexture(ren,ISLANDSELECT);
+  SDL_SetTextureBlendMode(env->islandselect,SDL_BLENDMODE_BLEND);
 
   SDL_Texture ** text = malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
 
@@ -197,10 +200,113 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
 
 
    SDL_SetRenderDrawColor(ren, 0, 0, 0, SDL_ALPHA_OPAQUE);
+   SDL_SetRenderDrawBlendMode(ren,SDL_BLENDMODE_ADD);
 
+
+   int node_pos = get_node(env->mouse_pos.x,env->mouse_pos.y,env);
+   int x =0;int y =0;int x1 =0;int y1 =0;
+
+   if(node_pos!=-1){
+      SDL_SetRenderDrawColor(ren,100,100,100,SDL_ALPHA_OPAQUE);
+      for(int d =0; d<game_nb_dir(env->g); d++){
+         if(can_add_bridge_dir(env->g,node_pos, d)){
+            node debut = game_node(env->g,node_pos);
+            node cible = game_node(env->g,get_neighbour_dir(env->g, node_pos, d));
+            switch(d){
+               case NORTH:
+                  x = coordtopxx(get_x(debut),env)+env->size/2;
+                  y = coordtopxy(get_y(debut),env)+env->size;
+                  x1 = coordtopxx(get_x(cible),env)+env->size/2;
+                  y1 =coordtopxy(get_y(cible),env);
+                  rect.x = coordtopxx(get_x(debut),env)+env->size/4;
+                  rect.y = coordtopxy(get_y(debut),env)+env->size;
+                  rect.h = y1 -y;
+                  rect.w = env->size/2;
+                  break;
+               case WEST:
+                  x = coordtopxx(get_x(debut),env);
+                  y = coordtopxy(get_y(debut),env)+env->size/2;
+                  x1 = coordtopxx(get_x(cible),env)+env->size;
+                  y1 =coordtopxy(get_y(cible),env)+env->size/2;
+                  rect.x = coordtopxx(get_x(debut),env);
+                  rect.y = coordtopxy(get_y(debut),env) + env->size/4;
+                  rect.h = env->size/2;
+                  rect.w = x1 - x;
+                  break;
+               case SOUTH:
+                  x = coordtopxx(get_x(debut),env)+env->size/2;
+                  y = coordtopxy(get_y(debut),env);
+                  x1 = coordtopxx(get_x(cible),env)+env->size/2;
+                  y1 =coordtopxy(get_y(cible),env)+env->size;
+                  rect.x = coordtopxx(get_x(debut),env)+env->size/4;
+                  rect.y = coordtopxy(get_y(debut),env);
+                  rect.h = y1 - y;
+                  rect.w = env->size/2;
+                  break;
+               case EAST:
+                  x = coordtopxx(get_x(debut),env)+env->size;
+                  y = coordtopxy(get_y(debut),env)+env->size/2;
+                  x1 = coordtopxx(get_x(cible),env);
+                  y1 =coordtopxy(get_y(cible),env)+env->size/2;
+                  rect.x = coordtopxx(get_x(debut),env)+env->size;
+                  rect.y = coordtopxy(get_y(debut),env)+env->size/4;
+                  rect.h = env->size/2;
+                  rect.w = x1 -x;
+                  break;
+               case NW:
+                  x = coordtopxx(get_x(debut),env);
+                  y = coordtopxy(get_y(debut),env)+env->size;
+                  x1 = coordtopxx(get_x(cible),env)+env->size;
+                  y1 =coordtopxy(get_y(cible),env);
+                  rect.x = coordtopxx(get_x(debut),env)+env->size;
+                  rect.y = coordtopxy(get_y(debut),env)+env->size/4;
+                  rect.h = env->size/2;
+                  rect.w = x1 -x;
+                  break;
+               case SW:
+                  x = coordtopxx(get_x(debut),env);
+                  y = coordtopxy(get_y(debut),env);
+                  x1 = coordtopxx(get_x(cible),env)+env->size;
+                  y1 =coordtopxy(get_y(cible),env)+env->size;
+                  rect.x = coordtopxx(get_x(debut),env)+env->size;
+                  rect.y = coordtopxy(get_y(debut),env)+env->size/4;
+                  rect.h = env->size/2;
+                  rect.w = x1 -x;
+                  break;
+               case SE:
+                  x = coordtopxx(get_x(debut),env)+env->size;
+                  y = coordtopxy(get_y(debut),env);
+                  x1 = coordtopxx(get_x(cible),env);
+                  y1 =coordtopxy(get_y(cible),env)+env->size;
+                  rect.x = coordtopxx(get_x(debut),env)+env->size;
+                  rect.y = coordtopxy(get_y(debut),env)+env->size/4;
+                  rect.h = env->size/2;
+                  rect.w = x1 -x;
+                  break;
+               case NE:
+                  x = coordtopxx(get_x(debut),env)+env->size;
+                  y = coordtopxy(get_y(debut),env)+env->size;
+                  x1 = coordtopxx(get_x(cible),env);
+                  y1 =coordtopxy(get_y(cible),env);
+                  rect.x = coordtopxx(get_x(debut),env)+env->size;
+                  rect.y = coordtopxy(get_y(debut),env)+env->size/4;
+                  rect.h = env->size/2;
+                  rect.w = x1 -x;
+                  break;
+            }
+            SDL_RenderFillRect(ren,&rect);
+            SDL_RenderDrawRect(ren,&rect);
+            SDL_RenderDrawLine(ren, x,y, x1, y1);
+         }
+      }
+   }
+   SDL_SetRenderDrawBlendMode(ren,SDL_BLENDMODE_MOD);
 
    print_node_and_bridges(env,ren);
-   //timer
+
+
+
+      //timer
 
 
    SDL_Color color = {255, 203, 96, 255};
@@ -327,89 +433,81 @@ void print_node_and_bridges(Env * env, SDL_Renderer * ren){
          for(int d=0;d<game_nb_dir(env->g);d++){
             if(get_degree_dir(env->g, i, d)>0){
                node cible = game_node(env->g,get_neighbour_dir(env->g, i, d));
-               switch(d){
-                  default:
-                     exit(EXIT_FAILURE); //ce cas ne peut pas arriver
-                  case NORTH:
-                     x = coordtopxx(get_x(n),env)+env->size/2;
-                     y = coordtopxy(get_y(n),env)+env->size;
-                     x1 = coordtopxx(get_x(cible),env)+env->size/2;
-                     y1 =coordtopxy(get_y(cible),env);
-                     dx =env->size/10;
-                     dy =0;
-                     break;
-                  case WEST:
-                     x = coordtopxx(get_x(n),env);
-                     y = coordtopxy(get_y(n),env)+env->size/2;
-                     x1 = coordtopxx(get_x(cible),env)+env->size;
-                     y1 =coordtopxy(get_y(cible),env)+env->size/2;
-                     dx =0;
-                     dy =env->size/10 ;
-                     break;
-                  case SOUTH:
-                     x = coordtopxx(get_x(n),env)+env->size/2;
-                     y = coordtopxy(get_y(n),env);
-                     x1 = coordtopxx(get_x(cible),env)+env->size/2;
-                     y1 =coordtopxy(get_y(cible),env)+env->size;
-                     dx =env->size/10;
-                     dy =0;
-                     break;
-                  case EAST:
-                     x = coordtopxx(get_x(n),env)+env->size;
-                     y = coordtopxy(get_y(n),env)+env->size/2;
-                     x1 = coordtopxx(get_x(cible),env);
-                     y1 =coordtopxy(get_y(cible),env)+env->size/2;
-                     dx =0;
-                     dy =env->size/10 ;
-                     break;
-                  case NW:
-                     x = coordtopxx(get_x(n),env);
-                     y = coordtopxy(get_y(n),env)+env->size;
-                     x1 = coordtopxx(get_x(cible),env)+env->size;
-                     y1 =coordtopxy(get_y(cible),env);
-                     dx =env->size/10;
-                     dy =env->size/10 ;
-                     break;
-                  case SW:
-                     x = coordtopxx(get_x(n),env);
-                     y = coordtopxy(get_y(n),env);
-                     x1 = coordtopxx(get_x(cible),env)+env->size;
-                     y1 =coordtopxy(get_y(cible),env)+env->size;
-                     dx =-env->size/10;
-                     dy =env->size/10 ;
-                     break;
-                  case SE:
-                     x = coordtopxx(get_x(n),env)+env->size;
-                     y = coordtopxy(get_y(n),env);
-                     x1 = coordtopxx(get_x(cible),env);
-                     y1 =coordtopxy(get_y(cible),env)+env->size;
-                     dx =env->size/10;
-                     dy =env->size/10 ;
-                     break;
-                  case NE:
-                     x = coordtopxx(get_x(n),env)+env->size;
-                     y = coordtopxy(get_y(n),env)+env->size;
-                     x1 = coordtopxx(get_x(cible),env);
-                     y1 =coordtopxy(get_y(cible),env);
-                     dx =-env->size/10;
-                     dy =env->size/10 ;
-                     break;
+               if(d == NORTH){
+                  x = coordtopxx(get_x(n),env)+env->size/2;
+                  y = coordtopxy(get_y(n),env)+env->size;
+                  x1 = coordtopxx(get_x(cible),env)+env->size/2;
+                  y1 =coordtopxy(get_y(cible),env);
+                  dx =env->size/10;
+                  dy =0;
+                  if(can_add_bridge_dir(env->g, i, d)){
+                     SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);
+                  }
+                  else
+                     SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);
+                  render_bridges(x,y,x1,y1,dx,dy,i,d,env,ren);
                }
-               int degree = get_degree_dir(env->g, i, d);
-               x = x+(dx*degree)/2;
-               y = y+(dy*degree)/2;
-               x1 = x1+(dx*degree)/2;
-               y1 = y1+(dy*degree)/2;
-               for(int j =0; j<get_degree_dir(env->g, i, d);j++){
-                  SDL_RenderDrawLine(ren, x, y, x1, y1);
-                  x = x-dx;
-                  y = y-dy;
-                  x1 = x1-dx;
-                  y1 = y1-dy;
+               else if(d == WEST){
+                  x = coordtopxx(get_x(n),env);
+                  y = coordtopxy(get_y(n),env)+env->size/2;
+                  x1 = coordtopxx(get_x(cible),env)+env->size;
+                  y1 =coordtopxy(get_y(cible),env)+env->size/2;
+                  dx =0;
+                  dy =env->size/10 ;
+                  if(can_add_bridge_dir(env->g, i, d)){
+                     SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);
+                  }
+                  else
+                     SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);
+                  render_bridges(x,y,x1,y1,dx,dy,i,d,env,ren);
+               }
+               else if(d == NW){
+                  x = coordtopxx(get_x(n),env);
+                  y = coordtopxy(get_y(n),env)+env->size;
+                  x1 = coordtopxx(get_x(cible),env)+env->size;
+                  y1 =coordtopxy(get_y(cible),env);
+                  dx =env->size/10;
+                  dy =env->size/10 ;
+                  if(can_add_bridge_dir(env->g, i, d)){
+                     SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);
+                  }
+                  else
+                     SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);
+                  render_bridges(x,y,x1,y1,dx,dy,i,d,env,ren);
+               }
+               else if(d == SW){
+                  x = coordtopxx(get_x(n),env);
+                  y = coordtopxy(get_y(n),env);
+                  x1 = coordtopxx(get_x(cible),env)+env->size;
+                  y1 =coordtopxy(get_y(cible),env)+env->size;
+                  dx =-env->size/10;
+                  dy =env->size/10 ;
+                  if(can_add_bridge_dir(env->g, i, d)){
+                     SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);
+                  }
+                  else
+                     SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);
+                  render_bridges(x,y,x1,y1,dx,dy,i,d,env,ren);
                }
             }
          }
       }
+   }
+}
+
+
+void render_bridges(int x, int y, int x1, int y1, int dx, int dy, int node_num,int dir, Env * env, SDL_Renderer * ren){
+   int degree = get_degree_dir(env->g, node_num, dir);
+   x = x+(dx*degree)/2;
+   y = y+(dy*degree)/2;
+   x1 = x1+(dx*degree)/2;
+   y1 = y1+(dy*degree)/2;
+   for(int j =0; j<get_degree_dir(env->g, node_num, dir);j++){
+      SDL_RenderDrawLine(ren, x, y, x1, y1);
+      x = x-dx;
+      y = y-dy;
+      x1 = x1-dx;
+      y1 = y1-dy;
    }
 }
 
@@ -509,17 +607,19 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
     }
   }
 
-  if(e->type == SDL_MOUSEBUTTONUP){
+  else if(e->type == SDL_MOUSEBUTTONUP){
     SDL_Point mousedir;
     SDL_GetMouseState(&mousedir.x, &mousedir.y);
     int node_num = get_node(mousedir.x,mousedir.y, env);
     make_connection(node_num, ren, env);
   }
+  else if(e->type == SDL_MOUSEMOTION){
+     SDL_GetMouseState(&env->mouse_pos.x, &env->mouse_pos.y);
+  }
   #endif
 
   return false;
 }
-
 
 void clean(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   for(int i = 0; i<game_nb_nodes(env->g);i++){
