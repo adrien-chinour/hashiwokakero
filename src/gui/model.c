@@ -156,6 +156,9 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
 
   #ifdef __ANDROID__
     g = random_game(2,4);
+    for(int i = 0; i < game_nb_nodes(g); i++){
+      SDL_Log("%d\n", get_required_degree(game_node(g, i)));
+    }
   #else
     /* On charge le game en fonction de ce que l'utilisateur demande*/
     if(game_file != NULL) {g = translate_game(game_file); }
