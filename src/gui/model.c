@@ -545,9 +545,9 @@ void finger_slide_dir(Env * env, SDL_Event * e, int n){
       if(e->tfinger.dx < -sensibility)
          add_bridge_dir(env->g, n, WEST);
       if(e->tfinger.dy > sensibility)
-         add_bridge_dir(env->g, n, NORTH);
-      if(e->tfinger.dy < -sensibility)
          add_bridge_dir(env->g, n, SOUTH);
+      if(e->tfinger.dy < -sensibility)
+         add_bridge_dir(env->g, n, NORTH);
    }
    else{
       if(e->tfinger.dx > sensibility && e->tfinger.dy > sensibility){
@@ -599,6 +599,13 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
 
 #ifdef __ANDROID__
 
+  else if (e->type == SDL_FINGERMOTION){
+     int node_num = get_node(e->tfinger.x*w,e->tfinger.y*h, env);
+     if(node_num != -1){
+       finger_slide_dir(env,e,node_num);
+     }
+  }
+
   else if (e->type == SDL_FINGERDOWN) {
     button_action(win, ren, env, e->tfinger.x*w, e->tfinger.y*h);
      int node_num = get_node(e->tfinger.x*w, e->tfinger.y*h, env);
@@ -618,13 +625,6 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   else if(e->type == SDL_FINGERUP){
      int node_num = get_node(e->tfinger.x*w,e->tfinger.y*h, env);
      make_connection(node_num, ren, env);
-  }
-
-  else if (e->type == SDL_FINGERMOTION){
-     int node_num = get_node(e->tfinger.x*w,e->tfinger.y*h, env);
-     if(node_num != -1){
-       finger_slide_dir(env,e,node_num);
-     }
   }
 
   #else
