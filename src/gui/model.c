@@ -495,6 +495,7 @@ void print_node_and_bridges(Env * env, SDL_Renderer * ren){
    }
 }
 
+
 void render_bridges(int x, int y, int x1, int y1, int dx, int dy, int node_num,int dir, Env * env, SDL_Renderer * ren){
    int degree = get_degree_dir(env->g, node_num, dir);
    x = x+(dx*degree)/2;
@@ -509,6 +510,34 @@ void render_bridges(int x, int y, int x1, int y1, int dx, int dy, int node_num,i
       y1 = y1-dy;
    }
 }
+
+void button_action(SDL_Window* win, SDL_Renderer* ren, Env * env, int x , int y){
+
+  int width, height;
+  SDL_GetWindowSize(win, &width, &height);
+
+  if(y > height-env->size+env->size/4 && y < height-env->size+env->size/4+env->size/2){
+    if(x > env->size/4 && x < env->size/4+env->size/2){
+      for(int i = 0; i < game_nb_nodes(env->g); i++){
+        for(int j = 0; j < game_nb_dir(env->g); j++){
+          while(get_degree_dir(env->g, i, j) != 0){
+            del_bridge_dir(env->g, i, j);
+          }
+        }
+      }
+      simple_bridges(env->g);
+      bool * go=malloc(sizeof(bool));
+      *go=false;
+      solver_r(env->g,0,-1,go);
+      free(go);
+    }
+    else if (x >env->size && x < env->size+env->size/2){
+      //save file
+      printf("non pris en charge pour le moment\n");
+    }
+  }
+}
+
 
 bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   int w, h;
@@ -560,6 +589,9 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   if(e->type == SDL_MOUSEBUTTONDOWN){
     SDL_Point mousedir;
     SDL_GetMouseState(&mousedir.x, &mousedir.y);
+
+    button_action(win, ren, env, mousedir.x, mousedir.y);
+
     int node_num = get_node(mousedir.x, mousedir.y, env);
     if(node_num !=-1){
       if(env->node == -1){

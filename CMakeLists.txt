@@ -20,10 +20,11 @@ add_executable(hashi_text ${text_src_files}) # hashi_text
 add_executable(hashi_gui ${gui_src_files}) # hashi_gui
 add_executable(hashi_solve ${solve_src_files}) #hashi_solve
 add_library(hashi src/core/game.c src/core/node.c) # libhashi
-add_library(hashi-tools src/tools/file.c
-												src/tools/secure.c
-												src/tools/generate.c
-												src/solver/solver.c) # libhashi-tools
+add_library(hashi-tools
+  src/tools/file.c
+  src/tools/secure.c
+  src/tools/generate.c
+  src/solver/solver.c) # libhashi-tools
 
 #Pour installer les executables à la racine
 install(TARGETS hashi_gui hashi_text hashi_solve DESTINATION ${PROJECT_SOURCE_DIR})
