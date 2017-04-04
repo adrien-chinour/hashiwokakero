@@ -105,7 +105,7 @@ static int coordtopxy(int coord, Env * env){
   return (coord * 2 + 1) * env->size  - env->size / 2 + env->margin_y;
 }
 
-Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
+Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int select) {
   char * game_file = NULL;
   game g = NULL;
 
@@ -118,12 +118,30 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   //il y a une erreur sur le chargement de la map sur android
 
   #ifdef __ANDROID__
-    // generation aleatoire d'ue partie 3*3 à 9 noeud avec nb_dir = 4 et max_bridges = 2
+    // generation aleatoire d'une partie 3*3 à 9 noeud avec nb_dir = 4 et max_bridges = 2
     g = random_game(2,4);
   #else
     /* On charge le game en fonction de ce que l'utilisateur demande*/
     if(game_file != NULL) {g = translate_game(game_file); }
-    else {g = translate_game("save/game_default.txt"); }
+    else {
+      switch (select)
+	{
+	case 1:
+	  g = translate_game("save/game_easy.txt");
+	  break;
+	case 2:
+	  g = translate_game("save/game_medium.txt");
+	  break;
+	case 3:
+	  g = translate_game("save/game_hard.txt");
+	  break;
+	case 4:
+	  //ATTENTION : dernier panneau = charger une game sauvegardée, à configurer
+	  if(check_file("save/game_save.txt"))
+	    g = translate_save("save/game_save.txt");
+	  break;
+	}
+    }
   #endif
 
   /* test retour fonction translate*/
@@ -387,6 +405,7 @@ void make_connection(int node_num, SDL_Renderer * ren, Env * env){
           env->island[node_num]=env->islandnonselect;
           print_degree(node_num, ren, env);
           game_finish(env,ren);
+          SDL_SetTextureBlendMode(env->save,SDL_BLENDMODE_NONE);
         }
         else {
           while(get_degree_dir(env->g, node_num, i) != 0){
@@ -394,6 +413,7 @@ void make_connection(int node_num, SDL_Renderer * ren, Env * env){
             env->island[node_num]=env->islandnonselect;
             del_bridge_dir(env->g, node_num, i);
             print_degree(node_num, ren, env);
+            SDL_SetTextureBlendMode(env->save,SDL_BLENDMODE_NONE);
           }
         }
         print_degree(env->node, ren ,env);
@@ -533,7 +553,12 @@ void button_action(SDL_Window* win, SDL_Renderer* ren, Env * env, int x , int y)
       game_finish(env, ren);
     }
     else if (x >env->size && x < env->size+env->size/2){
-      write_save(env->g, "save/game_save.txt");
+       SDL_BlendMode* BM = NULL;
+       SDL_GetTextureBlendMode(env->save,BM);
+       if(BM == SDL_BLENDMODE_NONE){
+          write_save(env->g, "save/game_save.txt");
+          SDL_SetTextureBlendMode(env->save,SDL_BLENDMODE_MOD);
+       }
     }
   }
 }

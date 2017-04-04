@@ -67,11 +67,14 @@ int main(int argc, char * argv[]) {
      }
      /* clean menu environment */
      clean_menu(win, ren, envm);
+     if(select == -1)
+       exit(EXIT_SUCCESS);
   }
   #endif
 
   /* initialize game environment */
-  Env * env = init(win, ren, argc, argv);
+  
+  Env * env = init(win, ren, argc, argv, select);
   if (env == NULL){
     fprintf(stderr, "Initialisation de l'environnement impossible\n");
     exit(EXIT_FAILURE);

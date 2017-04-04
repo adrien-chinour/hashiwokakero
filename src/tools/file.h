@@ -10,6 +10,7 @@
 #include "../core/game.h"
 
 game generate_game(int game, int nb_max_bridges, int nb_dir, int nb_nodes);
+bool check_file(char *file);
 game translate_game(char * fileopen);
 game translate_save(char * fileopen);
 void write_save(game g, char * filesave);

@@ -37,6 +37,19 @@ game generate_game(int nb_game, int nb_max_bridges, int nb_dir, int nb_nodes){
     return g;
 }
 
+bool check_file(char *file)
+{
+  FILE* fichier = NULL;
+  fichier = fopen(file, "r");
+
+  if(fichier != NULL)
+    {
+      fclose(fichier);
+      return true;
+    }
+  return false;
+}
+
 game translate_game(char * fileopen){
    FILE *gametxt;
    gametxt = fopen(fileopen,"r");
