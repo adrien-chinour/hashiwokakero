@@ -47,6 +47,30 @@ struct Env_t {
   unsigned int starttime;
 };
 
+/*à enlever*/
+int translate_game_android(char * fileopen){ //inspiré de la documentation https://wiki.libsdl.org/SDL_RWread
+   SDL_RWops *file = SDL_RWFromFile(fileopen,"rt");
+   if (file == NULL) return NULL;
+   Sint64 res_size = SDL_RWsize(file);
+//message d'erreur size
+   char* res = (char*)malloc(res_size + 1);
+
+   Sint64 nb_read_total = 0, nb_read = 1;
+   char* buf = res;
+/**/
+   int nb_nodes = 0;
+   while(nb_read_total < res_size && nb_read != 0 && *res != ' '){
+      /**/
+      nb_read = SDL_RWread(file, buf, 1, (res_size - nb_read_total));
+      nb_read_total += nb_read;
+      //buf += nb_read;
+      nb_nodes = nb_nodes *10 + atoi(buf); 
+   } 
+   SDL_RWclose(file);
+   return nb_nodes;
+}
+
+
 
 /*
   Initialisation des variables d'env en fonction de la taille de l'écran
@@ -112,6 +136,8 @@ static int coordtopxy(int coord, Env * env){
 Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int select) {
   char * game_file = NULL;
   game g = NULL;
+
+  printf("%d\n\n",translate_game_android("save/game_easy.txt"));
 
   /* L'utilisateur a rentré un nom de fichier */
   if(argc == 2) game_file = argv[1];
@@ -750,3 +776,4 @@ void clean(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   free(env->text);
   free(env);
 }
+
