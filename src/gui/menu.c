@@ -60,7 +60,7 @@ void init_window_menu(int w, int h, SDL_Renderer* ren, Envm * env){
    
    
    for(int i = 0; i < NB_BOARDS; i++){
-      //pour récupérer la taile d'une image int SDL_QueryTexture(env->board, NULL, NULL, X, Y)
+     //positionner les images au centre en abscisse
       env->x = w/4;
       //e = nombre de pixels entre 2 planches (espace)
       env->y[i] = (i*(h-marge))/NB_BOARDS + marge/2;
@@ -143,11 +143,11 @@ int select_button(Envm * env, int x, int y){
 /* **************************************************************** */
      
      
-bool process_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env, SDL_Event * e){
+int process_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env, SDL_Event * e){
   int w,h;
   SDL_GetWindowSize(win, &w, &h);
   if (e->type == SDL_QUIT) {
-    return true;
+    return -1;
   }
   else if(e->type == SDL_WINDOWEVENT){
     switch(e->window.event){

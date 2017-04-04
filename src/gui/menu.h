@@ -29,7 +29,7 @@ typedef struct Env_m Envm;
 Envm * init_menu(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]);
 void render_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env);
 void clean_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env);
-bool process_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env, SDL_Event * e);
+int process_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env, SDL_Event * e);
 
 /* **************************************************************** */
 
