@@ -22,6 +22,8 @@
 #define ISLANDSELECT "img/island_selected.png"
 #define SOLVE "img/solve.png"
 #define SAVE "img/save.png"
+#define RELOAD "img/reload.png"
+#define NEXT "img/next.png"
 
 /* **************************************************************** */
 
@@ -38,9 +40,11 @@ struct Env_t {
   int size; // taille d'une ile
   SDL_Texture * game_win;
   SDL_Texture * solve;
-   SDL_Texture * save;
-   SDL_Point mouse_pos;
-   unsigned int starttime;
+  SDL_Texture * save;
+  SDL_Texture * reload;
+  SDL_Texture * next;
+  SDL_Point mouse_pos;
+  unsigned int starttime;
 };
 
 
@@ -174,6 +178,12 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
 
   env->save = IMG_LoadTexture(ren, SAVE);
   if(!env->save) SDL_Log("IMG_LoadTexture: %s\n", SAVE);
+
+  env->reload = IMG_LoadTexture(ren, RELOAD);
+  if(!env->reload) SDL_Log("IMG_LoadTexture: %s\n", RELOAD);
+
+  env->next = IMG_LoadTexture(ren, NEXT);
+  if(!env->next) SDL_Log("IMG_LoadTexture: %s\n", NEXT);
 
   for(int i = 0 ; i < game_nb_nodes(g) ; i++){
     env->island[i] = env->islandnonselect;
@@ -357,6 +367,22 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
    rect.x = env->size;
    rect.y = height-env->size + env->size/4;
    SDL_RenderCopy(ren, env->save, NULL, &(rect));
+
+   //reload
+   rect.w = env->size/2;
+   rect.h = env->size/2;
+   rect.x = 2 * env->size - env->size/4;
+   rect.y = height-env->size + env->size/4;
+   SDL_RenderCopy(ren, env->reload, NULL, &(rect));
+
+   #ifdef __ANDROID__
+   //next
+   rect.w = env->size/2;
+   rect.h = env->size/2;
+   rect.x = 2 * env->size + env->size/2;
+   rect.y = height-env->size + env->size/4;
+   SDL_RenderCopy(ren, env->next, NULL, &(rect));
+   #endif
 
    if(env->game_win){
       rect.w = env->size*3;
@@ -560,6 +586,25 @@ void button_action(SDL_Window* win, SDL_Renderer* ren, Env * env, int x , int y)
           SDL_SetTextureBlendMode(env->save,SDL_BLENDMODE_MOD);
        }
     }
+    else if(x > 2 * env->size - env->size/4 && x < 2 * env->size - env->size/4 + env->size/2){
+      for(int i = 0; i < game_nb_nodes(env->g); i++){
+        for(int j = 0; j < game_nb_dir(env->g); j++){
+          if(get_degree_dir(env->g,i,j) != 0)
+            del_bridge_dir(env->g,i,j);
+        }
+      }
+      for(int i = 0; i < game_nb_nodes(env->g); i++){
+         print_degree(i, ren,  env);
+      }
+      env->game_win = NULL;
+    }
+    #ifdef __ANDROID__
+    else if(x > 2 * env->size + env->size/2 && x < 3 * env->size){
+      char ** t = NULL;
+      clean(win,ren,env);
+      init(win,ren,0,t,0);
+    }
+    #endif
   }
 }
 
@@ -629,7 +674,7 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   else if (game_over(env->g ) && e->type == SDL_FINGERDOWN){
     char ** t = NULL;
     clean(win,ren,env);
-    init(win,ren,0,t);
+    init(win,ren,0,t,0);
   }
   else if (e->type == SDL_FINGERMOTION){
      int node_num = get_node(e->tfinger.x*w,e->tfinger.y*h, env);
