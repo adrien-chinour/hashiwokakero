@@ -117,6 +117,115 @@ game SDL_translate_game(char * fileopen){ //inspiré de la documentation https:/
   return g; // après game   
 }
 
+game SDL_translate_save(char * fileopen){
+  SDL_RWops *file = SDL_RWFromFile(fileopen,"rt");
+  if (file == NULL) return NULL;
+  Sint64 res_size = SDL_RWsize(file);
+  //message d'erreur size
+
+  Sint64 nb_read_total = 0, nb_read = 1;
+  
+  char * buf = malloc(sizeof(char));
+  
+  buf[0] = '0';
+  int * arg = malloc(sizeof(int)*3);
+  arg[0]=0;
+  
+  /*nb_nodes*/
+  int y = 0;
+  while(nb_read_total < res_size && nb_read != 0 && buf[0] != ' '){
+    y = y +1;
+    nb_read_total += nb_read;
+    //buf += nb_read;
+    arg[0] = arg[0] *10 + atoi(buf);
+    nb_read = SDL_RWread(file, buf, sizeof(char),1);
+  }
+  
+  int c = 1;
+  printf("nbnodes = %d\n",arg[0]);
+  
+  while(nb_read_total < res_size && nb_read != 0 && buf[0] != '\n'){
+    nb_read = SDL_RWread(file, buf, sizeof(char), 1);
+    nb_read_total += nb_read;
+    if(buf[0] != ' ' && c<3){
+      arg[c] = atoi(buf);
+      printf("nb other dir et max = %d\n",arg[c]);
+      c++;
+    }
+  }
+  c = 0;
+
+  int * node_arg = malloc(sizeof(int)*3);
+  node * tab_nodes = malloc(sizeof(node)*(arg[0]));
+  for(int i = 0 ; i< arg[0];i++){
+    node_arg[0] = 0;
+    node_arg[1] = 0;
+    node_arg[2] = 0;
+    buf[0]='0';
+    for(int j = 0; j < 3; j++){
+      while(nb_read_total < res_size && nb_read != 0 && buf[0] != ' ' && buf[0] != '\n'){//lecture des 3 premiers chiffres
+        node_arg[j] = node_arg[j]*10 +atoi(buf);
+        nb_read = SDL_RWread(file, buf, sizeof(char), 1);
+        nb_read_total += nb_read;
+      }
+      buf[0]='0';
+      printf("%d ",node_arg[j]);
+    }
+    while(nb_read_total < res_size && nb_read != 0 && buf[0] != '\n'){ //saut de ligne
+      nb_read = SDL_RWread(file, buf, sizeof(char), 1);
+      nb_read_total += nb_read;
+    }
+    printf("\n");
+    tab_nodes[i] = new_node(node_arg[0],node_arg[1],node_arg[2]);
+  }
+
+  game g = new_game(arg[0],tab_nodes,arg[1],arg[2]);
+  SDL_RWseek(file,0,RW_SEEK_SET); //retour au début du fichier
+  nb_read_total = 0;
+
+  while(nb_read_total < res_size && nb_read != 0 && buf[0] != '\n'){//saut de la première ligne
+    nb_read = SDL_RWread(file, buf, sizeof(char), 1);
+    nb_read_total += nb_read;
+  }
+
+  for(int i = 0 ; i< arg[0];i++){//remplacer i par "node_num"
+    buf[0]='0';
+    for(int j = 0; j < 3; j++){
+      while(nb_read_total < res_size && nb_read != 0 && buf[0] != ' '){//saut des 3 premiers chiffres
+        nb_read = SDL_RWread(file, buf, sizeof(char), 1);
+        nb_read_total += nb_read;
+      }
+      buf[0]='0';
+    }
+    for(int d =0; d < arg[2]; d++){
+      buf[0]='0';
+      while(nb_read_total < res_size && nb_read != 0 && buf[0] != ' ' && buf[0] != '\n'){
+        nb_read = SDL_RWread(file, buf, sizeof(char), 1);
+        nb_read_total += nb_read;
+        for(int nbbridges = 0; nbbridges<atoi(buf) ; nbbridges++){
+          add_bridge_dir(g,i,d);
+        }
+      }
+    }
+    if(buf[0] != '\n'){//saut de ligne si ce n'est pas déjà fait
+      buf[0]='0';
+      while(nb_read_total < res_size && nb_read != 0 && buf[0] != '\n'){//saut de ligne
+        nb_read = SDL_RWread(file, buf, sizeof(char), 1);
+        nb_read_total += nb_read;
+      }
+    }
+  }
+ 
+  
+  for (int i = 0; i< arg[0];i++) delete_node(tab_nodes[i]);
+  free(buf);
+  free(arg);
+  free(tab_nodes);
+  free(node_arg);
+  SDL_RWclose(file);
+  return g;
+}
+
 
 
 /*
@@ -184,8 +293,6 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
   char * game_file = NULL;
   game g = NULL;
 
-  SDL_translate_game("save/game_easy.txt"); // modif game = ...
-
   /* L'utilisateur a rentré un nom de fichier */
   if(argc == 2) game_file = argv[1];
   if (game_file != NULL) printf("%s\n",game_file); //debug
@@ -215,7 +322,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
 	case 4:
 	  //ATTENTION : dernier panneau = charger une game sauvegardée, à configurer
 	  if(check_file("save/game_save.txt"))
-	    g = translate_save("save/game_save.txt");
+	    g = SDL_translate_save("save/game_save.txt");
 	  break;
 	}
     }
