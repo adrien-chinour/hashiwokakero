@@ -325,19 +325,19 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
    SDL_FreeSurface(surf);
    TTF_CloseFont(font);
 
-      //solver
-      rect.w = env->size/2;
-      rect.h = env->size/2;
-      rect.x = env->size/4;
-      rect.y = height-env->size + env->size/4;
-      SDL_RenderCopy(ren, env->solve, NULL, &(rect));
+   //solver
+   rect.w = env->size/2;
+   rect.h = env->size/2;
+   rect.x = env->size/4;
+   rect.y = height-env->size + env->size/4;
+   SDL_RenderCopy(ren, env->solve, NULL, &(rect));
 
-      //save
-      rect.w = env->size/2;
-      rect.h = env->size/2;
-      rect.x = env->size;
-      rect.y = height-env->size + env->size/4;
-      SDL_RenderCopy(ren, env->save, NULL, &(rect));
+   //save
+   rect.w = env->size/2;
+   rect.h = env->size/2;
+   rect.x = env->size;
+   rect.y = height-env->size + env->size/4;
+   SDL_RenderCopy(ren, env->save, NULL, &(rect));
 
    if(env->game_win){
       rect.w = env->size*3;
@@ -384,6 +384,7 @@ void make_connection(int node_num, SDL_Renderer * ren, Env * env){
           env->island[node_num]=env->islandnonselect;
           print_degree(node_num, ren, env);
           game_finish(env,ren);
+          SDL_SetTextureBlendMode(env->save,SDL_BLENDMODE_NONE);
         }
         else {
           while(get_degree_dir(env->g, node_num, i) != 0){
@@ -391,6 +392,7 @@ void make_connection(int node_num, SDL_Renderer * ren, Env * env){
             env->island[node_num]=env->islandnonselect;
             del_bridge_dir(env->g, node_num, i);
             print_degree(node_num, ren, env);
+            SDL_SetTextureBlendMode(env->save,SDL_BLENDMODE_NONE);
           }
         }
         print_degree(env->node, ren ,env);
@@ -530,7 +532,12 @@ void button_action(SDL_Window* win, SDL_Renderer* ren, Env * env, int x , int y)
       game_finish(env, ren);
     }
     else if (x >env->size && x < env->size+env->size/2){
-      write_save(env->g, "save/game_save.txt");
+       SDL_BlendMode* BM = NULL;
+       SDL_GetTextureBlendMode(env->save,BM);
+       if(BM == SDL_BLENDMODE_NONE){
+          write_save(env->g, "save/game_save.txt");
+          SDL_SetTextureBlendMode(env->save,SDL_BLENDMODE_MOD);
+       }
     }
   }
 }
