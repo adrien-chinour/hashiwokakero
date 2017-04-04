@@ -1,7 +1,9 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+
 
 #include "../core/node.h"
 #include "../core/game.h"
@@ -105,7 +107,7 @@ game translate_save(char * fileopen){ //pour les sauvegardes + solutions
    }
    char * l = malloc(sizeof(char)*255);
    fgets(l,10,gametxt);
-   int * tab = malloc(sizeof(int)*3);
+   int * tab = malloc(sizeof(int)*255);
 
    char * token = strtok(l, " ");
    int tmp;
@@ -118,8 +120,8 @@ game translate_save(char * fileopen){ //pour les sauvegardes + solutions
       c++;
    }
    c=0;
-   int * tabnode = malloc(sizeof(int)*(3+tab[1]));
-   node * nodes = malloc(sizeof(node)*(tab[0]));
+   int * tabnode = malloc(sizeof(int)*(250+tab[1]));
+   node * nodes = malloc(sizeof(node)*(250+tab[0]));
 
    for(int i=0; i<tab[0]; i++){
       fgets(l,255,gametxt);
@@ -195,3 +197,6 @@ void write_game(game g){
    }
    fclose(gametxt);
 }
+
+
+
