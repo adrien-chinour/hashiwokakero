@@ -48,26 +48,73 @@ struct Env_t {
 };
 
 /*à enlever*/
-int translate_game_android(char * fileopen){ //inspiré de la documentation https://wiki.libsdl.org/SDL_RWread
-   SDL_RWops *file = SDL_RWFromFile(fileopen,"rt");
-   if (file == NULL) return NULL;
-   Sint64 res_size = SDL_RWsize(file);
-//message d'erreur size
-   char* res = (char*)malloc(res_size + 1);
+game SDL_translate_game(char * fileopen){ //inspiré de la documentation https://wiki.libsdl.org/SDL_RWread
+  SDL_RWops *file = SDL_RWFromFile(fileopen,"rt");
+  if (file == NULL) return NULL;
+  Sint64 res_size = SDL_RWsize(file);
+  //message d'erreur size
 
-   Sint64 nb_read_total = 0, nb_read = 1;
-   char* buf = res;
-/**/
-   int nb_nodes = 0;
-   while(nb_read_total < res_size && nb_read != 0 && *res != ' '){
-      /**/
-      nb_read = SDL_RWread(file, buf, 1, (res_size - nb_read_total));
-      nb_read_total += nb_read;
-      //buf += nb_read;
-      nb_nodes = nb_nodes *10 + atoi(buf); 
-   } 
-   SDL_RWclose(file);
-   return nb_nodes;
+  Sint64 nb_read_total = 0, nb_read = 1;
+  
+  char * buf = malloc(sizeof(char));
+  
+  buf[0] = '0';
+  int * arg = malloc(sizeof(int)*3);
+  arg[0]=0;
+  
+  /*nb_nodes*/
+  int y = 0;
+  while(nb_read_total < res_size && nb_read != 0 && buf[0] != ' '){
+    y = y +1;
+    nb_read_total += nb_read;
+    //buf += nb_read;
+    arg[0] = arg[0] *10 + atoi(buf);
+    nb_read = SDL_RWread(file, buf, sizeof(char),1);
+  }
+  
+  int c = 1;
+  printf("nbnodes = %d\n",arg[0]);
+  
+  while(nb_read_total < res_size && nb_read != 0 && buf[0] != '\n'){
+    nb_read = SDL_RWread(file, buf, sizeof(char), 1);
+    nb_read_total += nb_read;
+    if(buf[0] != ' ' && c<3){
+      arg[c] = atoi(buf);
+      printf("nb other dir et max = %d\n",arg[c]);
+      c++;
+    }
+  }
+  c = 0;
+
+  int * node_arg = malloc(sizeof(int)*3);
+  node * tab_nodes = malloc(sizeof(node)*(arg[0]));
+  for(int i = 0 ; i< arg[0];i++){
+    node_arg[0] = 0;
+    node_arg[1] = 0;
+    node_arg[2] = 0;
+    buf[0]='0';
+    for(int j = 0; j < 3; j++){
+      while(nb_read_total < res_size && nb_read != 0 && buf[0] != ' ' && buf[0] != '\n'){
+        node_arg[j] = node_arg[j]*10 +atoi(buf);
+        nb_read = SDL_RWread(file, buf, sizeof(char), 1);
+        nb_read_total += nb_read;
+      }
+      buf[0]='0';
+      printf("%d ",node_arg[j]);
+    }
+    printf("\n");
+    tab_nodes[i] = new_node(node_arg[0],node_arg[1],node_arg[2]);
+  }
+  game g = new_game(arg[0],tab_nodes,arg[1],arg[2]);
+  printf("nb nodes = %d autres = %d, %d\n",arg[0],arg[1],arg[2]);
+  
+  for (int i = 0; i< arg[0];i++) delete_node(tab_nodes[i]);
+  free(buf);
+  free(arg);
+  free(tab_nodes);
+  free(node_arg);
+  SDL_RWclose(file);
+  return g; // après game   
 }
 
 
@@ -137,7 +184,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
   char * game_file = NULL;
   game g = NULL;
 
-  printf("%d\n\n",translate_game_android("save/game_easy.txt"));
+  SDL_translate_game("save/game_easy.txt"); // modif game = ...
 
   /* L'utilisateur a rentré un nom de fichier */
   if(argc == 2) game_file = argv[1];
@@ -157,13 +204,13 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
       switch (select)
 	{
 	case 1:
-	  g = translate_game("save/game_easy.txt");
+	  g = SDL_translate_game("save/game_easy.txt");
 	  break;
 	case 2:
-	  g = translate_game("save/game_medium.txt");
+	  g = SDL_translate_game("save/game_medium.txt");
 	  break;
 	case 3:
-	  g = translate_game("save/game_hard.txt");
+	  g = SDL_translate_game("save/game_hard.txt");
 	  break;
 	case 4:
 	  //ATTENTION : dernier panneau = charger une game sauvegardée, à configurer
