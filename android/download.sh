@@ -14,8 +14,4 @@ wget -c https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.1.zip
 unzip SDL2_image-2.0.1.zip
 mv SDL2_image-2.0.1 SDL_image
 
-wget -c https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.1.zip
-unzip SDL2_mixer-2.0.1.zip
-mv SDL2_mixer-2.0.1 SDL_mixer
-
 cd ..

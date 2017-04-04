@@ -40,6 +40,7 @@ struct Env_t {
   SDL_Texture * solve;
    SDL_Texture * save;
    SDL_Point mouse_pos;
+   unsigned int starttime;
 };
 
 
@@ -108,8 +109,6 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   char * game_file = NULL;
   game g = NULL;
 
-
-
   /* L'utilisateur a rentré un nom de fichier */
   if(argc == 2) game_file = argv[1];
   if (game_file != NULL) printf("%s\n",game_file); //debug
@@ -137,6 +136,8 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
 
   env->game_win = NULL;
   env->g = g;
+
+  env->starttime = SDL_GetTicks();
 
   int w, h;
   SDL_GetWindowSize(win, &w, &h);
@@ -312,7 +313,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
    if(!font) SDL_Log("TTF_OpenFont: %s\n", FONT);
    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
    char * timer = malloc(sizeof(char)*100);
-   int time = SDL_GetTicks();
+   int time = SDL_GetTicks() - env->starttime;
    sprintf(timer, "Time : %ds", time/1000);
    SDL_Surface * surf = TTF_RenderText_Blended(font, timer , color);
    SDL_Texture * timer_texture = SDL_CreateTextureFromSurface(ren, surf);
@@ -325,19 +326,19 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
    SDL_FreeSurface(surf);
    TTF_CloseFont(font);
 
-      //solver
-      rect.w = env->size/2;
-      rect.h = env->size/2;
-      rect.x = env->size/4;
-      rect.y = height-env->size + env->size/4;
-      SDL_RenderCopy(ren, env->solve, NULL, &(rect));
+   //solver
+   rect.w = env->size/2;
+   rect.h = env->size/2;
+   rect.x = env->size/4;
+   rect.y = height-env->size + env->size/4;
+   SDL_RenderCopy(ren, env->solve, NULL, &(rect));
 
-      //save
-      rect.w = env->size/2;
-      rect.h = env->size/2;
-      rect.x = env->size;
-      rect.y = height-env->size + env->size/4;
-      SDL_RenderCopy(ren, env->save, NULL, &(rect));
+   //save
+   rect.w = env->size/2;
+   rect.h = env->size/2;
+   rect.x = env->size;
+   rect.y = height-env->size + env->size/4;
+   SDL_RenderCopy(ren, env->save, NULL, &(rect));
 
    if(env->game_win){
       rect.w = env->size*3;
@@ -348,13 +349,15 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
    }
 }
 
-static void game_finish(Env * env, SDL_Renderer * ren){ //note pour plus tard: pour avoir le dernier temps il faut mettre le temps dans la variable d'environnement ou en faire un variable globale
+static void game_finish(Env * env, SDL_Renderer * ren){
+  //note pour plus tard: pour avoir le dernier temps il faut mettre le temps dans la variable d'environnement ou en faire un variable globale
   if(game_over(env->g)){
     SDL_Color color = {255, 203, 96, 255};
     TTF_Font * font = TTF_OpenFont(FONT, env->fontsize*4);
     if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
     TTF_SetFontStyle(font, TTF_STYLE_BOLD);
-    char * end_message = "Victoire !";
+    unsigned int timer = (SDL_GetTicks()-env->starttime)/1000;
+    char end_message[100]; sprintf(end_message, "Victoire ! Temps : %ds", timer);
     SDL_Surface * surf = TTF_RenderText_Blended(font, end_message, color);
     SDL_Texture * end_texture = SDL_CreateTextureFromSurface(ren, surf);
     env->game_win = end_texture;
@@ -435,7 +438,7 @@ void print_node_and_bridges(Env * env, SDL_Renderer * ren){
                   dx =env->size/10;
                   dy =0;
                   if(can_add_bridge_dir(env->g, i, d)){
-                     SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);
+                     SDL_SetRenderDrawColor(ren, 255, 203, 96, SDL_ALPHA_OPAQUE);
                   }
                   else
                      SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);
@@ -449,7 +452,7 @@ void print_node_and_bridges(Env * env, SDL_Renderer * ren){
                   dx =0;
                   dy =env->size/10 ;
                   if(can_add_bridge_dir(env->g, i, d)){
-                     SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);
+                     SDL_SetRenderDrawColor(ren, 255, 203, 96, SDL_ALPHA_OPAQUE);
                   }
                   else
                      SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);
@@ -463,7 +466,7 @@ void print_node_and_bridges(Env * env, SDL_Renderer * ren){
                   dx =env->size/10;
                   dy =env->size/10 ;
                   if(can_add_bridge_dir(env->g, i, d)){
-                     SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);
+                     SDL_SetRenderDrawColor(ren, 255, 203, 96, SDL_ALPHA_OPAQUE);
                   }
                   else
                      SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);
@@ -477,7 +480,7 @@ void print_node_and_bridges(Env * env, SDL_Renderer * ren){
                   dx =-env->size/10;
                   dy =env->size/10 ;
                   if(can_add_bridge_dir(env->g, i, d)){
-                     SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);
+                     SDL_SetRenderDrawColor(ren, 255, 203, 96, SDL_ALPHA_OPAQUE);
                   }
                   else
                      SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);
@@ -598,7 +601,11 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   /* Android events */
 
 #ifdef __ANDROID__
-
+  else if (game_over(env->g ) && e->type == SDL_FINGERDOWN){
+    char ** t = NULL;
+    clean(win,ren,env);
+    init(win,ren,0,t);
+  }
   else if (e->type == SDL_FINGERMOTION){
      int node_num = get_node(e->tfinger.x*w,e->tfinger.y*h, env);
      if(node_num != -1){

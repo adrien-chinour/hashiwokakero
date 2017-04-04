@@ -2,7 +2,6 @@
 #include <SDL.h>
 #include <SDL_image.h>  // required to load transparent texture from PNG
 #include <SDL_ttf.h>    // required to use TTF fonts
-#include <SDL_mixer.h>
 #include <stdio.h>
 #include <stdbool.h>
 

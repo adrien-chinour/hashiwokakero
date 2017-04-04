@@ -11,7 +11,7 @@ LOCAL_CFLAGS += -g -std=c99
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/$(SDL_PATH)/include
 
-YOUR_SRC_FILES= $(SRC_PATH)/core/game.c $(SRC_PATH)/core/node.c $(SRC_PATH)/gui/hashi_gui.c $(SRC_PATH)/gui/model.c  $(SRC_PATH)/tools/file.c $(SRC_PATH)/tools/generate.c $(SRC_PATH)/solver/solver.c $(SRC_PATH)/gui/menu.c
+YOUR_SRC_FILES= $(SRC_PATH)/core/game.c $(SRC_PATH)/core/node.c $(SRC_PATH)/gui/hashi_gui.c $(SRC_PATH)/gui/model.c  $(SRC_PATH)/tools/file.c $(SRC_PATH)/tools/generate.c $(SRC_PATH)/gui/menu.c $(SRC_PATH)/solver/solver.c
 
 LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c $(YOUR_SRC_FILES)
 
