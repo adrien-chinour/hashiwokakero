@@ -88,7 +88,7 @@ game SDL_translate_game(char * fileopen){ //inspiré de la documentation https:/
 
   int * node_arg = malloc(sizeof(int)*3);
   node * tab_nodes = malloc(sizeof(node)*(arg[0]));
-  for(int i = 0 ; i< arg[0];i++){
+  for(int i = 0 ; i < arg[0];i++){
     node_arg[0] = 0;
     node_arg[1] = 0;
     node_arg[2] = 0;
@@ -338,7 +338,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
   if (game_file != NULL) printf("%s\n",game_file); //debug
 
 
-
+  
   //il y a une erreur sur le chargement de la map sur android
 
   #ifdef __ANDROID__
@@ -461,7 +461,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
                   x = coordtopxx(get_x(debut),env)+env->size/2;
                   y = coordtopxy(get_y(debut),env)+env->size;
                   x1 = coordtopxx(get_x(cible),env)+env->size/2;
-                  y1 =coordtopxy(get_y(cible),env);
+                  y1 = coordtopxy(get_y(cible),env);
                   rect.x = coordtopxx(get_x(debut),env)+env->size/4;
                   rect.y = coordtopxy(get_y(debut),env)+env->size;
                   rect.h = y1 -y;
@@ -471,7 +471,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
                   x = coordtopxx(get_x(debut),env);
                   y = coordtopxy(get_y(debut),env)+env->size/2;
                   x1 = coordtopxx(get_x(cible),env)+env->size;
-                  y1 =coordtopxy(get_y(cible),env)+env->size/2;
+                  y1 = coordtopxy(get_y(cible),env)+env->size/2;
                   rect.x = coordtopxx(get_x(debut),env);
                   rect.y = coordtopxy(get_y(debut),env) + env->size/4;
                   rect.h = env->size/2;
@@ -491,7 +491,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
                   x = coordtopxx(get_x(debut),env)+env->size;
                   y = coordtopxy(get_y(debut),env)+env->size/2;
                   x1 = coordtopxx(get_x(cible),env);
-                  y1 =coordtopxy(get_y(cible),env)+env->size/2;
+                  y1 = coordtopxy(get_y(cible),env)+env->size/2;
                   rect.x = coordtopxx(get_x(debut),env)+env->size;
                   rect.y = coordtopxy(get_y(debut),env)+env->size/4;
                   rect.h = env->size/2;
@@ -511,7 +511,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
                   x = coordtopxx(get_x(debut),env);
                   y = coordtopxy(get_y(debut),env);
                   x1 = coordtopxx(get_x(cible),env)+env->size;
-                  y1 =coordtopxy(get_y(cible),env)+env->size;
+                  y1 = coordtopxy(get_y(cible),env)+env->size;
                   rect.x = coordtopxx(get_x(debut),env)+env->size;
                   rect.y = coordtopxy(get_y(debut),env)+env->size/4;
                   rect.h = env->size/2;
@@ -531,7 +531,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
                   x = coordtopxx(get_x(debut),env)+env->size;
                   y = coordtopxy(get_y(debut),env)+env->size;
                   x1 = coordtopxx(get_x(cible),env);
-                  y1 =coordtopxy(get_y(cible),env);
+                  y1 = coordtopxy(get_y(cible),env);
                   rect.x = coordtopxx(get_x(debut),env)+env->size;
                   rect.y = coordtopxy(get_y(debut),env)+env->size/4;
                   rect.h = env->size/2;

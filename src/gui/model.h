@@ -29,14 +29,10 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
 void render(SDL_Window* win, SDL_Renderer* ren, Env * env);
 void clean(SDL_Window* win, SDL_Renderer* ren, Env * env);
 bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e);
-
-static int coordtopxx(int coord, Env * env);
-static int coordtopxy(int coord, Env * env);
 void print_node_and_boats(Env * env, SDL_Renderer * ren);
 void print_node_and_bridges(Env * env, SDL_Renderer * ren);
 void render_bridges(int x, int y, int x1, int y1, int dx, int dy, int node_num,int dir, Env * env, SDL_Renderer * ren);
 int get_node(int x, int y, Env * env);
-
 
 /* **************************************************************** */
 

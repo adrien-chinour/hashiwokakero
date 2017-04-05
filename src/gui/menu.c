@@ -137,8 +137,8 @@ int select_button(Envm * env, int x, int y){
       if(env->y[i] <= y && y <= (env->y[i] + env->height_b))
         return i+1;
     }
-  return 0;
   }
+  return 0;
 }
 /* **************************************************************** */
      
