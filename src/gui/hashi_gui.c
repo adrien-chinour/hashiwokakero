@@ -8,10 +8,15 @@
 #include "model.h"
 #include "menu.h"
 
+/* **************************************************************** */
+
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 
+/* **************************************************************** */
+
 int main(int argc, char * argv[]) {
+
   /* initialize SDL2 and some extensions */
   if(SDL_Init(SDL_INIT_VIDEO) != 0) ERROR("SDL_Init VIDEO");
   if(IMG_Init(IMG_INIT_PNG & IMG_INIT_PNG) != IMG_INIT_PNG) ERROR("IMG_Init PNG");
@@ -36,8 +41,8 @@ int main(int argc, char * argv[]) {
     SDL_FreeSurface(surface);
   }
 
-  bool quit = false;
-  int select = 0;
+  bool quit = false; //variable de retour de la fonction event
+  int select = 0; //variable de retour du menu (selection d'une board)
 
   // ouverture du menu seulement si aucun fichier en parametre
   if(argc < 2){
@@ -86,7 +91,6 @@ int main(int argc, char * argv[]) {
       quit = process(win, ren, env, &e);
       if(quit) break;
     }
-    /* background in white */
     SDL_SetRenderDrawColor(ren, 0, 204, 255, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(ren);
     /* render all what you want */
