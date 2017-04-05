@@ -9,7 +9,7 @@
 
 /* **************************************************************** */
 
-#define FONT "Luna.ttf"
+#define FONT "Arial.ttf"
 #define FONTSIZE 36
 #define BACKGROUND "img/background.png"
 #define BOARD "img/board.png"
@@ -31,7 +31,12 @@ struct Env_m {
 
 
 void init_window_menu(int w, int h, SDL_Renderer* ren, Envm * env){
-   env->width_b = w/2;
+  #ifdef __ANDROID__
+    env->width_b = w;
+  #else
+    env->width_b = w/2;
+  #endif
+
    env->height_b = h/(NB_BOARDS+1);
 
    // definition de la taille de la police
@@ -44,8 +49,8 @@ void init_window_menu(int w, int h, SDL_Renderer* ren, Envm * env){
 
    board_message[0] = "Partie 4dir";
    board_message[1] = "Partie 8dir";
-   board_message[2] = "Partie Aleatoire";
-   board_message[3] = "Partie sauvegardee";
+   board_message[2] = "Aleatoire";
+   board_message[3] = "Sauvegarde";
    /* init text texture using Luna font */
    SDL_Color color = { 231, 62, 1, 255 }; /* black color in RGBA */
    TTF_Font * font = TTF_OpenFont(FONT, env->fontsize);
@@ -58,10 +63,16 @@ void init_window_menu(int w, int h, SDL_Renderer* ren, Envm * env){
       SDL_FreeSurface(surf);
    }
 
+   //positionner les images au centre en abscisse
+   #ifdef __ANDROID__
+    env->x = 0;
+   #else
+    env->x = w/4;
+   #endif
+
 
    for(int i = 0; i < NB_BOARDS; i++){
-     //positionner les images au centre en abscisse
-      env->x = w/4;
+
       //e = nombre de pixels entre 2 planches (espace)
       env->y[i] = (i*(h-marge))/NB_BOARDS + marge/2;
    }

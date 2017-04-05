@@ -41,8 +41,8 @@ void print_degree(int node_num, SDL_Renderer* ren,  Env * env){
   SDL_Color color_menthe = { 22,184,78,255 }; //couleur menthe
   SDL_Color color_corail = { 231,62,1,255 }; //couleur corail
   node n = game_node(env->g, node_num);
-  TTF_Font * font = TTF_OpenFont(FONT, env->fontsize);
-  if(!font) SDL_Log("TTF_OpenFont: %s\n", FONT);
+  TTF_Font * font = TTF_OpenFont(LUNA, env->fontsize);
+  if(!font) SDL_Log("TTF_OpenFont: %s\n", LUNA);
   TTF_SetFontStyle(font, TTF_STYLE_BOLD);
   char * degree = malloc(sizeof(char)*10);
   sprintf(degree, "%d", get_required_degree(n));
@@ -102,8 +102,8 @@ void game_finish(Env * env, SDL_Renderer * ren){
   //note pour plus tard: pour avoir le dernier temps il faut mettre le temps dans la variable d'environnement ou en faire un variable globale
   if(game_over(env->g)){
     SDL_Color color = {255, 203, 96, 255};
-    TTF_Font * font = TTF_OpenFont(FONT, env->fontsize*4);
-    if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
+    TTF_Font * font = TTF_OpenFont(ARIAL, env->fontsize*4);
+    if(!font) ERROR("TTF_OpenFont: %s\n", ARIAL);
     TTF_SetFontStyle(font, TTF_STYLE_BOLD);
     unsigned int timer = (SDL_GetTicks()-env->starttime)/1000;
     char end_message[100]; sprintf(end_message, "Victoire ! Temps : %ds", timer);

@@ -45,7 +45,6 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
   /* L'utilisateur a rentré un nom de fichier */
   if(argc == 2) game_file = argv[1];
 
-<<<<<<< HEAD
   /* On charge le game en fonction de ce que l'utilisateur a choisi dans le menu*/
   if(game_file != NULL) {g = translate_game(game_file); }
   else {
@@ -119,8 +118,8 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
   for(int i = 0 ; i < game_nb_nodes(g) ; i++){
     node n = game_node(g, i);
     SDL_Color color = { 231, 62, 1, 255 };
-    TTF_Font * font = TTF_OpenFont(FONT, env->fontsize);
-    if(!font) SDL_Log("TTF_OpenFont: %s\n", FONT);
+    TTF_Font * font = TTF_OpenFont(LUNA, env->fontsize);
+    if(!font) SDL_Log("TTF_OpenFont: %s\n", LUNA);
     TTF_SetFontStyle(font, TTF_STYLE_BOLD);
     char * degree = malloc(sizeof(char)*10);
     sprintf(degree, "%d", get_required_degree(n));
@@ -250,8 +249,8 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
 
    //timer
    SDL_Color color = {255, 203, 96, 255};
-   TTF_Font * font = TTF_OpenFont(FONT, env->fontsize*2);
-   if(!font) SDL_Log("TTF_OpenFont: %s\n", FONT);
+   TTF_Font * font = TTF_OpenFont(ARIAL, env->fontsize*2);
+   if(!font) SDL_Log("TTF_OpenFont: %s\n", ARIAL);
    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
    char * timer = malloc(sizeof(char)*100);
    int time = SDL_GetTicks() - env->starttime;
