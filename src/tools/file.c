@@ -39,8 +39,7 @@ game generate_game(int nb_game, int nb_max_bridges, int nb_dir, int nb_nodes){
     return g;
 }
 
-bool check_file(char *file)
-{
+bool check_file(char *file) {
   FILE* fichier = NULL;
   fichier = fopen(file, "r");
 
@@ -197,6 +196,3 @@ void write_game(game g){
    }
    fclose(gametxt);
 }
-
-
-
