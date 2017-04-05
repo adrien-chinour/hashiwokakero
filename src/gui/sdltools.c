@@ -313,9 +313,11 @@ void button_action(SDL_Window* win, SDL_Renderer* ren, Env * env, int x , int y)
       env->game_win = NULL;
     }
     else if(x > 2 * env->size + env->size/2 && x < 3 * env->size){
-      char ** t = NULL;
-      clean(win,ren,env);
-      init(win,ren,0,t,3);
+       delete_game(env->g);
+       env->g = random_game(2,4);
+       for(int in =0; in<9; in++ )
+          print_degree(in,ren,env);
+       init_window(width,height,ren,env);
     }
   }
 }
