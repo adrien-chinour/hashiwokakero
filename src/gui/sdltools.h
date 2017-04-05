@@ -26,6 +26,8 @@ typedef struct Env_t Env;
 
 /* **************************************************************** */
 
+void change_game(SDL_Window* win,Env* env,SDL_Renderer * ren, int num_game);
+void init_game(Env * env,char * game_file,int select);
 void refresh_window(SDL_Window* win, SDL_Renderer* ren, Env * env);
 int coordtopxx(int coord, Env * env);
 int coordtopxy(int coord, Env * env);

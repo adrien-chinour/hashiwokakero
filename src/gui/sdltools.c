@@ -36,6 +36,16 @@ struct Env_t {
 
 /**/
 
+void change_game(SDL_Window* win,Env* env,SDL_Renderer * ren, int num_game){
+   for(int i = 0; i<game_nb_nodes(env->g);i++)
+      SDL_DestroyTexture(env->text[i]);
+   delete_game(env->g);
+   if(env->game_win != NULL){SDL_DestroyTexture(env->game_win); env->game_win =NULL;}
+   free(env->island);
+   free(env->text);
+   init_game(env,NULL,num_game);
+   refresh_window(win, ren, env);
+}
 
 void init_game(Env * env,char * game_file,int select){
    game g = NULL;
@@ -360,11 +370,7 @@ void button_action(SDL_Window* win, SDL_Renderer* ren, Env * env, int x , int y)
       env->game_win = NULL;
     }
     else if(x > 2 * env->size + env->size/2 && x < 3 * env->size){
-       delete_game(env->g);
-       env->g = random_game(2,4);
-       for(int in =0; in<9; in++ )
-          print_degree(in,ren,env);
-       init_window(width,height,ren,env);
+       change_game(win, env, ren, 3);
        env->starttime = SDL_GetTicks();
     }
   }

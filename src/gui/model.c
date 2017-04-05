@@ -46,7 +46,6 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
 
   /* On charge le game en fonction de ce que l'utilisateur a choisi dans le menu*/
 
-
   /*allocation de notre structure d'environnement*/
   Env * env = malloc(sizeof(struct Env_t));
   if(env == NULL) {return NULL;} //ERREUR
