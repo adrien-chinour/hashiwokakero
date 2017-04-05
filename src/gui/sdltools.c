@@ -32,7 +32,6 @@ struct Env_t {
   unsigned int starttime;
 };
 
-
 /*
   Initialisation des variables d'env en fonction de la taille de l'écran
 */

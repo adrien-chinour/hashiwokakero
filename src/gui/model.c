@@ -328,12 +328,6 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
   /* Android events */
 
 #ifdef __ANDROID__
-  else if (game_over(env->g ) && e->type == SDL_FINGERDOWN){
-    char ** t = NULL;
-    clean(win,ren,env);
-    init(win,ren,0,t,0);
-  }
-
   else if (e->type == SDL_FINGERDOWN) {
     button_action(win, ren, env, e->tfinger.x*w, e->tfinger.y*h);
      int node_num = get_node(e->tfinger.x*w, e->tfinger.y*h, env);
