@@ -38,8 +38,6 @@ struct Env_t {
   unsigned int starttime;
 };
 
-
-
 Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int select) {
   char * game_file = NULL;
   game g = NULL;
@@ -47,6 +45,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
   /* L'utilisateur a rentré un nom de fichier */
   if(argc == 2) game_file = argv[1];
 
+<<<<<<< HEAD
   /* On charge le game en fonction de ce que l'utilisateur a choisi dans le menu*/
   if(game_file != NULL) {g = translate_game(game_file); }
   else {
@@ -159,7 +158,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
                   x = coordtopxx(get_x(debut),env)+env->size/2;
                   y = coordtopxy(get_y(debut),env)+env->size;
                   x1 = coordtopxx(get_x(cible),env)+env->size/2;
-                  y1 =coordtopxy(get_y(cible),env);
+                  y1 = coordtopxy(get_y(cible),env);
                   rect.x = coordtopxx(get_x(debut),env)+env->size/4;
                   rect.y = coordtopxy(get_y(debut),env)+env->size;
                   rect.h = y1 -y;
@@ -169,7 +168,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
                   x = coordtopxx(get_x(debut),env);
                   y = coordtopxy(get_y(debut),env)+env->size/2;
                   x1 = coordtopxx(get_x(cible),env)+env->size;
-                  y1 =coordtopxy(get_y(cible),env)+env->size/2;
+                  y1 = coordtopxy(get_y(cible),env)+env->size/2;
                   rect.x = coordtopxx(get_x(debut),env);
                   rect.y = coordtopxy(get_y(debut),env) + env->size/4;
                   rect.h = env->size/2;
@@ -189,7 +188,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
                   x = coordtopxx(get_x(debut),env)+env->size;
                   y = coordtopxy(get_y(debut),env)+env->size/2;
                   x1 = coordtopxx(get_x(cible),env);
-                  y1 =coordtopxy(get_y(cible),env)+env->size/2;
+                  y1 = coordtopxy(get_y(cible),env)+env->size/2;
                   rect.x = coordtopxx(get_x(debut),env)+env->size;
                   rect.y = coordtopxy(get_y(debut),env)+env->size/4;
                   rect.h = env->size/2;
@@ -209,7 +208,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
                   x = coordtopxx(get_x(debut),env);
                   y = coordtopxy(get_y(debut),env);
                   x1 = coordtopxx(get_x(cible),env)+env->size;
-                  y1 =coordtopxy(get_y(cible),env)+env->size;
+                  y1 = coordtopxy(get_y(cible),env)+env->size;
                   rect.x = coordtopxx(get_x(debut),env)+env->size;
                   rect.y = coordtopxy(get_y(debut),env)+env->size/4;
                   rect.h = env->size/2;
@@ -229,7 +228,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
                   x = coordtopxx(get_x(debut),env)+env->size;
                   y = coordtopxy(get_y(debut),env)+env->size;
                   x1 = coordtopxx(get_x(cible),env);
-                  y1 =coordtopxy(get_y(cible),env);
+                  y1 = coordtopxy(get_y(cible),env);
                   rect.x = coordtopxx(get_x(debut),env)+env->size;
                   rect.y = coordtopxy(get_y(debut),env)+env->size/4;
                   rect.h = env->size/2;
