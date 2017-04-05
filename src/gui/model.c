@@ -214,8 +214,8 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
 
    //timer
    SDL_Color color = {255, 203, 96, 255};
-   TTF_Font * font = TTF_OpenFont(LSD, env->fontsize*2);
-   if(!font) SDL_Log("TTF_OpenFont: %s\n", LSD);
+   TTF_Font * font = TTF_OpenFont(UBUNTU, env->fontsize*4);
+   if(!font) SDL_Log("TTF_OpenFont: %s\n", UBUNTU);
    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
    char * timer = malloc(sizeof(char)*100);
    int time = SDL_GetTicks() - env->starttime;
