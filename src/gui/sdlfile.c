@@ -15,7 +15,7 @@
 
 /*à enlever*/
 game SDL_translate_game(char * fileopen){ //inspiré de la documentation https://wiki.libsdl.org/SDL_RWread
-   SDL_RWops *file = SDL_RWFromFile(fileopen,"rt");
+   SDL_RWops *file = SDL_RWFromFile(fileopen,"r");
    if (file == NULL) return NULL;
    Sint64 res_size = SDL_RWsize(file);
    //message d'erreur size
@@ -84,7 +84,7 @@ game SDL_translate_game(char * fileopen){ //inspiré de la documentation https:/
 }
 
 game SDL_translate_save(char * fileopen){
-   SDL_RWops *file = SDL_RWFromFile(fileopen,"rt");
+   SDL_RWops *file = SDL_RWFromFile(fileopen,"r");
    if (file == NULL) return NULL;
    Sint64 res_size = SDL_RWsize(file);
    //message d'erreur size
@@ -192,13 +192,13 @@ game SDL_translate_save(char * fileopen){
    return g;
 }
 
-void SDL_write_save(game g, char * filesave){
-   SDL_RWops *file = SDL_RWFromFile(filesave,"wt");
+void SDL_write_save(cgame g, char * filesave){
+   SDL_RWops *file = SDL_RWFromFile(filesave,"w");
    if (file == NULL) printf("erreur\n");//erreur ->exit failure
-   char* game_txt =malloc(sizeof(char)*1000);
+   char* game_txt =malloc(sizeof(char)*100);
    sprintf(game_txt,"%d %d %d\n",game_nb_nodes(g),game_nb_max_bridges(g),game_nb_dir(g));
    size_t len = SDL_strlen(game_txt);
-   if (SDL_RWwrite(file, game_txt, 1, len) != len) {
+   if (SDL_RWwrite(file, game_txt, sizeof(char), len) != len) {
       SDL_RWclose(file);
       fprintf(stderr,"Couldn't fully write string\n");
       exit(EXIT_FAILURE);
@@ -208,7 +208,7 @@ void SDL_write_save(game g, char * filesave){
          node node_i = game_node(g,i);
          sprintf(game_txt,"%d %d %d %d %d %d %d\n",get_x(node_i),get_y(node_i),get_required_degree(node_i),get_degree_dir(g, i, 0),get_degree_dir(g, i, 1),get_degree_dir(g, i, 2),get_degree_dir(g, i, 3));
          len = SDL_strlen(game_txt);
-         if (SDL_RWwrite(file, game_txt, 1, len) != len) {
+         if (SDL_RWwrite(file, game_txt, sizeof(char), len) != len) {
             SDL_RWclose(file);
             fprintf(stderr,"Couldn't fully write string\n");
             exit(EXIT_FAILURE);
@@ -220,7 +220,7 @@ void SDL_write_save(game g, char * filesave){
          node node_i = game_node(g,i);
          sprintf(game_txt,"%d %d %d %d %d %d %d %d %d %d %d\n",get_x(node_i),get_y(node_i),get_required_degree(node_i),get_degree_dir(g, i, 0),get_degree_dir(g, i, 1),get_degree_dir(g, i, 2),get_degree_dir(g, i, 3),get_degree_dir(g, i, 4),get_degree_dir(g, i, 5),get_degree_dir(g, i, 6),get_degree_dir(g, i, 7));
          len = SDL_strlen(game_txt);
-         if (SDL_RWwrite(file, game_txt, 1, len) != len) {
+         if (SDL_RWwrite(file, game_txt, sizeof(char), len) != len) {
             SDL_RWclose(file);
             fprintf(stderr,"Couldn't fully write string\n");
             exit(EXIT_FAILURE);

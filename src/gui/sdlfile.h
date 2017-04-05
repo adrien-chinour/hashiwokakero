@@ -28,7 +28,7 @@ typedef struct Env_t Env;
 
 game SDL_translate_game(char * fileopen);
 game SDL_translate_save(char * fileopen);
-void SDL_write_save(game g, char * filesave);
+void SDL_write_save(cgame g, char * filesave);
 
 /* **************************************************************** */
 
