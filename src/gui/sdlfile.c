@@ -39,14 +39,12 @@ game SDL_translate_game(char * fileopen){
    }
 
    int c = 1;
-   printf("nbnodes = %d\n",arg[0]);
 
    while(nb_read_total < res_size && nb_read != 0 && buf[0] != '\n'){
       nb_read = SDL_RWread(file, buf, sizeof(char), 1);
       nb_read_total += nb_read;
       if(buf[0] != ' ' && c<3){
          arg[c] = atoi(buf);
-         printf("nb other dir et max = %d\n",arg[c]);
          c++;
       }
    }
@@ -66,13 +64,10 @@ game SDL_translate_game(char * fileopen){
             nb_read_total += nb_read;
          }
          buf[0]='0';
-         printf("%d ",node_arg[j]);
       }
-      printf("\n");
       tab_nodes[i] = new_node(node_arg[0],node_arg[1],node_arg[2]);
    }
    game g = new_game(arg[0],tab_nodes,arg[1],arg[2]);
-   printf("nb nodes = %d autres = %d, %d\n",arg[0],arg[1],arg[2]);
 
    for (int i = 0; i< arg[0];i++) delete_node(tab_nodes[i]);
    free(buf);
@@ -108,14 +103,12 @@ game SDL_translate_save(char * fileopen){
    }
 
    int c = 1;
-   printf("nbnodes = %d\n",arg[0]);
 
    while(nb_read_total < res_size && nb_read != 0 && buf[0] != '\n'){
       nb_read = SDL_RWread(file, buf, sizeof(char), 1);
       nb_read_total += nb_read;
       if(buf[0] != ' ' && c<3){
          arg[c] = atoi(buf);
-         printf("nb other dir et max = %d\n",arg[c]);
          c++;
       }
    }
@@ -135,13 +128,11 @@ game SDL_translate_save(char * fileopen){
             nb_read_total += nb_read;
          }
          buf[0]='0';
-         printf("%d ",node_arg[j]);
       }
       while(nb_read_total < res_size && nb_read != 0 && buf[0] != '\n'){ //saut de ligne
          nb_read = SDL_RWread(file, buf, sizeof(char), 1);
          nb_read_total += nb_read;
       }
-      printf("\n");
       tab_nodes[i] = new_node(node_arg[0],node_arg[1],node_arg[2]);
    }
 

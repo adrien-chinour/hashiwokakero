@@ -46,6 +46,7 @@ void change_game(SDL_Window* win,Env* env,SDL_Renderer * ren, int num_game){
    if(env->game_win != NULL){SDL_DestroyTexture(env->game_win); env->game_win =NULL;}
    free(env->island);
    free(env->text);
+   SDL_SetTextureBlendMode(env->save,SDL_BLENDMODE_NONE);
    init_game(env,NULL,num_game);
    refresh_window(win, ren, env);
 }
@@ -62,7 +63,6 @@ void init_game(Env * env,char * game_file,int select){
             g = SDL_translate_game("save/3bridges.txt");
             break;
          case 3:
-            printf("chargement random\n");
             g = random_game(2,4);
             break;
          case 4:

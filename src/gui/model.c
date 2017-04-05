@@ -79,7 +79,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
   init_game(env,game_file,select);
   init_window(w,h,ren,env);
 
-  if(env->text == NULL) {delete_game(env->g); free(env); return NULL;} //ERREUR //SDLdeletetexture env->island
+  if(env->text == NULL) {clean_game(env); free(env); return NULL;} //ERREUR //SDLdeletetexture env->island
 
   refresh_window(win, ren, env);
   return env;
