@@ -318,6 +318,7 @@ void button_action(SDL_Window* win, SDL_Renderer* ren, Env * env, int x , int y)
        for(int in =0; in<9; in++ )
           print_degree(in,ren,env);
        init_window(width,height,ren,env);
+       env->starttime = SDL_GetTicks();
     }
   }
 }
