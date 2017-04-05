@@ -9,7 +9,7 @@
 
 /* **************************************************************** */
 
-#define FONT "Arial.ttf"
+#define FONT "look sir, droids.ttf"
 #define FONTSIZE 36
 #define BACKGROUND "img/background.png"
 #define BOARD "img/board.png"
