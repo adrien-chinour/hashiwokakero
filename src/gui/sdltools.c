@@ -34,13 +34,19 @@ struct Env_t {
 
 
 
-/**/
+/*
+  détruit les variables liées à un objet game
+*/
 void clean_game(Env* env){
    for(int i = 0; i<game_nb_nodes(env->g);i++){
       SDL_DestroyTexture(env->text[i]);
    }
    delete_game(env->g);
 }
+
+/*
+  permet de changer de partie
+*/
 void change_game(SDL_Window* win,Env* env,SDL_Renderer * ren, int num_game){
    int width, height; SDL_GetWindowSize(win, &width, &height);
    clean_game(env);
@@ -53,6 +59,9 @@ void change_game(SDL_Window* win,Env* env,SDL_Renderer * ren, int num_game){
    refresh_window(win, ren, env);
 }
 
+/*
+  initialise les variables liées à un objet game + le game lui même
+*/
 void init_game(Env * env,char * game_file,int select){
    game g = NULL;
    if(game_file != NULL) {g = translate_game(game_file); }
@@ -87,6 +96,9 @@ void init_game(Env * env,char * game_file,int select){
    env->node = -1;
 }
 
+/*
+  permet de "rafraichir" la fenêtre (sert surtout quand on charge une partie différente)
+*/
 void refresh_window(SDL_Window* win, SDL_Renderer* ren, Env * env){
    int width, height;
    SDL_GetWindowSize(win, &width, &height);
@@ -97,7 +109,7 @@ void refresh_window(SDL_Window* win, SDL_Renderer* ren, Env * env){
 }
 
 /*
-  Initialisation des variables d'env en fonction de la taille de l'écran
+  initialise les degrées et leur couleur
 */
 void print_degree(int node_num, SDL_Renderer* ren,  Env * env){
   SDL_Surface * surf;
@@ -118,6 +130,9 @@ void print_degree(int node_num, SDL_Renderer* ren,  Env * env){
   TTF_CloseFont(font);
 }
 
+/*
+  affiche les ponts possible (utile que dans la version ordinateur)
+*/
 void print_bridges(SDL_Renderer* ren ,Env * env){
    SDL_Rect rect;
    int node_pos = get_node(env->mouse_pos.x,env->mouse_pos.y,env);
@@ -417,6 +432,10 @@ void print_node_and_bridges(Env * env, SDL_Renderer * ren){
       }
    }
 }
+
+/*
+  affiche les ponts dans le render
+ */
 void render_bridges(int x, int y, int x1, int y1, int dx, int dy, int node_num,int dir, Env * env, SDL_Renderer * ren){
    int degree = get_degree_dir(env->g, node_num, dir);
    x = x+(dx*degree)/2;
