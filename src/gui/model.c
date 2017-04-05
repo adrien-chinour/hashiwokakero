@@ -56,7 +56,6 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
         g = SDL_translate_game("save/3bridges.txt");
         break;
       case 3:
-      printf("chargement random\n");
         g = random_game(2,4);
         break;
       case 4:
@@ -249,8 +248,8 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
 
    //timer
    SDL_Color color = {255, 203, 96, 255};
-   TTF_Font * font = TTF_OpenFont(LSD, env->fontsize*2);
-   if(!font) SDL_Log("TTF_OpenFont: %s\n", LSD);
+   TTF_Font * font = TTF_OpenFont(UBUNTU, env->fontsize*4);
+   if(!font) SDL_Log("TTF_OpenFont: %s\n", UBUNTU);
    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
    char * timer = malloc(sizeof(char)*100);
    int time = SDL_GetTicks() - env->starttime;

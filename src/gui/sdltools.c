@@ -101,8 +101,8 @@ void game_finish(Env * env, SDL_Renderer * ren){
   //note pour plus tard: pour avoir le dernier temps il faut mettre le temps dans la variable d'environnement ou en faire un variable globale
   if(game_over(env->g)){
     SDL_Color color = {255, 203, 96, 255};
-    TTF_Font * font = TTF_OpenFont(LSD, env->fontsize*4);
-    if(!font) ERROR("TTF_OpenFont: %s\n", LSD);
+    TTF_Font * font = TTF_OpenFont(UBUNTU, env->fontsize*4);
+    if(!font) ERROR("TTF_OpenFont: %s\n", UBUNTU);
     TTF_SetFontStyle(font, TTF_STYLE_BOLD);
     unsigned int timer = (SDL_GetTicks()-env->starttime)/1000;
     char end_message[100]; sprintf(end_message, "Victoire ! Temps : %ds", timer);
