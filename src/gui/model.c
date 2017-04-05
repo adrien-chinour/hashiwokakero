@@ -226,6 +226,46 @@ game SDL_translate_save(char * fileopen){
   return g;
 }
 
+void SDL_write_save(game g, char * filesave){
+  SDL_RWops *file = SDL_RWFromFile(filesave,"wt");
+  if (file == NULL) printf("erreur\n");//erreur ->exit failure
+  char* game_txt =malloc(sizeof(char)*1000);
+  sprintf(game_txt,"%d %d %d\n",game_nb_nodes(g),game_nb_max_bridges(g),game_nb_dir(g));
+  size_t len = SDL_strlen(game_txt);
+  if (SDL_RWwrite(file, game_txt, 1, len) != len) {
+    SDL_RWclose(file);
+    //printf("Couldn't fully write string\n");
+    //erreur ->exit failure
+  }
+  if(game_nb_dir(g)==4){
+    for(int i=0; i<game_nb_nodes(g);i++){
+      node node_i = game_node(g,i);
+      sprintf(game_txt,"%d %d %d %d %d %d %d\n",get_x(node_i),get_y(node_i),get_required_degree(node_i),get_degree_dir(g, i, 0),get_degree_dir(g, i, 1),get_degree_dir(g, i, 2),get_degree_dir(g, i, 3));
+      len = SDL_strlen(game_txt);
+      if (SDL_RWwrite(file, game_txt, 1, len) != len) {
+        SDL_RWclose(file);
+        //printf("Couldn't fully write string\n");
+        //erreur ->exit failure
+      }
+    }
+  }
+  else{
+    for(int i=0; i<game_nb_nodes(g);i++){
+      node node_i = game_node(g,i);
+      sprintf(game_txt,"%d %d %d %d %d %d %d %d %d %d %d\n",get_x(node_i),get_y(node_i),get_required_degree(node_i),get_degree_dir(g, i, 0),get_degree_dir(g, i, 1),get_degree_dir(g, i, 2),get_degree_dir(g, i, 3),get_degree_dir(g, i, 4),get_degree_dir(g, i, 5),get_degree_dir(g, i, 6),get_degree_dir(g, i, 7));
+      len = SDL_strlen(game_txt);
+      if (SDL_RWwrite(file, game_txt, 1, len) != len) {
+        SDL_RWclose(file);
+        //printf("Couldn't fully write string\n");
+        //erreur ->exit failure
+      }
+    }
+  }
+  free(game_txt);
+  SDL_RWclose(file);
+}
+
+
 
 
 /*
@@ -762,7 +802,7 @@ void button_action(SDL_Window* win, SDL_Renderer* ren, Env * env, int x , int y)
        SDL_BlendMode* BM = NULL;
        SDL_GetTextureBlendMode(env->save,BM);
        if(BM == SDL_BLENDMODE_NONE){
-          write_save(env->g, "save/game_save.txt");
+          SDL_write_save(env->g, "save/game_save.txt");
           SDL_SetTextureBlendMode(env->save,SDL_BLENDMODE_MOD);
        }
     }
