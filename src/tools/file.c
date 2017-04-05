@@ -17,7 +17,6 @@ int game5[9][3] = {{0,0,6},{0,2,5},{0,4,3},{2,0,4},{2,2,4},{2,4,6},{4,0,1},{4,2,
 int game6[8][3] = {{0,0,6},{0,2,5},{0,4,4},{2,0,9},{2,2,7},{4,0,4},{4,2,3},{4,4,4}};
 
 // fin déclaration des tableaux.
-
 game generate_game(int nb_game, int nb_max_bridges, int nb_dir, int nb_nodes){
 
     node nodes[nb_nodes];
@@ -39,8 +38,7 @@ game generate_game(int nb_game, int nb_max_bridges, int nb_dir, int nb_nodes){
     return g;
 }
 
-bool check_file(char *file)
-{
+bool check_file(char *file) {
   FILE* fichier = NULL;
   fichier = fopen(file, "r");
 
@@ -197,6 +195,3 @@ void write_game(game g){
    }
    fclose(gametxt);
 }
-
-
-

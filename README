@@ -1,7 +1,7 @@
 HASHI-TM2H - PROJET TECHNOLOGIQUE L2 UNIVERSITE DE BORDEAUX
 
 ### INSTALLATION :
-    
+
     Installation off-source : mkdir Build ; cd Build ; cmake .. -DENABLE_DEBUG=OFF ; make ; make install ; cd ..
     Installation in-source : cmake . -DENABLE_DEBUG=OFF ; make ; make install
 
@@ -9,9 +9,9 @@ HASHI-TM2H - PROJET TECHNOLOGIQUE L2 UNIVERSITE DE BORDEAUX
 
 ### UTILISATION :
 
--> ./hashi_text (Jouer au jeu en mode "texte" sur le terminal)
+-> ./hashi_text (Jouer au jeu en mode CLI sur le terminal)
    * Aucun paramètre necessaire
-   
+
 -> ./hashi_gui <nom_du_fichier> (Jouer au jeu en mode graphique avec la library SDL2)
    * <nom_du_fichier> : pour jouer à une partie en particulier (paramètre non obligatoire)
 
@@ -20,51 +20,6 @@ HASHI-TM2H - PROJET TECHNOLOGIQUE L2 UNIVERSITE DE BORDEAUX
    * <nom_de_la_save> : nom de la sauvegarde, si non renseigné elle est par defaut <nom_du_fichier>.solved
 
 ### DEBUGAGE : (utilisation de Dart)
-
+    EDIT : test non pris en charge car inutile...
     * make test : lance les tests des fonctions du core
     * make ExperimentalCoverage : lance les tests de couvertures; résultats sauvegardés dans Testing/CoverageInfo
-
-### ARBORESCENCE : (sans compilation)
-
-hashi-tm2h/
-├── CMakeLists.txt
-├── CMakeModules/
-│   ├── FindSDL2.cmake
-│   ├── FindSDL2_gfx.cmake
-│   ├── FindSDL2_image.cmake
-│   └── FindSDL2_ttf.cmake
-├── img/ 
-│   ├── boat1.png
-│   ├── boat2.png
-│   ├── boat3.png
-│   ├── boat4.png
-│   └── island.png
-├── README
-├── clean.sh*
-└── src/
-    ├── core/
-    │	├── file.c
-    │	├── file.h
-    │	├── game.c
-    │	├── game.h
-    │	├── node.c
-    │	├── node.h
-    │	├── secure.c
-    │	└── secure.h
-    ├── gui/
-    │	├── hashi_gui.c
-    │	├── model.c
-    │	└── model.h
-    ├── solver/
-    │	└── solver.c
-    ├── test/
-    │	├── test_can_add_bridge_dir1.c
-    │	├── test_can_add_bridge_dir2.c
-    │	├── test_can_add_bridge_dir3.c
-    │	├── test_toolbox.c
-    │	└── test_toolbox.h
-    └── text
-        ├── hashi_text.c
-        ├── interface.c
-        └── interface.h
-
