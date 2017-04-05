@@ -18,21 +18,21 @@
 /* **************************************************************** */
 
 struct Env_m {
-   SDL_Texture * background;  // texture background
-   SDL_Texture * board;       // texture planche
-   SDL_Texture ** text;       // texture texte (texte des plaches)
-   int fontsize;              // taille de la police
-   int x; int *y;             // coordonnees des planches
-   int width_b;               // longueur planches
-   int height_b;              // hauteur planche
+  SDL_Texture * background;  // texture background
+  SDL_Texture * board;       // texture planche
+  SDL_Texture ** text;       // texture texte (texte des plaches)
+  int fontsize;              // taille de la police
+  int x; int *y;             // coordonnees des planches
+  int width_b;               // longueur planches
+  int height_b;              // hauteur planche
 };
 
 /* **************************************************************** */
 
 /*
-  initialisation de l'environnement relatif a la fenetre
-  les variables de l'environnement sont toutes defini en fonction de la taille de la fenetre (w,h)
-  difference sur android : les planches sont plus large (bonus : ajouter cette fonctionnalité pour un affichage avec un width petit)
+initialisation de l'environnement relatif a la fenetre
+les variables de l'environnement sont toutes defini en fonction de la taille de la fenetre (w,h)
+difference sur android : les planches sont plus large (bonus : ajouter cette fonctionnalité pour un affichage avec un width petit)
 */
 void init_window_menu(int w, int h, SDL_Renderer* ren, Envm * env){
 
@@ -89,70 +89,70 @@ void init_window_menu(int w, int h, SDL_Renderer* ren, Envm * env){
 
 
 /*
-  initialisation de l'environnement de SDL
+initialisation de l'environnement de SDL
 */
 Envm * init_menu(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]){
-   Envm * env = malloc(sizeof(struct Env_m));
+  Envm * env = malloc(sizeof(struct Env_m));
 
-   /* get current window size */
-   int w, h;
-   SDL_GetWindowSize(win, &w, &h);
+  /* get current window size */
+  int w, h;
+  SDL_GetWindowSize(win, &w, &h);
 
-   /* environnement en fonction de la fenetre , dans une fonction annexe car les variables sont redefini a chaque redimensionnement de fenetre */
-   init_window_menu(w,h,ren,env);
+  /* environnement en fonction de la fenetre , dans une fonction annexe car les variables sont redefini a chaque redimensionnement de fenetre */
+  init_window_menu(w,h,ren,env);
 
-   /* init background texture from PNG image */
-   env->background = IMG_LoadTexture(ren, BACKGROUND);
-   if(!env->background) ERROR("IMG_LoadTexture: %s\n", BACKGROUND);
+  /* init background texture from PNG image */
+  env->background = IMG_LoadTexture(ren, BACKGROUND);
+  if(!env->background) ERROR("IMG_LoadTexture: %s\n", BACKGROUND);
 
-   /* Init board texture from PNG image */
-   env->board= IMG_LoadTexture(ren,BOARD);
-   if(!env->board) ERROR("IMG_LoadTexture: %s\n", BOARD);
+  /* Init board texture from PNG image */
+  env->board= IMG_LoadTexture(ren,BOARD);
+  if(!env->board) ERROR("IMG_LoadTexture: %s\n", BOARD);
 
-   return env;
+  return env;
 }
 
 /*
-  fonction render_menu ; affichage des elements du menu (board et texte)
+fonction render_menu ; affichage des elements du menu (board et texte)
 */
 void render_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env) {
-   SDL_Rect rect; // utiliser pour les tailles des textures et leurs placements
+  SDL_Rect rect; // utiliser pour les tailles des textures et leurs placements
 
-   /* get current window size */
-   int w, h;
-   SDL_GetWindowSize(win, &w, &h);
+  /* get current window size */
+  int w, h;
+  SDL_GetWindowSize(win, &w, &h);
 
-   /* render background texture */
-   SDL_RenderCopy(ren, env->background, NULL, NULL);
+  /* render background texture */
+  SDL_RenderCopy(ren, env->background, NULL, NULL);
 
-   for(int i = 0; i < NB_BOARDS; i++){
-      /* render board texture */
-      rect.w = env->width_b; rect.h = env->height_b;
-      rect.x = env->x; rect.y = env->y[i];
-      SDL_RenderCopy(ren, env->board, NULL, &rect);
+  for(int i = 0; i < NB_BOARDS; i++){
+    /* render board texture */
+    rect.w = env->width_b; rect.h = env->height_b;
+    rect.x = env->x; rect.y = env->y[i];
+    SDL_RenderCopy(ren, env->board, NULL, &rect);
 
-      /* render text texture */
-      rect.w = rect.w/2; rect.h = rect.h/2;
-      rect.x = env->x + env->width_b /4; rect.y = env->y[i] +env->height_b/3;
-      SDL_RenderCopy(ren, env->text[i], NULL, &rect);
-   }
+    /* render text texture */
+    rect.w = rect.w/2; rect.h = rect.h/2;
+    rect.x = env->x + env->width_b /4; rect.y = env->y[i] +env->height_b/3;
+    SDL_RenderCopy(ren, env->text[i], NULL, &rect);
+  }
 }
 
 /*
-  fonction annexe a process_menu pour recuperer le choix de l'utilisateur en fonction des coordonnees (x,y)
+fonction annexe a process_menu pour recuperer le choix de l'utilisateur en fonction des coordonnees (x,y)
 */
 int select_button(Envm * env, int x, int y){
   if(env->x <= x && x <= (env->x +env->width_b)){
     for(int i =0;i<NB_BOARDS;i++){
       if(env->y[i] <= y && y <= (env->y[i] + env->height_b))
-        return i+1;
+      return i+1;
     }
   }
   return 0;
 }
 
 /*
-  fonction process_menu ; gestion des evenement du menu (clic sur board, redimmensionnement et quitter)
+fonction process_menu ; gestion des evenement du menu (clic sur board, redimmensionnement et quitter)
 */
 int process_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env, SDL_Event * e){
   int w,h;
@@ -166,7 +166,7 @@ int process_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env, SDL_Event * e){
   //evenement redimmensionnement
   else if(e->type == SDL_WINDOWEVENT){
     switch(e->window.event){
-    case SDL_WINDOWEVENT_RESIZED:
+      case SDL_WINDOWEVENT_RESIZED:
       init_window_menu(w,h,ren,env);
     }
   }
@@ -176,7 +176,7 @@ int process_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env, SDL_Event * e){
   else if(e->type == SDL_FINGERDOWN){
     int selec =select_button(env,e->tfinger.x*w,e->tfinger.y*h);
     if(selec)
-      return selec;
+    return selec;
   }
   #else
   else if(e->type == SDL_MOUSEBUTTONDOWN){
@@ -184,7 +184,7 @@ int process_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env, SDL_Event * e){
     SDL_GetMouseState(&mousedir.x, &mousedir.y);
     int selec =select_button(env,mousedir.x,mousedir.y);
     if(selec)
-      return selec;
+    return selec;
   }
   #endif
 
@@ -193,16 +193,16 @@ int process_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env, SDL_Event * e){
 
 
 /*
-  Nettoyage des element de l'environnement du menu (boards, background et text)
+Nettoyage des element de l'environnement du menu (boards, background et text)
 */
 void clean_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env) {
-   SDL_DestroyTexture(env->board);
-   SDL_DestroyTexture(env->background);
-   for(int i = 0; i<NB_BOARDS;i++){
-      SDL_DestroyTexture(env->text[i]);
-   }
-   free(env->text);
-   free(env);
+  SDL_DestroyTexture(env->board);
+  SDL_DestroyTexture(env->background);
+  for(int i = 0; i<NB_BOARDS;i++){
+    SDL_DestroyTexture(env->text[i]);
+  }
+  free(env->text);
+  free(env);
 }
 
 
