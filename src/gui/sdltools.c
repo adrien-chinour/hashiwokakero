@@ -42,12 +42,14 @@ void clean_game(Env* env){
    delete_game(env->g);
 }
 void change_game(SDL_Window* win,Env* env,SDL_Renderer * ren, int num_game){
+   int width, height; SDL_GetWindowSize(win, &width, &height);
    clean_game(env);
    if(env->game_win != NULL){SDL_DestroyTexture(env->game_win); env->game_win =NULL;}
    free(env->island);
    free(env->text);
    SDL_SetTextureBlendMode(env->save,SDL_BLENDMODE_NONE);
    init_game(env,NULL,num_game);
+   init_window(width,height,ren,env);
    refresh_window(win, ren, env);
 }
 
@@ -75,10 +77,12 @@ void init_game(Env * env,char * game_file,int select){
    env->game_win = NULL;
    env->g = g;
    env->island=malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
+   if(env->island == NULL) exit(EXIT_FAILURE); //ERREUR
    for(int i = 0 ; i < game_nb_nodes(g) ; i++){
       env->island[i] = env->islandnonselect;
    }
    SDL_Texture ** text = malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
+   if(text == NULL) exit(EXIT_FAILURE);
    env->text = text;
    env->node = -1;
 }
@@ -281,7 +285,6 @@ void game_finish(Env * env, SDL_Renderer * ren){
 /*
   recuperation du numero du noeud a partir des coordonnees d'un pixel
 */
-
 int get_node(int x, int y, Env * env){
   for(int i = 0; i < game_nb_nodes(env->g); i++){
     node n = game_node(env->g, i);

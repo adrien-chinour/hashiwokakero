@@ -55,11 +55,9 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
   int w, h;
   SDL_GetWindowSize(win, &w, &h);
 
-  /* Init island texture from PNG image */
-  if(env->island == NULL) exit(EXIT_FAILURE); //ERREUR
+  /* Init texture from PNG image */
   env->islandnonselect = IMG_LoadTexture(ren, ISLAND);
-  SDL_SetTextureBlendMode(env->islandnonselect,SDL_BLENDMODE_BLEND);
-  if(!env->island) SDL_Log("IMG_LoadTexture: %s\n", ISLAND); //ERREUR
+  if(!env->islandnonselect) SDL_Log("IMG_LoadTexture: %s\n", ISLAND);
 
   env->solve = IMG_LoadTexture(ren, SOLVE);
   if(!env->solve) SDL_Log("IMG_LoadTexture: %s\n", SOLVE);
@@ -74,14 +72,12 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
   if(!env->random) SDL_Log("IMG_LoadTexture: %s\n", RANDOM);
 
   env->islandselect = IMG_LoadTexture(ren,ISLANDSELECT);
-  SDL_SetTextureBlendMode(env->islandselect,SDL_BLENDMODE_BLEND);
+  if(!env->islandselect) SDL_Log("IMG_LoadTexture: %s\n", ISLANDSELECT);
 
-  init_game(env,game_file,select);
-  init_window(w,h,ren,env);
-
-  if(env->text == NULL) {clean_game(env); free(env); return NULL;} //ERREUR //SDLdeletetexture env->island
-
-  refresh_window(win, ren, env);
+  init_game(env,game_file,select);  //initialisation de l'environnement relatif a l'instance
+  init_window(w,h,ren,env);         //initialisation de l'environnement relatif a la fenetre
+  refresh_window(win, ren, env);    //actualisation de le fenetre
+  
   return env;
 }
 
