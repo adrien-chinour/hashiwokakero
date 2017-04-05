@@ -82,21 +82,6 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
   if(env->text == NULL) {delete_game(env->g); free(env); return NULL;} //ERREUR //SDLdeletetexture env->island
 
   refresh_window(win, ren, env);
-/*
-  for(int i = 0 ; i < game_nb_nodes(env->g) ; i++){
-    node n = game_node(env->g, i);
-    SDL_Color color = { 231, 62, 1, 255 };
-    TTF_Font * font = TTF_OpenFont(LUNA, env->fontsize);
-    if(!font) SDL_Log("TTF_OpenFont: %s\n", LUNA);
-    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
-    char * degree = malloc(sizeof(char)*10);
-    sprintf(degree, "%d", get_required_degree(n));
-    SDL_Surface * surf = TTF_RenderText_Blended(font, degree , color);// blended rendering for ultra nice text
-    //free(degree);
-    env->text[i] = SDL_CreateTextureFromSurface(ren, surf);
-    SDL_FreeSurface(surf);
-    TTF_CloseFont(font);
-    }*/
   return env;
 }
 
@@ -107,106 +92,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
    SDL_SetRenderDrawColor(ren, 0, 0, 0, SDL_ALPHA_OPAQUE);
    SDL_SetRenderDrawBlendMode(ren,SDL_BLENDMODE_ADD);
 
-   int node_pos = get_node(env->mouse_pos.x,env->mouse_pos.y,env);
-   int x =0;int y =0;int x1 =0;int y1 =0;
-
-   if(node_pos!=-1){
-      SDL_SetRenderDrawColor(ren,100,100,100,SDL_ALPHA_OPAQUE);
-      for(int d =0; d<game_nb_dir(env->g); d++){
-         if(can_add_bridge_dir(env->g,node_pos, d)){
-            node debut = game_node(env->g,node_pos);
-            node cible = game_node(env->g,get_neighbour_dir(env->g, node_pos, d));
-            switch(d){
-               case NORTH:
-                  x = coordtopxx(get_x(debut),env)+env->size/2;
-                  y = coordtopxy(get_y(debut),env)+env->size;
-                  x1 = coordtopxx(get_x(cible),env)+env->size/2;
-                  y1 = coordtopxy(get_y(cible),env);
-                  rect.x = coordtopxx(get_x(debut),env)+env->size/4;
-                  rect.y = coordtopxy(get_y(debut),env)+env->size;
-                  rect.h = y1 -y;
-                  rect.w = env->size/2;
-                  break;
-               case WEST:
-                  x = coordtopxx(get_x(debut),env);
-                  y = coordtopxy(get_y(debut),env)+env->size/2;
-                  x1 = coordtopxx(get_x(cible),env)+env->size;
-                  y1 = coordtopxy(get_y(cible),env)+env->size/2;
-                  rect.x = coordtopxx(get_x(debut),env);
-                  rect.y = coordtopxy(get_y(debut),env) + env->size/4;
-                  rect.h = env->size/2;
-                  rect.w = x1 - x;
-                  break;
-               case SOUTH:
-                  x = coordtopxx(get_x(debut),env)+env->size/2;
-                  y = coordtopxy(get_y(debut),env);
-                  x1 = coordtopxx(get_x(cible),env)+env->size/2;
-                  y1 =coordtopxy(get_y(cible),env)+env->size;
-                  rect.x = coordtopxx(get_x(debut),env)+env->size/4;
-                  rect.y = coordtopxy(get_y(debut),env);
-                  rect.h = y1 - y;
-                  rect.w = env->size/2;
-                  break;
-               case EAST:
-                  x = coordtopxx(get_x(debut),env)+env->size;
-                  y = coordtopxy(get_y(debut),env)+env->size/2;
-                  x1 = coordtopxx(get_x(cible),env);
-                  y1 = coordtopxy(get_y(cible),env)+env->size/2;
-                  rect.x = coordtopxx(get_x(debut),env)+env->size;
-                  rect.y = coordtopxy(get_y(debut),env)+env->size/4;
-                  rect.h = env->size/2;
-                  rect.w = x1 -x;
-                  break;
-               case NW:
-                  x = coordtopxx(get_x(debut),env);
-                  y = coordtopxy(get_y(debut),env)+env->size;
-                  x1 = coordtopxx(get_x(cible),env)+env->size;
-                  y1 =coordtopxy(get_y(cible),env);
-                  rect.x = coordtopxx(get_x(debut),env)+env->size;
-                  rect.y = coordtopxy(get_y(debut),env)+env->size/4;
-                  rect.h = env->size/2;
-                  rect.w = x1 -x;
-                  break;
-               case SW:
-                  x = coordtopxx(get_x(debut),env);
-                  y = coordtopxy(get_y(debut),env);
-                  x1 = coordtopxx(get_x(cible),env)+env->size;
-                  y1 = coordtopxy(get_y(cible),env)+env->size;
-                  rect.x = coordtopxx(get_x(debut),env)+env->size;
-                  rect.y = coordtopxy(get_y(debut),env)+env->size/4;
-                  rect.h = env->size/2;
-                  rect.w = x1 -x;
-                  break;
-               case SE:
-                  x = coordtopxx(get_x(debut),env)+env->size;
-                  y = coordtopxy(get_y(debut),env);
-                  x1 = coordtopxx(get_x(cible),env);
-                  y1 =coordtopxy(get_y(cible),env)+env->size;
-                  rect.x = coordtopxx(get_x(debut),env)+env->size;
-                  rect.y = coordtopxy(get_y(debut),env)+env->size/4;
-                  rect.h = env->size/2;
-                  rect.w = x1 -x;
-                  break;
-               case NE:
-                  x = coordtopxx(get_x(debut),env)+env->size;
-                  y = coordtopxy(get_y(debut),env)+env->size;
-                  x1 = coordtopxx(get_x(cible),env);
-                  y1 = coordtopxy(get_y(cible),env);
-                  rect.x = coordtopxx(get_x(debut),env)+env->size;
-                  rect.y = coordtopxy(get_y(debut),env)+env->size/4;
-                  rect.h = env->size/2;
-                  rect.w = x1 -x;
-                  break;
-            }
-            if(game_nb_dir(env->g) == 4){
-               SDL_RenderFillRect(ren,&rect);
-               SDL_RenderDrawRect(ren,&rect);
-            }
-            else
-               SDL_RenderDrawLine(ren, x,y, x1, y1);
-         }
-      }
-   }
+   print_bridges(ren,env);
    SDL_SetRenderDrawBlendMode(ren,SDL_BLENDMODE_MOD);
 
    print_node_and_bridges(env,ren);
@@ -345,10 +231,6 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
 }
 
 void clean(SDL_Window* win, SDL_Renderer* ren, Env * env) {
-  for(int i = 0; i<game_nb_nodes(env->g);i++){
-    SDL_DestroyTexture(env->text[i]);
-    SDL_DestroyTexture(env->island[i]);
-  }
   SDL_DestroyTexture(env->islandnonselect);
   SDL_DestroyTexture(env->islandselect);
   SDL_DestroyTexture(env->random);
@@ -356,7 +238,7 @@ void clean(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   SDL_DestroyTexture(env->save);
   SDL_DestroyTexture(env->game_win);
   SDL_DestroyTexture(env->reload);
-  delete_game(env->g);
+  clean_game(env);
   free(env->island);
   free(env->text);
   free(env);
