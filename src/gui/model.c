@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "model.h"
+#include "sdltools.h"
+#include "sdlfile.h"
 #include "../core/game.h"
 #include "../core/node.h"
 #include "../tools/file.h"
@@ -13,17 +15,6 @@
 
 /* **************************************************************** */
 
-#define FONT "Luna.ttf"
-#define ISLAND "img/island.png"
-#define BOAT1 "img/boat1.png"
-#define BOAT2 "img/boat2.png"
-#define BOAT3 "img/boat3.png"
-#define BOAT4 "img/boat4.png"
-#define ISLANDSELECT "img/island_selected.png"
-#define SOLVE "img/solve.png"
-#define SAVE "img/save.png"
-#define RELOAD "img/reload.png"
-#define NEXT "img/next.png"
 
 /* **************************************************************** */
 
@@ -42,292 +33,12 @@ struct Env_t {
   SDL_Texture * solve;
   SDL_Texture * save;
   SDL_Texture * reload;
-  SDL_Texture * next;
+  SDL_Texture * random;
   SDL_Point mouse_pos;
   unsigned int starttime;
 };
 
-/*à enlever*/
-game SDL_translate_game(char * fileopen){ //inspiré de la documentation https://wiki.libsdl.org/SDL_RWread
-  SDL_RWops *file = SDL_RWFromFile(fileopen,"rt");
-  if (file == NULL) return NULL;
-  Sint64 res_size = SDL_RWsize(file);
-  //message d'erreur size
 
-  Sint64 nb_read_total = 0, nb_read = 1;
-  
-  char * buf = malloc(sizeof(char));
-  
-  buf[0] = '0';
-  int * arg = malloc(sizeof(int)*3);
-  arg[0]=0;
-  
-  /*nb_nodes*/
-  int y = 0;
-  while(nb_read_total < res_size && nb_read != 0 && buf[0] != ' '){
-    y = y +1;
-    nb_read_total += nb_read;
-    //buf += nb_read;
-    arg[0] = arg[0] *10 + atoi(buf);
-    nb_read = SDL_RWread(file, buf, sizeof(char),1);
-  }
-  
-  int c = 1;
-  printf("nbnodes = %d\n",arg[0]);
-  
-  while(nb_read_total < res_size && nb_read != 0 && buf[0] != '\n'){
-    nb_read = SDL_RWread(file, buf, sizeof(char), 1);
-    nb_read_total += nb_read;
-    if(buf[0] != ' ' && c<3){
-      arg[c] = atoi(buf);
-      printf("nb other dir et max = %d\n",arg[c]);
-      c++;
-    }
-  }
-  c = 0;
-
-  int * node_arg = malloc(sizeof(int)*3);
-  node * tab_nodes = malloc(sizeof(node)*(arg[0]));
-  for(int i = 0 ; i< arg[0];i++){
-    node_arg[0] = 0;
-    node_arg[1] = 0;
-    node_arg[2] = 0;
-    buf[0]='0';
-    for(int j = 0; j < 3; j++){
-      while(nb_read_total < res_size && nb_read != 0 && buf[0] != ' ' && buf[0] != '\n'){
-        node_arg[j] = node_arg[j]*10 +atoi(buf);
-        nb_read = SDL_RWread(file, buf, sizeof(char), 1);
-        nb_read_total += nb_read;
-      }
-      buf[0]='0';
-      printf("%d ",node_arg[j]);
-    }
-    printf("\n");
-    tab_nodes[i] = new_node(node_arg[0],node_arg[1],node_arg[2]);
-  }
-  game g = new_game(arg[0],tab_nodes,arg[1],arg[2]);
-  printf("nb nodes = %d autres = %d, %d\n",arg[0],arg[1],arg[2]);
-  
-  for (int i = 0; i< arg[0];i++) delete_node(tab_nodes[i]);
-  free(buf);
-  free(arg);
-  free(tab_nodes);
-  free(node_arg);
-  SDL_RWclose(file);
-  return g; // après game   
-}
-
-game SDL_translate_save(char * fileopen){
-  SDL_RWops *file = SDL_RWFromFile(fileopen,"rt");
-  if (file == NULL) return NULL;
-  Sint64 res_size = SDL_RWsize(file);
-  //message d'erreur size
-
-  Sint64 nb_read_total = 0, nb_read = 1;
-  
-  char * buf = malloc(sizeof(char));
-  
-  buf[0] = '0';
-  int * arg = malloc(sizeof(int)*3);
-  arg[0]=0;
-  
-  /*nb_nodes*/
-  int y = 0;
-  while(nb_read_total < res_size && nb_read != 0 && buf[0] != ' '){
-    y = y +1;
-    nb_read_total += nb_read;
-    //buf += nb_read;
-    arg[0] = arg[0] *10 + atoi(buf);
-    nb_read = SDL_RWread(file, buf, sizeof(char),1);
-  }
-  
-  int c = 1;
-  printf("nbnodes = %d\n",arg[0]);
-  
-  while(nb_read_total < res_size && nb_read != 0 && buf[0] != '\n'){
-    nb_read = SDL_RWread(file, buf, sizeof(char), 1);
-    nb_read_total += nb_read;
-    if(buf[0] != ' ' && c<3){
-      arg[c] = atoi(buf);
-      printf("nb other dir et max = %d\n",arg[c]);
-      c++;
-    }
-  }
-  c = 0;
-
-  int * node_arg = malloc(sizeof(int)*3);
-  node * tab_nodes = malloc(sizeof(node)*(arg[0]));
-  for(int i = 0 ; i< arg[0];i++){
-    node_arg[0] = 0;
-    node_arg[1] = 0;
-    node_arg[2] = 0;
-    buf[0]='0';
-    for(int j = 0; j < 3; j++){
-      while(nb_read_total < res_size && nb_read != 0 && buf[0] != ' ' && buf[0] != '\n'){//lecture des 3 premiers chiffres
-        node_arg[j] = node_arg[j]*10 +atoi(buf);
-        nb_read = SDL_RWread(file, buf, sizeof(char), 1);
-        nb_read_total += nb_read;
-      }
-      buf[0]='0';
-      printf("%d ",node_arg[j]);
-    }
-    while(nb_read_total < res_size && nb_read != 0 && buf[0] != '\n'){ //saut de ligne
-      nb_read = SDL_RWread(file, buf, sizeof(char), 1);
-      nb_read_total += nb_read;
-    }
-    printf("\n");
-    tab_nodes[i] = new_node(node_arg[0],node_arg[1],node_arg[2]);
-  }
-
-  game g = new_game(arg[0],tab_nodes,arg[1],arg[2]);
-  SDL_RWseek(file,0,RW_SEEK_SET); //retour au début du fichier
-  nb_read_total = 0;
-
-  while(nb_read_total < res_size && nb_read != 0 && buf[0] != '\n'){//saut de la première ligne
-    nb_read = SDL_RWread(file, buf, sizeof(char), 1);
-    nb_read_total += nb_read;
-  }
-
-  for(int i = 0 ; i< arg[0];i++){//remplacer i par "node_num"
-    buf[0]='0';
-    for(int j = 0; j < 3; j++){
-      while(nb_read_total < res_size && nb_read != 0 && buf[0] != ' '){//saut des 3 premiers chiffres
-        nb_read = SDL_RWread(file, buf, sizeof(char), 1);
-        nb_read_total += nb_read;
-      }
-      buf[0]='0';
-    }
-    for(int d =0; d < arg[2]; d++){
-      buf[0]='0';
-      while(nb_read_total < res_size && nb_read != 0 && buf[0] != ' ' && buf[0] != '\n'){
-        nb_read = SDL_RWread(file, buf, sizeof(char), 1);
-        nb_read_total += nb_read;
-        for(int nbbridges = 0; nbbridges<atoi(buf) ; nbbridges++){
-          add_bridge_dir(g,i,d);
-        }
-      }
-    }
-    if(buf[0] != '\n'){//saut de ligne si ce n'est pas déjà fait
-      buf[0]='0';
-      while(nb_read_total < res_size && nb_read != 0 && buf[0] != '\n'){//saut de ligne
-        nb_read = SDL_RWread(file, buf, sizeof(char), 1);
-        nb_read_total += nb_read;
-      }
-    }
-  }
- 
-  
-  for (int i = 0; i< arg[0];i++) delete_node(tab_nodes[i]);
-  free(buf);
-  free(arg);
-  free(tab_nodes);
-  free(node_arg);
-  SDL_RWclose(file);
-  return g;
-}
-
-void SDL_write_save(game g, char * filesave){
-  SDL_RWops *file = SDL_RWFromFile(filesave,"wt");
-  if (file == NULL) printf("erreur\n");//erreur ->exit failure
-  char* game_txt =malloc(sizeof(char)*1000);
-  sprintf(game_txt,"%d %d %d\n",game_nb_nodes(g),game_nb_max_bridges(g),game_nb_dir(g));
-  size_t len = SDL_strlen(game_txt);
-  if (SDL_RWwrite(file, game_txt, 1, len) != len) {
-    SDL_RWclose(file);
-    //printf("Couldn't fully write string\n");
-    //erreur ->exit failure
-  }
-  if(game_nb_dir(g)==4){
-    for(int i=0; i<game_nb_nodes(g);i++){
-      node node_i = game_node(g,i);
-      sprintf(game_txt,"%d %d %d %d %d %d %d\n",get_x(node_i),get_y(node_i),get_required_degree(node_i),get_degree_dir(g, i, 0),get_degree_dir(g, i, 1),get_degree_dir(g, i, 2),get_degree_dir(g, i, 3));
-      len = SDL_strlen(game_txt);
-      if (SDL_RWwrite(file, game_txt, 1, len) != len) {
-        SDL_RWclose(file);
-        //printf("Couldn't fully write string\n");
-        //erreur ->exit failure
-      }
-    }
-  }
-  else{
-    for(int i=0; i<game_nb_nodes(g);i++){
-      node node_i = game_node(g,i);
-      sprintf(game_txt,"%d %d %d %d %d %d %d %d %d %d %d\n",get_x(node_i),get_y(node_i),get_required_degree(node_i),get_degree_dir(g, i, 0),get_degree_dir(g, i, 1),get_degree_dir(g, i, 2),get_degree_dir(g, i, 3),get_degree_dir(g, i, 4),get_degree_dir(g, i, 5),get_degree_dir(g, i, 6),get_degree_dir(g, i, 7));
-      len = SDL_strlen(game_txt);
-      if (SDL_RWwrite(file, game_txt, 1, len) != len) {
-        SDL_RWclose(file);
-        //printf("Couldn't fully write string\n");
-        //erreur ->exit failure
-      }
-    }
-  }
-  free(game_txt);
-  SDL_RWclose(file);
-}
-
-
-
-
-/*
-  Initialisation des variables d'env en fonction de la taille de l'écran
-*/
-void print_degree(int node_num, SDL_Renderer* ren,  Env * env){
-  SDL_Surface * surf;
-  SDL_Color color_menthe = { 22,184,78,255 }; //couleur menthe
-  SDL_Color color_corail = { 231,62,1,255 }; //couleur corail
-  node n = game_node(env->g, node_num);
-  TTF_Font * font = TTF_OpenFont(FONT, env->fontsize);
-  if(!font) SDL_Log("TTF_OpenFont: %s\n", FONT);
-  TTF_SetFontStyle(font, TTF_STYLE_BOLD);
-  char * degree = malloc(sizeof(char)*10);
-  sprintf(degree, "%d", get_required_degree(n));
-  if(get_required_degree(game_node(env->g, node_num)) == get_degree(env->g, node_num))
-    surf = TTF_RenderText_Blended(font, degree , color_menthe);
-  else
-    surf = TTF_RenderText_Blended(font, degree , color_corail);
-  env->text[node_num] = SDL_CreateTextureFromSurface(ren, surf);
-  SDL_FreeSurface(surf);
-  TTF_CloseFont(font);
-}
-
-/*
-Initialisation des variables d'env en fonction de la taille de l'écran
-*/
-void init_window(int w, int h, SDL_Renderer* ren, Env * env){
-  int max_x = 0; int max_y = 0;
-  int margin_x = 0; int margin_y = 0;
-
-  // recupération de max_x et max_y
-  for(int i = 0 ; i < game_nb_nodes(env->g) ; i++){
-    node n = game_node(env->g, i);
-    if(get_x(n) > max_x) max_x = get_x(n);
-    if(get_y(n) > max_y) max_y = get_y(n);
-  }
-  env->max_x = max_x + 1; env->max_y = max_y + 2;
-
-  // definiton de la marge
-  if(env->max_x * h > env->max_y * w){
-    env->size = w /(env->max_x * 2);
-    margin_y = (h  - env->size * (env->max_y * 2)) / 2;
-  }
-  else {
-    env->size = h /(env->max_y * 2);
-    margin_x = (w  - env->size * (env->max_x * 2)) / 2;
-  }
-  env->margin_x = margin_x; env->margin_y = margin_y;
-
-  // definition de la taille de la police
-  env->fontsize = env->size/6;
-}
-
-
-static int coordtopxx(int coord, Env * env){
-  return (coord * 2 + 1) * env->size  - env->size / 2 + env->margin_x;
-}
-
-static int coordtopxy(int coord, Env * env){
-  return (coord * 2 + 1) * env->size  - env->size / 2 + env->margin_y;
-}
 
 Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int select) {
   char * game_file = NULL;
@@ -335,40 +46,27 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
 
   /* L'utilisateur a rentré un nom de fichier */
   if(argc == 2) game_file = argv[1];
-  if (game_file != NULL) printf("%s\n",game_file); //debug
 
-
-
-  //il y a une erreur sur le chargement de la map sur android
-
-  #ifdef __ANDROID__
-    // generation aleatoire d'une partie 3*3 à 9 noeud avec nb_dir = 4 et max_bridges = 2
-    g = random_game(2,4);
-  #else
-    /* On charge le game en fonction de ce que l'utilisateur demande*/
-    if(game_file != NULL) {g = translate_game(game_file); }
-    else {
-      switch (select)
-	{
-	case 1:
-	  g = SDL_translate_game("save/game_easy.txt");
-	  break;
-	case 2:
-	  g = SDL_translate_game("save/game_medium.txt");
-	  break;
-	case 3:
-	  g = SDL_translate_game("save/game_hard.txt");
-	  break;
-	case 4:
-	  //ATTENTION : dernier panneau = charger une game sauvegardée, à configurer
-	  if(check_file("save/game_save.txt"))
-	    g = SDL_translate_save("save/game_save.txt");
-	  break;
-	}
+  /* On charge le game en fonction de ce que l'utilisateur a choisi dans le menu*/
+  if(game_file != NULL) {g = translate_game(game_file); }
+  else {
+    switch (select) {
+      case 1:
+        g = SDL_translate_game("save/game_default.txt");
+        break;
+      case 2:
+        g = SDL_translate_game("save/3bridges.txt");
+        break;
+      case 3:
+      printf("chargement random\n");
+        g = random_game(2,4);
+        break;
+      case 4:
+        //if(check_file("save/game_save.txt"))
+        g = SDL_translate_save("save/game_save.txt");
+        break;
     }
-  #endif
-
-  /* test retour fonction translate*/
+  }
   if (g == NULL) return NULL;
 
 
@@ -402,8 +100,8 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
   env->reload = IMG_LoadTexture(ren, RELOAD);
   if(!env->reload) SDL_Log("IMG_LoadTexture: %s\n", RELOAD);
 
-  env->next = IMG_LoadTexture(ren, NEXT);
-  if(!env->next) SDL_Log("IMG_LoadTexture: %s\n", NEXT);
+  env->random = IMG_LoadTexture(ren, RANDOM);
+  if(!env->random) SDL_Log("IMG_LoadTexture: %s\n", RANDOM);
 
   for(int i = 0 ; i < game_nb_nodes(g) ; i++){
     env->island[i] = env->islandnonselect;
@@ -551,11 +249,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
 
    print_node_and_bridges(env,ren);
 
-
-
-      //timer
-
-
+   //timer
    SDL_Color color = {255, 203, 96, 255};
    TTF_Font * font = TTF_OpenFont(FONT, env->fontsize*2);
    if(!font) SDL_Log("TTF_OpenFont: %s\n", FONT);
@@ -595,14 +289,12 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
    rect.y = height-env->size + env->size/4;
    SDL_RenderCopy(ren, env->reload, NULL, &(rect));
 
-   #ifdef __ANDROID__
-   //next
+   //random
    rect.w = env->size/2;
    rect.h = env->size/2;
    rect.x = 2 * env->size + env->size/2;
    rect.y = height-env->size + env->size/4;
-   SDL_RenderCopy(ren, env->next, NULL, &(rect));
-   #endif
+   SDL_RenderCopy(ren, env->random, NULL, &(rect));
 
    if(env->game_win){
       rect.w = env->size*3;
@@ -610,259 +302,6 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
       rect.x = width/2 - (rect.w / 2);
       rect.y = height - rect.h*2;
       SDL_RenderCopy(ren, env->game_win, NULL, &(rect));
-   }
-}
-
-static void game_finish(Env * env, SDL_Renderer * ren){
-  //note pour plus tard: pour avoir le dernier temps il faut mettre le temps dans la variable d'environnement ou en faire un variable globale
-  if(game_over(env->g)){
-    SDL_Color color = {255, 203, 96, 255};
-    TTF_Font * font = TTF_OpenFont(FONT, env->fontsize*4);
-    if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
-    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
-    unsigned int timer = (SDL_GetTicks()-env->starttime)/1000;
-    char end_message[100]; sprintf(end_message, "Victoire ! Temps : %ds", timer);
-    SDL_Surface * surf = TTF_RenderText_Blended(font, end_message, color);
-    SDL_Texture * end_texture = SDL_CreateTextureFromSurface(ren, surf);
-    env->game_win = end_texture;
-    SDL_FreeSurface(surf);
-    TTF_CloseFont(font);
-  }
-}
-
-int get_node(int x, int y, Env * env){
-  for(int i = 0; i < game_nb_nodes(env->g); i++){
-    node n = game_node(env->g, i);
-    int coordX = coordtopxx(get_x(n), env);
-    int coordY = coordtopxy(get_y(n), env);
-    if(coordX < x && coordX+env->size > x && coordY < y && coordY+env->size > y){
-      return i;
-    }
-  }
-  return -1;
-}
-
-void make_connection(int node_num, SDL_Renderer * ren, Env * env){
-  if(env->node != -1 && node_num != -1){
-    for(int i = 0; i < game_nb_dir(env->g); i++){
-      if(get_neighbour_dir(env->g, node_num, i) == env->node){
-        if(can_add_bridge_dir(env->g, node_num, i)){
-          add_bridge_dir(env->g, node_num, i);
-          env->island[node_num]=env->islandnonselect;
-          print_degree(node_num, ren, env);
-          game_finish(env,ren);
-          SDL_SetTextureBlendMode(env->save,SDL_BLENDMODE_NONE);
-        }
-        else {
-          while(get_degree_dir(env->g, node_num, i) != 0){
-            env->island[get_neighbour_dir(env->g, node_num, i)] = env->islandnonselect;
-            env->island[node_num]=env->islandnonselect;
-            del_bridge_dir(env->g, node_num, i);
-            print_degree(node_num, ren, env);
-            SDL_SetTextureBlendMode(env->save,SDL_BLENDMODE_NONE);
-          }
-        }
-        print_degree(env->node, ren ,env);
-        env->island[env->node] = env->islandnonselect;
-        env->node = -1;
-        break;
-      }
-    }
-  }
-}
-
-
-void print_node_and_bridges(Env * env, SDL_Renderer * ren){
-   SDL_Rect rect;
-   int x,y,x1,y1;
-   int dx =0,dy=0;
-   /* nodes */
-   for(int i = 0; i < game_nb_nodes(env->g); i++){
-      node n = game_node(env->g, i);
-      /* texture */
-      rect.w = env->size;
-      rect.h = env->size;
-      rect.x = coordtopxx(get_x(n),env);
-      rect.y = coordtopxy(get_y(n),env);
-      SDL_RenderCopy(ren, env->island[i], NULL, &(rect));
-
-      /* degree */
-      SDL_QueryTexture(env->text[i], NULL, NULL, &rect.w, &rect.h);
-      rect.x = coordtopxx(get_x(n),env) + env->size /1.5;
-      rect.y = coordtopxy(get_y(n),env) + env->size /1.5;
-      SDL_RenderCopy(ren, env->text[i], NULL, &rect);
-
-      if(get_degree(env->g, i)){
-         for(int d=0;d<game_nb_dir(env->g);d++){
-            if(get_degree_dir(env->g, i, d)>0){
-               node cible = game_node(env->g,get_neighbour_dir(env->g, i, d));
-               if(d == NORTH){
-                  x = coordtopxx(get_x(n),env)+env->size/2;
-                  y = coordtopxy(get_y(n),env)+env->size;
-                  x1 = coordtopxx(get_x(cible),env)+env->size/2;
-                  y1 =coordtopxy(get_y(cible),env);
-                  dx =env->size/10;
-                  dy =0;
-                  if(can_add_bridge_dir(env->g, i, d)){
-                     SDL_SetRenderDrawColor(ren, 255, 203, 96, SDL_ALPHA_OPAQUE);
-                  }
-                  else
-                     SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);
-                  render_bridges(x,y,x1,y1,dx,dy,i,d,env,ren);
-               }
-               else if(d == WEST){
-                  x = coordtopxx(get_x(n),env);
-                  y = coordtopxy(get_y(n),env)+env->size/2;
-                  x1 = coordtopxx(get_x(cible),env)+env->size;
-                  y1 =coordtopxy(get_y(cible),env)+env->size/2;
-                  dx =0;
-                  dy =env->size/10 ;
-                  if(can_add_bridge_dir(env->g, i, d)){
-                     SDL_SetRenderDrawColor(ren, 255, 203, 96, SDL_ALPHA_OPAQUE);
-                  }
-                  else
-                     SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);
-                  render_bridges(x,y,x1,y1,dx,dy,i,d,env,ren);
-               }
-               else if(d == NW){
-                  x = coordtopxx(get_x(n),env);
-                  y = coordtopxy(get_y(n),env)+env->size;
-                  x1 = coordtopxx(get_x(cible),env)+env->size;
-                  y1 =coordtopxy(get_y(cible),env);
-                  dx =env->size/10;
-                  dy =env->size/10 ;
-                  if(can_add_bridge_dir(env->g, i, d)){
-                     SDL_SetRenderDrawColor(ren, 255, 203, 96, SDL_ALPHA_OPAQUE);
-                  }
-                  else
-                     SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);
-                  render_bridges(x,y,x1,y1,dx,dy,i,d,env,ren);
-               }
-               else if(d == SW){
-                  x = coordtopxx(get_x(n),env);
-                  y = coordtopxy(get_y(n),env);
-                  x1 = coordtopxx(get_x(cible),env)+env->size;
-                  y1 =coordtopxy(get_y(cible),env)+env->size;
-                  dx =-env->size/10;
-                  dy =env->size/10 ;
-                  if(can_add_bridge_dir(env->g, i, d)){
-                     SDL_SetRenderDrawColor(ren, 255, 203, 96, SDL_ALPHA_OPAQUE);
-                  }
-                  else
-                     SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);
-                  render_bridges(x,y,x1,y1,dx,dy,i,d,env,ren);
-               }
-            }
-         }
-      }
-   }
-}
-
-
-void render_bridges(int x, int y, int x1, int y1, int dx, int dy, int node_num,int dir, Env * env, SDL_Renderer * ren){
-   int degree = get_degree_dir(env->g, node_num, dir);
-   x = x+(dx*degree)/2;
-   y = y+(dy*degree)/2;
-   x1 = x1+(dx*degree)/2;
-   y1 = y1+(dy*degree)/2;
-   for(int j =0; j<get_degree_dir(env->g, node_num, dir);j++){
-      SDL_RenderDrawLine(ren, x, y, x1, y1);
-      x = x-dx;
-      y = y-dy;
-      x1 = x1-dx;
-      y1 = y1-dy;
-   }
-}
-
-void button_action(SDL_Window* win, SDL_Renderer* ren, Env * env, int x , int y){
-
-  int width, height;
-  SDL_GetWindowSize(win, &width, &height);
-
-  if(y > height-env->size+env->size/4 && y < height-env->size+env->size/4+env->size/2){
-    if(x > env->size/4 && x < env->size/4+env->size/2){
-      for(int i = 0; i < game_nb_nodes(env->g); i++){
-        for(int j = 0; j < game_nb_dir(env->g); j++){
-          while(get_degree_dir(env->g, i, j) != 0){
-            del_bridge_dir(env->g, i, j);
-          }
-        }
-      }
-      simple_bridges(env->g);
-      bool * go=malloc(sizeof(bool));
-      *go=false;
-      solver_r(env->g,0,-1,go);
-      free(go);
-      for(int i = 0; i < game_nb_nodes(env->g); i++){
-         print_degree(i, ren,  env);
-      }
-      game_finish(env, ren);
-    }
-    else if (x >env->size && x < env->size+env->size/2){
-       SDL_BlendMode* BM = NULL;
-       SDL_GetTextureBlendMode(env->save,BM);
-       if(BM == SDL_BLENDMODE_NONE){
-          SDL_write_save(env->g, "save/game_save.txt");
-          SDL_SetTextureBlendMode(env->save,SDL_BLENDMODE_MOD);
-       }
-    }
-    else if(x > 2 * env->size - env->size/4 && x < 2 * env->size - env->size/4 + env->size/2){
-      for(int i = 0; i < game_nb_nodes(env->g); i++){
-        for(int j = 0; j < game_nb_dir(env->g); j++){
-          if(get_degree_dir(env->g,i,j) != 0)
-            del_bridge_dir(env->g,i,j);
-        }
-      }
-      for(int i = 0; i < game_nb_nodes(env->g); i++){
-         print_degree(i, ren,  env);
-      }
-      env->game_win = NULL;
-    }
-    #ifdef __ANDROID__
-    else if(x > 2 * env->size + env->size/2 && x < 3 * env->size){
-      char ** t = NULL;
-      clean(win,ren,env);
-      init(win,ren,0,t,0);
-    }
-    #endif
-  }
-}
-
-void finger_slide_dir(Env * env, SDL_Event * e, int n){
-   float sensibility = 0.1;
-   if(env->node != -1)
-      env->island[env->node] = env->islandnonselect;
-   if(game_nb_dir(env->g)==4){
-      if(e->tfinger.dx > sensibility)
-         add_bridge_dir(env->g, n, EAST);
-      if(e->tfinger.dx < -sensibility)
-         add_bridge_dir(env->g, n, WEST);
-      if(e->tfinger.dy > sensibility)
-         add_bridge_dir(env->g, n, SOUTH);
-      if(e->tfinger.dy < -sensibility)
-         add_bridge_dir(env->g, n, NORTH);
-   }
-   else{
-      if(e->tfinger.dx > sensibility && e->tfinger.dy > sensibility){
-         add_bridge_dir(env->g, n, NW);
-      }
-      if(e->tfinger.dx < -sensibility && e->tfinger.dy > sensibility){
-         add_bridge_dir(env->g, n, SW);
-      }
-      if(e->tfinger.dx > sensibility && e->tfinger.dy < -sensibility){
-         add_bridge_dir(env->g, n, NE);
-      }
-      if(e->tfinger.dx < -sensibility && e->tfinger.dy < -sensibility){
-         add_bridge_dir(env->g, n, SE);
-      }
-      if(e->tfinger.dx > sensibility)
-         add_bridge_dir(env->g, n, EAST);
-      if(e->tfinger.dx < -sensibility)
-         add_bridge_dir(env->g, n, WEST);
-      if(e->tfinger.dy > sensibility)
-         add_bridge_dir(env->g, n, NORTH);
-      if(e->tfinger.dy < -sensibility)
-         add_bridge_dir(env->g, n, SOUTH);
    }
 }
 
@@ -895,12 +334,6 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
     char ** t = NULL;
     clean(win,ren,env);
     init(win,ren,0,t,0);
-  }
-  else if (e->type == SDL_FINGERMOTION){
-     int node_num = get_node(e->tfinger.x*w,e->tfinger.y*h, env);
-     if(node_num != -1){
-       finger_slide_dir(env,e,node_num);
-     }
   }
 
   else if (e->type == SDL_FINGERDOWN) {
@@ -963,11 +396,17 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
 void clean(SDL_Window* win, SDL_Renderer* ren, Env * env) {
   for(int i = 0; i<game_nb_nodes(env->g);i++){
     SDL_DestroyTexture(env->text[i]);
+    SDL_DestroyTexture(env->island[i]);
   }
   SDL_DestroyTexture(env->islandnonselect);
   SDL_DestroyTexture(env->islandselect);
+  SDL_DestroyTexture(env->random);
+  SDL_DestroyTexture(env->solve);
+  SDL_DestroyTexture(env->save);
+  SDL_DestroyTexture(env->game_win);
+  SDL_DestroyTexture(env->reload);
   delete_game(env->g);
+  free(env->island);
   free(env->text);
   free(env);
 }
-

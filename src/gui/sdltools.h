@@ -1,12 +1,12 @@
 // SDL2 Model by aurelien.esnard@u-bordeaux.fr
 
-#ifndef MODEL_H
-#define MODEL_H
+#ifndef SDLTOOLS_H
+#define SDLTOOLS_H
 
 #include <SDL.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include "sdltools.h"
+#include "model.h"
 #include "sdlfile.h"
 #include "../core/game.h"
 #include "../core/node.h"
@@ -14,36 +14,29 @@
 
 typedef struct Env_t Env;
 
-#define FONT "Luna.ttf"
-#define ISLAND "img/island.png"
-#define BOAT1 "img/boat1.png"
-#define BOAT2 "img/boat2.png"
-#define BOAT3 "img/boat3.png"
-#define BOAT4 "img/boat4.png"
-#define ISLANDSELECT "img/island_selected.png"
-#define SOLVE "img/solve.png"
-#define SAVE "img/save.png"
-#define RELOAD "img/reload.png"
-#define RANDOM "img/random.png"
-
-
 /* **************************************************************** */
 
 #ifdef __ANDROID__
 #define PRINT(STR, ...) do { SDL_Log(STR, ##__VA_ARGS__);  } while(0)
 #define ERROR(STR, ...) do { SDL_Log(STR, ##__VA_ARGS__); exit(EXIT_FAILURE); } while(0)
-// #define LOG(TAG, STR, ...) __android_log_print(ANDROID_LOG_VERBOSE, TAG ,STR, ##__VA_ARGS__)
-# else
+#else
 #define PRINT(STR, ...) do { printf(STR, ##__VA_ARGS__); } while(0)
 #define ERROR(STR, ...) do { fprintf(stderr, STR, ##__VA_ARGS__); exit(EXIT_FAILURE); } while(0)
 #endif
 
 /* **************************************************************** */
 
-Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int select);
-void render(SDL_Window* win, SDL_Renderer* ren, Env * env);
-void clean(SDL_Window* win, SDL_Renderer* ren, Env * env);
-bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e);
+int coordtopxx(int coord, Env * env);
+int coordtopxy(int coord, Env * env);
+int get_node(int x, int y, Env * env);
+void game_finish(Env * env, SDL_Renderer * ren);
+void print_degree(int node_num, SDL_Renderer* ren,  Env * env);
+void init_window(int w, int h, SDL_Renderer* ren, Env * env);
+void make_connection(int node_num, SDL_Renderer * ren, Env * env);
+void button_action(SDL_Window* win, SDL_Renderer* ren, Env * env, int x , int y);
+void print_node_and_bridges(Env * env, SDL_Renderer * ren);
+void render_bridges(int x, int y, int x1, int y1, int dx, int dy, int node_num,int dir, Env * env, SDL_Renderer * ren);
+int get_node(int x, int y, Env * env);
 
 /* **************************************************************** */
 

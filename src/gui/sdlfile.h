@@ -1,31 +1,17 @@
 // SDL2 Model by aurelien.esnard@u-bordeaux.fr
 
-#ifndef MODEL_H
-#define MODEL_H
+#ifndef SDLFILE_H
+#define SDLFILE_H
 
 #include <SDL.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include "sdltools.h"
-#include "sdlfile.h"
+#include "model.h"
 #include "../core/game.h"
 #include "../core/node.h"
 #include "../tools/file.h"
 
 typedef struct Env_t Env;
-
-#define FONT "Luna.ttf"
-#define ISLAND "img/island.png"
-#define BOAT1 "img/boat1.png"
-#define BOAT2 "img/boat2.png"
-#define BOAT3 "img/boat3.png"
-#define BOAT4 "img/boat4.png"
-#define ISLANDSELECT "img/island_selected.png"
-#define SOLVE "img/solve.png"
-#define SAVE "img/save.png"
-#define RELOAD "img/reload.png"
-#define RANDOM "img/random.png"
-
 
 /* **************************************************************** */
 
@@ -40,10 +26,9 @@ typedef struct Env_t Env;
 
 /* **************************************************************** */
 
-Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int select);
-void render(SDL_Window* win, SDL_Renderer* ren, Env * env);
-void clean(SDL_Window* win, SDL_Renderer* ren, Env * env);
-bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e);
+game SDL_translate_game(char * fileopen);
+game SDL_translate_save(char * fileopen);
+void SDL_write_save(game g, char * filesave);
 
 /* **************************************************************** */
 

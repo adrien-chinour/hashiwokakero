@@ -33,32 +33,32 @@ struct Env_m {
 void init_window_menu(int w, int h, SDL_Renderer* ren, Envm * env){
    env->width_b = w/2;
    env->height_b = h/(NB_BOARDS+1);
-   
+
    // definition de la taille de la police
    env->fontsize = env->height_b;
    env->y = malloc(NB_BOARDS*sizeof(int));
    env->text = malloc(NB_BOARDS*sizeof(SDL_Texture*));
-   
+
    int marge = h/(2*(NB_BOARDS));
    char ** board_message = malloc(sizeof(char*)*NB_BOARDS);
-   
-   board_message[0] = "jeu facile";
-   board_message[1] = "jeu moyen";
-   board_message[2] = "jeu difficile";
-   board_message[3] = "charger";
+
+   board_message[0] = "Partie 4dir";
+   board_message[1] = "Partie 8dir";
+   board_message[2] = "Partie Aleatoire";
+   board_message[3] = "Partie sauvegardee";
    /* init text texture using Luna font */
    SDL_Color color = { 231, 62, 1, 255 }; /* black color in RGBA */
    TTF_Font * font = TTF_OpenFont(FONT, env->fontsize);
    if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
    TTF_SetFontStyle(font, TTF_STYLE_NORMAL); // TTF_STYLE_ITALIC | TTF_STYLE_NORMAL
-   
+
    for(int i = 0; i < NB_BOARDS; i++){
       SDL_Surface * surf = TTF_RenderText_Blended(font, board_message[i] , color);
       env->text[i] = SDL_CreateTextureFromSurface(ren, surf);
       SDL_FreeSurface(surf);
    }
-   
-   
+
+
    for(int i = 0; i < NB_BOARDS; i++){
      //positionner les images au centre en abscisse
       env->x = w/4;
@@ -69,7 +69,7 @@ void init_window_menu(int w, int h, SDL_Renderer* ren, Envm * env){
    free(board_message);
 }
 
-Envm * init_menu(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]){  
+Envm * init_menu(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]){
    Envm * env = malloc(sizeof(struct Env_m));
 
    /* get current window size */
@@ -77,26 +77,26 @@ Envm * init_menu(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]){
    SDL_GetWindowSize(win, &w, &h);
 
    init_window_menu(w,h,ren,env);
-   
 
 
-  
+
+
    /* init positions */
-   
 
-   
-   
-  
+
+
+
+
    /* INIT TEXTURES */
 
    /* init background texture from PNG image */
    env->background = IMG_LoadTexture(ren, BACKGROUND);
    if(!env->background) ERROR("IMG_LoadTexture: %s\n", BACKGROUND);
-  
+
    /* Init board texture from PNG image */
    env->board= IMG_LoadTexture(ren,BOARD);
    if(!env->board) ERROR("IMG_LoadTexture: %s\n", BOARD);
-  
+
    return env;
 }
 
@@ -106,12 +106,12 @@ void render_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env)
 {
    /* RENDER TEXTURES */
 
-   SDL_Rect rect;  
- 
+   SDL_Rect rect;
+
    /* get current window size */
    int w, h;
    SDL_GetWindowSize(win, &w, &h);
-    
+
    /* render background texture */
    SDL_RenderCopy(ren, env->background, NULL, NULL); /* stretch it */
 
@@ -141,8 +141,8 @@ int select_button(Envm * env, int x, int y){
   }
 }
 /* **************************************************************** */
-     
-     
+
+
 int process_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env, SDL_Event * e){
   int w,h;
   SDL_GetWindowSize(win, &w, &h);
@@ -174,7 +174,7 @@ int process_menu(SDL_Window* win, SDL_Renderer* ren, Envm * env, SDL_Event * e){
 #endif
 
   /* PUT YOUR CODE HERE TO PROCESS EVENTS */
-  
+
   return 0;
 }
 

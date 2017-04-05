@@ -39,9 +39,6 @@ int main(int argc, char * argv[]) {
   bool quit = false;
   int select = 0;
 
-  #ifdef __ANDROID__
-    //pas de menu
-  #else
   // ouverture du menu seulement si aucun fichier en parametre
   if(argc < 2){
      /* initialize menu environment */
@@ -70,10 +67,9 @@ int main(int argc, char * argv[]) {
      if(select == -1)
        exit(EXIT_SUCCESS);
   }
-  #endif
 
   /* initialize game environment */
-  
+
   Env * env = init(win, ren, argc, argv, select);
   if (env == NULL){
     fprintf(stderr, "Initialisation de l'environnement impossible\n");
