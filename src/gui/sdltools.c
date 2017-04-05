@@ -32,6 +32,53 @@ struct Env_t {
   unsigned int starttime;
 };
 
+
+
+/**/
+
+
+void init_game(Env * env,char * game_file,int select){
+   game g = NULL;
+   if(game_file != NULL) {g = translate_game(game_file); }
+   else {
+      switch (select) {
+         case 1:
+            g = SDL_translate_game("save/game_default.txt");
+            break;
+         case 2:
+            g = SDL_translate_game("save/3bridges.txt");
+            break;
+         case 3:
+            printf("chargement random\n");
+            g = random_game(2,4);
+            break;
+         case 4:
+            g = SDL_translate_save("save/game_save.txt");
+            break;
+      }
+   }
+   if (g == NULL){ fprintf(stderr,"problème d'initialisation game\n"); exit(EXIT_FAILURE);}
+
+   env->game_win = NULL;
+   env->g = g;
+   env->island=malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
+   for(int i = 0 ; i < game_nb_nodes(g) ; i++){
+      env->island[i] = env->islandnonselect;
+   }
+   SDL_Texture ** text = malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
+   env->text = text;
+   env->node = -1;
+}
+
+void refresh_window(SDL_Window* win, SDL_Renderer* ren, Env * env){
+   int width, height;
+   SDL_GetWindowSize(win, &width, &height);
+   for(int i = 0; i < game_nb_nodes(env->g); i++){
+      print_degree(i, ren, env);
+   }
+   init_window(width,height,ren,env);
+}
+
 /*
   Initialisation des variables d'env en fonction de la taille de l'écran
 */

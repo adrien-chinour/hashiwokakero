@@ -28,7 +28,6 @@ node * generate_nodes(int nb_max_bridges, int nb_dir){
 }
 
 bool test_game(game g, int nb_max_bridges, int nb_dir){
-
    simple_bridges(g);
    bool * go=malloc(sizeof(bool));
    *go=false;
@@ -47,7 +46,7 @@ game random_game(int nb_max_bridges, int nb_dir){
    srand(time(NULL));
    game g = NULL;
    do {
-      if(g != NULL) delete_game(g);
+      if(g != NULL){ delete_game(g); g=NULL;}
       node * nodes = generate_nodes(nb_max_bridges, nb_dir);
       g = new_game(9, nodes, nb_max_bridges, nb_dir);
       for(int i = 0; i < 9; i++)

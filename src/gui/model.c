@@ -40,50 +40,23 @@ struct Env_t {
 
 Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int select) {
   char * game_file = NULL;
-  game g = NULL;
 
   /* L'utilisateur a rentré un nom de fichier */
   if(argc == 2) game_file = argv[1];
 
   /* On charge le game en fonction de ce que l'utilisateur a choisi dans le menu*/
-  if(game_file != NULL) {g = translate_game(game_file); }
-  else {
-    switch (select) {
-      case 1:
-        g = SDL_translate_game("save/game_default.txt");
-        break;
-      case 2:
-        g = SDL_translate_game("save/3bridges.txt");
-        break;
-      case 3:
-      printf("chargement random\n");
-        g = random_game(2,4);
-        break;
-      case 4:
-        //if(check_file("save/game_save.txt"))
-        g = SDL_translate_save("save/game_save.txt");
-        break;
-    }
-  }
-  if (g == NULL) return NULL;
 
 
   /*allocation de notre structure d'environnement*/
   Env * env = malloc(sizeof(struct Env_t));
-  if(env == NULL) {delete_game(g); return NULL;} //ERREUR
-
-  env->game_win = NULL;
-  env->g = g;
+  if(env == NULL) {return NULL;} //ERREUR
 
   env->starttime = SDL_GetTicks();
 
   int w, h;
   SDL_GetWindowSize(win, &w, &h);
 
-  init_window(w,h,ren,env);
-
   /* Init island texture from PNG image */
-  env->island=malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
   if(env->island == NULL) exit(EXIT_FAILURE); //ERREUR
   env->islandnonselect = IMG_LoadTexture(ren, ISLAND);
   SDL_SetTextureBlendMode(env->islandnonselect,SDL_BLENDMODE_BLEND);
@@ -101,22 +74,18 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
   env->random = IMG_LoadTexture(ren, RANDOM);
   if(!env->random) SDL_Log("IMG_LoadTexture: %s\n", RANDOM);
 
-  for(int i = 0 ; i < game_nb_nodes(g) ; i++){
-    env->island[i] = env->islandnonselect;
-  }
-
-
   env->islandselect = IMG_LoadTexture(ren,ISLANDSELECT);
   SDL_SetTextureBlendMode(env->islandselect,SDL_BLENDMODE_BLEND);
 
-  SDL_Texture ** text = malloc(sizeof(SDL_Texture*)*game_nb_nodes(g));
+  init_game(env,game_file,select);
+  init_window(w,h,ren,env);
 
-  if(text == NULL) {delete_game(g); free(env); return NULL;} //ERREUR //SDLdeletetexture env->island
+  if(env->text == NULL) {delete_game(env->g); free(env); return NULL;} //ERREUR //SDLdeletetexture env->island
 
-  env->text = text;
-
-  for(int i = 0 ; i < game_nb_nodes(g) ; i++){
-    node n = game_node(g, i);
+  refresh_window(win, ren, env);
+/*
+  for(int i = 0 ; i < game_nb_nodes(env->g) ; i++){
+    node n = game_node(env->g, i);
     SDL_Color color = { 231, 62, 1, 255 };
     TTF_Font * font = TTF_OpenFont(LUNA, env->fontsize);
     if(!font) SDL_Log("TTF_OpenFont: %s\n", LUNA);
@@ -128,10 +97,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
     env->text[i] = SDL_CreateTextureFromSurface(ren, surf);
     SDL_FreeSurface(surf);
     TTF_CloseFont(font);
-  }
-
-  env->node = -1;
-
+    }*/
   return env;
 }
 
@@ -141,7 +107,6 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
    int width, height; SDL_GetWindowSize(win, &width, &height);
    SDL_SetRenderDrawColor(ren, 0, 0, 0, SDL_ALPHA_OPAQUE);
    SDL_SetRenderDrawBlendMode(ren,SDL_BLENDMODE_ADD);
-
 
    int node_pos = get_node(env->mouse_pos.x,env->mouse_pos.y,env);
    int x =0;int y =0;int x1 =0;int y1 =0;
@@ -304,25 +269,20 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env) {
 }
 
 bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e) {
-  int w, h;
-  SDL_GetWindowSize(win, &w, &h);
+   int w, h;
+   SDL_GetWindowSize(win, &w, &h);
 
-  /* generic events */
-  if (e->type == SDL_QUIT) {
-    return true;
-  }
+   /* generic events */
+   if (e->type == SDL_QUIT) {
+      return true;
+   }
 
   if(e->type == SDL_WINDOWEVENT){
-    int width, height;
     switch (e->window.event) {
       case SDL_WINDOWEVENT_RESIZED:
-      SDL_GetWindowSize(win, &width, &height);
-      init_window(width,height,ren,env);
-      for(int i = 0; i < game_nb_nodes(env->g); i++){
-        print_degree(i, ren, env);
-      }
       break;
     }
+    refresh_window(win,ren,env);
   }
 
   /* Android events */

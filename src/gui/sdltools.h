@@ -26,6 +26,7 @@ typedef struct Env_t Env;
 
 /* **************************************************************** */
 
+void refresh_window(SDL_Window* win, SDL_Renderer* ren, Env * env);
 int coordtopxx(int coord, Env * env);
 int coordtopxy(int coord, Env * env);
 int get_node(int x, int y, Env * env);

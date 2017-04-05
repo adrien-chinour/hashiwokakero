@@ -13,8 +13,8 @@
 #include "../tools/file.h"
 #include "../tools/generate.h"
 
-/*à enlever*/
-game SDL_translate_game(char * fileopen){ //inspiré de la documentation https://wiki.libsdl.org/SDL_RWread
+
+game SDL_translate_game(char * fileopen){
    SDL_RWops *file = SDL_RWFromFile(fileopen,"r");
    if (file == NULL) return NULL;
    Sint64 res_size = SDL_RWsize(file);
