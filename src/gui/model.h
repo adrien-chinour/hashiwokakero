@@ -14,8 +14,8 @@
 
 typedef struct Env_t Env;
 
-#define LUNA "Luna.ttf"
-#define LSD "look sir, droids.ttf"
+#define LUNA "fonts/Luna.ttf"
+#define LSD "fonts/look sir, droids.ttf"
 #define ISLAND "img/island.png"
 #define BOAT1 "img/boat1.png"
 #define BOAT2 "img/boat2.png"
