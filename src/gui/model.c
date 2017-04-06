@@ -29,13 +29,13 @@ struct Env_t {
   game g; // la partie a afficher
   int node; // le noeud selectionné (evenement)
   int size; // taille d'une ile
-  SDL_Texture * game_win;
-  SDL_Texture * solve;
-  SDL_Texture * save;
-  SDL_Texture * reload;
-  SDL_Texture * random;
-  SDL_Point mouse_pos;
-  unsigned int starttime;
+  SDL_Texture * game_win;//message de victoire
+  SDL_Texture * solve; //image icone solver
+  SDL_Texture * save; //image icone save
+  SDL_Texture * reload;//image icone reload
+  SDL_Texture * random;//image icone chargement game aléatoire
+  SDL_Point mouse_pos;//position de la souris en temps réel 
+  unsigned int starttime;//timer depuis le début d'une partie
 };
 
 Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int select) {
@@ -74,10 +74,12 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
   env->islandselect = IMG_LoadTexture(ren,ISLANDSELECT);
   if(!env->islandselect) SDL_Log("IMG_LoadTexture: %s\n", ISLANDSELECT);
 
+
   init_game(env,game_file,select);  //initialisation de l'environnement relatif a l'instance
   init_window(w,h,ren,env);         //initialisation de l'environnement relatif a la fenetre
   refresh_window(win, ren, env);    //actualisation de le fenetre
-  
+  env->mouse_pos.y = 0;
+  env->mouse_pos.x = 0;
   return env;
 }
 

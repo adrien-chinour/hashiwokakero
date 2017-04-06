@@ -13,7 +13,7 @@
 #include "../tools/file.h"
 #include "../tools/generate.h"
 
-
+/*ces fonctions servent à lire des fichiers avec la SDL et sont donc compatible android*/
 game SDL_translate_game(char * fileopen){
    SDL_RWops *file = SDL_RWFromFile(fileopen,"r");
    if (file == NULL) return NULL;
@@ -33,13 +33,12 @@ game SDL_translate_game(char * fileopen){
    while(nb_read_total < res_size && nb_read != 0 && buf[0] != ' '){
       y = y +1;
       nb_read_total += nb_read;
-      //buf += nb_read;
       arg[0] = arg[0] *10 + atoi(buf);
       nb_read = SDL_RWread(file, buf, sizeof(char),1);
    }
 
    int c = 1;
-
+   /*lecture nb_max_bridges et nb_max_dir*/
    while(nb_read_total < res_size && nb_read != 0 && buf[0] != '\n'){
       nb_read = SDL_RWread(file, buf, sizeof(char), 1);
       nb_read_total += nb_read;
@@ -49,7 +48,7 @@ game SDL_translate_game(char * fileopen){
       }
    }
    c = 0;
-
+   /*lecture des nodes*/
    int * node_arg = malloc(sizeof(int)*3);
    node * tab_nodes = malloc(sizeof(node)*(arg[0]));
    for(int i = 0 ; i< arg[0];i++){

@@ -137,7 +137,7 @@ game translate_save(char * fileopen){ //pour les sauvegardes + solutions
 
    rewind(gametxt);
 
-   fgets(l,10,gametxt);
+   fgets(l,255,gametxt); //saut de ligne
    for(int i=0; i<tab[0]; i++){
       fgets(l,255,gametxt);
       char * token = strtok(l," ");
@@ -161,7 +161,7 @@ game translate_save(char * fileopen){ //pour les sauvegardes + solutions
    for (int i = 0 ; i < tab[0]; i++) delete_node(nodes[i]);
    free(tab);
    free(l);
-   //free(nodes);
+   free(nodes);
    return g;
 }
 
