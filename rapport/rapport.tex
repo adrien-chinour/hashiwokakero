@@ -109,6 +109,7 @@ Les arguments de la fonction sont:
 
 \section{Possibilité d'amélioration}
 Pour améliorer ce solveur on pourrait refaire le processus de ``ponts obligatoire'' à chaque fois que l'on fait une action mais celà implique d'avoir une sauvegarde de l'état du jeu pour que lorsque l'on dépile on puisse retirer les ponts posés par ce processus. On a aussi essayé de rajouter une vérification de la possibilité de connexité à chaque fois que l'on pose un pont,comme ça il ne pourrait pas se former de blocs isolés.
+
 \chapter{Interface graphique}
 \section{Structure principale de la partie graphique}
 La partie graphique est composé de 4 fonctions principale ayant des utilités différentes:
@@ -122,12 +123,6 @@ La partie graphique est composé de 4 fonctions principale ayant des utilités d
 \section{Capacités de l'application}
 On a réussi à avoir un jeu qui marche avec 4 ou 8 directions et de 2 à 4 ponts, avec d'autres fonctionnalités comme un affichage des ponts possible en passant le pointeur de la souris dessus, des boutons permettant de remettre la partie à 0, de tricher avec le solveur, de charger une partie générée aléatoirement et de sauvegarder.
 
-\chapter{Portabilité sur Android}
-Pour améliorer ce solveur on pourrait refaire le processus de ``ponts obligatoire'' à chaque fois que l'on fait une action, mais celà implique d'avoir une sauvegarde de l'état du jeu pour que lorsque l'on dépile on puisse retirer les ponts posés par ce processus. On pourrait aussi améliorer 
-
-\newpage
-\chapter{Interface graphique}
-\newpage
 \chapter{Portabilité sur Android}
 \section{Introduction}
 \textnormal{La première partie du travail a était d'ajouter le répertoire android à notre projet. Ensuite nous avons modifié le fichier qui permet de compiler notre programme pour android (android.mk). Puis modifié la variable YOUR\_SRC\_FILES qui correspond à nos fichier C utile à l'application android. Plutôt que de dupliquer ces fichiers nous avons simplement donner le chemin des fichiers utiliser pour la compilation standard.\\Ensuite il a fallut modifier et ajouter du code a nos fichiers comme par exemple pour la gestion des évènement sous SDL ou la lecture de fichier afin que la compilation se déroule sans erreur.}
