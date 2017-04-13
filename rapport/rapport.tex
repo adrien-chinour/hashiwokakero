@@ -87,6 +87,19 @@ On peut voir que grille[x][y] peut avoir pour valeur :
 Nous avons donc regardé la partie et corrigé les problèmes avec ces lignes, l'affichage permettant alors de connaître toute la composition du jeu.
 
 \chapter{Caprice des profs}
+L'utilisation de 4 directions et 2 ponts maximum n'étant pas suffisante, on a dû implémenter les 8 directions du jeu et 3 ponts posables (il est facile de mettre autant de ponts que souhaité à présent).
+On a ajouté à la plupart des fonctions les variables nb\_max\_bridges (nombre maximum de ponts posables) et nb\_dir (nombre de directions) dans une structure pour permettre de détecter le type de partie que l'on souhaite.Voici la structure concernée:
+\begin{verbatim}
+typedef struct game_s {
+  int nb_nodes;
+  node *nodes; 
+  int **bridges;
+  int nb_dir;
+  int nb_max_bridges;
+} *game;
+\end{verbatim}
+Il a fallut dans ce cas se servir de diff pour savoir où il fallait changer quelque chose. Les changements ont été fait dans des switch pour ajouter les directions NW; SW; SE; NE et traiter ces cas. Ainsi, la fonction d'affichage a dû être enlevée puisqu'elle ne traitait pas ces ajouts, donc elle a été refaite entièrement pour pouvoir traiter chaque cas, le précédent affichage étant trop sale. Cependant, l'implémentation des directions et des nouveaux ponts s'est fait assez rapidement, car les autres fonctions étaient déjà faites. Globalement, la plus grosse difficulté était de repérer où faire les changements.
+
 
 \chapter{Solveur}
 \includegraphics[width = 1.00\textwidth]{explication_solveur.eps}
