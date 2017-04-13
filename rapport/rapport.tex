@@ -1,20 +1,17 @@
 \documentclass[12pt]{report}
 
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage[francais]{babel}
 \usepackage{graphicx}
+\usepackage{verbatim}
 
-
-\title{Rapport - Projet technologique - Hashiwokakero}
+\title{RAPPORT :Projet technologique\\ Hashiwokakero}
 \author{Groupe TM2H}
 
 \begin{document}
 
 \maketitle
-
-\begin{abstract}
-Ceci est le résumé du rapport.
-\end{abstract}
 
 \tableofcontents
 
@@ -46,7 +43,7 @@ typedef struct game_s {
 \textnormal{Une fois la structure correctement définie, il a fallut réaliser les fonctions de création et de destruction d'une partie. Après quelques tests avec valgrind, tout semblait correct.\\ Nous nous sommes donc attaqués au gros du sujet : les fonctions qui font vivre ces structures game et node (l'ajout de pont, la supression de pont, le test de fin de partie...). Au fur et à mesure de notre avancement, les tests nous ont permis de déceller de nombreux bugs et nous éviter de nombreuses heures de débuggage même si gdb et valgrind nous ont énormément servi durant cette période.\\ Les fonctions les plus complexes qui nous ont demandé beaucoup de temps sont : can\_add\_bridge\_dir et game\_over.}
 
 \subsubsection{La fonction can\_add\_bridge\_dir}
-\textnormal{Cette fonction est l'une des plus utiles du jeu : elle permet de savoir s'il est possible ou non d'ajouter un pont. Il faut donc vérifier qu'il y ait un noeud dans la direction et que le pont ne croise pas un autre pont déjà existant. Pour la première vérification c'est assez simple puisque nous disposons déjà d'une fonction qui fait ça. Pour la deuxième vérification, après avoir cherché un bon moment, nous avons choisi de représenter nos ponts sous forme de vecteurs et de vérifier par le calcul vectoriel si notre pont croise un autre pont. \\ Supposons que le vecteur AB est notre pont et le vecteur CD l'autre pont, alors si vectoriel(vecteur(AB),vecteur(CD)) != 0, les deux vecteurs se croisent, mais il faut vérifier s'ils se croisent sur le segment CD avec vectoriel (vecteur (AB),vecteur (AD)) * vectoriel (vecteur (AB),vecteur(AC)) < 0\\On a donc une fonction qui prend de la place car il faut récupérer toutes les coordonnées des vecteurs, mais qui est plutôt simple.}
+\textnormal{Cette fonction est l'une des plus utiles du jeu : elle permet de savoir s'il est possible ou non d'ajouter un pont. Il faut donc vérifier qu'il y ait un noeud dans la direction et que le pont ne croise pas un autre pont déjà existant. Pour la première vérification c'est assez simple puisque nous disposons déjà d'une fonction qui fait ça. Pour la deuxième vérification, après avoir cherché un bon moment, nous avons choisi de représenter nos ponts sous forme de vecteurs et de vérifier par le calcul vectoriel si notre pont croise un autre pont. \\ Supposons que le vecteur $\overrightarrow{AB}$ est notre pont et le vecteur $\overrightarrow{CD}$ l'autre pont, alors si : $\overrightarrow{AB} \land \overrightarrow{CD} \neq 0$, les deux vecteurs se croisent, mais il faut vérifier s'ils se croisent sur le segment [CD] avec: $\overrightarrow{AB} \land \overrightarrow{AD} \times \overrightarrow{AB} \land \overrightarrow{AC} < 0$\\On a donc une fonction qui prend de la place car il faut récupérer toutes les coordonnées des vecteurs, mais qui est plutôt simple.}
 
 \subsubsection{La fonction game\_over}
 \textnormal{Pour la fonction game\_over, il faut vérifier que chaque noeud de la partie à le même degré que son degré requis (assez facile) mais il faut aussi vérifier que l'on peut se déplacer entre nimporte quel noeud grâce au pont. En remarquant que notre partie est un graphe, il suffit de vérifier la connexité de ce graphe. Pour faire cette vérification nous avons utilisé une fonction annexe récursive basé sur 'algoritme de parcours d'un graphe en profondeur}
