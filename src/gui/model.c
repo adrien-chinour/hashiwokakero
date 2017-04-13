@@ -55,7 +55,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[], int selec
   int w, h;
   SDL_GetWindowSize(win, &w, &h);
 
-  /* Init texture from PNG image */
+  /* Init texture from PNG image */ //mettre dans une fct chargement image
   env->islandnonselect = IMG_LoadTexture(ren, ISLAND);
   if(!env->islandnonselect) SDL_Log("IMG_LoadTexture: %s\n", ISLAND);
 

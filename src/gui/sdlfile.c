@@ -20,13 +20,13 @@ game SDL_translate_game(char * fileopen){
    Sint64 res_size = SDL_RWsize(file);
    //message d'erreur size
 
-   Sint64 nb_read_total = 0, nb_read = 1;
+   Sint64 nb_read_total = 0, nb_read = sizeof(char);
 
    char * buf = malloc(sizeof(char));
 
    buf[0] = '0';
    int * arg = malloc(sizeof(int)*3);
-   arg[0]=0;
+   arg[0] = 0;
 
    /*nb_nodes*/
    int y = 0;
@@ -34,7 +34,7 @@ game SDL_translate_game(char * fileopen){
       y = y +1;
       nb_read_total += nb_read;
       arg[0] = arg[0] *10 + atoi(buf);
-      nb_read = SDL_RWread(file, buf, sizeof(char),1);
+      nb_read = SDL_RWread(file, buf, sizeof(char), 1);
    }
 
    int c = 1;
@@ -83,7 +83,7 @@ game SDL_translate_save(char * fileopen){
    Sint64 res_size = SDL_RWsize(file);
    //message d'erreur size
 
-   Sint64 nb_read_total = 0, nb_read = 1;
+   Sint64 nb_read_total = 0, nb_read = sizeof(char);
 
    char * buf = malloc(sizeof(char));
 
