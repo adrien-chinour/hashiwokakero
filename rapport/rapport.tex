@@ -31,6 +31,9 @@ typedef struct node_s {
 \end{verbatim}
 
 \textnormal{Nous n'avons pas eu de difficulté a réaliser cette partie, surtout que le fichier qui nous était donné comme guide (node.h) contenait toutes les informations pour réaliser les fonctions. Le plus dur dans la création des fonctions de base se trouve dans le game.c}
+
+\newpage
+
 \subsection{Les fonctions de game.c}
 \textnormal{En effet, les fonctions composant game.c ont été un peu plus dur à réaliser. Tout d'abord, il a fallut définir la structure game qui contient les noeuds de la partie, le nombre de noeuds et les ponts.\\ Pour les noeuds, rien de bien compliqué: il suffit de créer un tableau de noeud et de donner à la structure le pointeur sur le premier élément. Pour les ponts, il a fallut un peu plus réfléchir, mais nous avons fini par créer une matrice de la taille du nombre de noeuds par le nombre de directions (c'est-à-dire 4). Voilà à quoi ressemble donc notre structure game:}
 \begin{verbatim}
@@ -60,6 +63,9 @@ static void explore(cgame g, int node_num, bool connected[]){
 }
 \end{verbatim}
 \textnormal{En gros la fonction parcours un sommet (un noeud), l'ajout à la liste des noeuds visités, puis visite ses voisins non visité. La récursion s'arrète quand le sommet n'a plus de voisin à visiter. Il suffit donc ensuite de vérifier la liste pour savoir si tout les noeuds sont visités}
+
+\newpage
+
 \section{L'interface terminal}
 \textnormal{Lors de l'utilisation des game.o et node.o (puisque game.c et node.c n'étaient pas encore codés), nous avons dû utiliser quelque chose de suffisament visuel pour pouvoir détecter les éventuelles erreurs : une interface texte. Il a donc fallut créer une fonction qui prennait en paramètre la taille du jeu (size), un tableau double (grille[size][size]) où chaque case du jeu correspond à une valeur et le jeu lui même (jeu) définit par la structure game.
 Voici l'affichage principal de la grille je jeu :}
@@ -83,6 +89,9 @@ On peut voir que grille[x][y] peut avoir pour valeur :
 \item ? : toute autre valeur correspond au degré d'un noeud, on l'affiche
 \end{itemize}
 Nous avons donc regardé la partie et corrigé les problèmes avec ces lignes, l'affichage permettant alors de connaître toute la composition du jeu.
+
+Afin de pouvoir mieux visualiser le jeu, nous avons décidé de faire une partie générée par l'ordinateur.
+En effet, Nous avions inclus, une fonction qui générait une partie totalement aléatoire. Bien que cette fonction faisait son travail correctement, il fallut l'abandonner, car la méthode ne marchait plus avec plus de ponts/directions. Pour ce faire, on posait 1 node aléatoirement sur la grille, puis on posait tous les autres, de degré 0, alignés en fonction du premier. Pour déterminer leur degré, on faisait une pose aléatoire de ponts sur chaque node dans chaque direction avec un principe simple de \textbf{pile ou face} : veut-on poser un pont? (oui ou non) et on reboucle pour avoir assez de pont dans chaque direction. Enfin, on pose un degré sur chaque node en fonction du nombre de ponts dessus et on retire tous les ponts.
 
 \chapter{Caprice des profs}
 L'utilisation de 4 directions et 2 ponts maximum n'étant pas suffisante, on a dû implémenter les 8 directions du jeu et 3 ponts posables (il est facile de mettre autant de ponts que souhaité à présent).
@@ -146,9 +155,12 @@ Notre projet ressemble à ça:\\
 
 \chapter{Portabilité sur Android}
 \section{Introduction}
-\textnormal{La première partie du travail a était d'ajouter le répertoire android à notre projet. Ensuite nous avons modifié le fichier qui permet de compiler notre programme pour android (android.mk). Puis modifié la variable YOUR\_SRC\_FILES qui correspond à nos fichier C utile à l'application android. Plutôt que de dupliquer ces fichiers nous avons simplement donner le chemin des fichiers utiliser pour la compilation standard.\\Ensuite il a fallut modifier et ajouter du code a nos fichiers comme par exemple pour la gestion des évènement sous SDL ou la lecture de fichier afin que la compilation se déroule sans erreur.}
+\textnormal{La première partie du travail a été d'ajouter le répertoire android à notre projet. Ensuite nous avons modifié le fichier qui permet de compiler notre programme pour android (android.mk). Puis modifié la variable YOUR\_SRC\_FILES qui correspond à nos fichiers C utiles à l'application android. Plutôt que de dupliquer ces fichiers, nous avons simplement donné le chemin des fichiers utilisé pour la compilation standard.\\Ensuite il a fallut modifier et ajouter du code a nos fichiers comme par exemple pour la gestion des évènements sous SDL ou la lecture de fichier afin que la compilation se déroule sans erreur.}
+
+\newpage
+
 \section{Gestion des évènements SDL}
-\textnormal{Pour la gestion des évènements il a falut ajouter un \#ifdef pour séparer les évènement liés à un ordinateur et ceux qui sont liés à android, avec SDL il est très facile de faire ça gràce au évènement prédéfini pour android:}
+\textnormal{Pour la gestion des évènements il a fallut ajouter un \#ifdef pour séparer les évènements liés à un ordinateur et ceux qui sont liés à android, avec SDL il est très facile de faire ça grâce aux évènements prédéfinis pour android:}
 \begin{verbatim}
 #ifdef __ANDROID__
   if (e->type == SDL_FINGERDOWN) {
