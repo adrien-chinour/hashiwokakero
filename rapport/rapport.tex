@@ -133,6 +133,16 @@ La partie graphique est composé de 4 fonctions principale ayant des utilités d
 \section{Capacités de l'application}
 On a réussi à avoir un jeu qui marche avec 4 ou 8 directions et de 2 à 4 ponts, avec d'autres fonctionnalités comme un affichage des ponts possible en passant le pointeur de la souris dessus, des boutons permettant de remettre la partie à 0, de tricher avec le solveur, de charger une partie générée aléatoirement et de sauvegarder.
 
+\section{Problèmes de développement}
+La SDL comportant diverses fuites mémoire il a été très dur de déterminer d'où venaient les fuites mémoires avec Valgrind nous avons dû faire des efforts supplémentaires pour lire le code. Ce moment était celui où l'on avait le plus besoin de tous écrire dans le même fichier mais ce problème a été aisément réglé avec l'aide de GIT et sa fonctionnalités de fusion de fichiers, ça a été le moment où l'on a le plus eu besoin de cette fonctionnalités comme le montre le log de GIT.
+
+\section{Affichage du jeu}
+Notre projet ressemble à ça:\\
+
+\includegraphics[width = 1.00\textwidth]{capture.eps}
+
+
+
 \chapter{Portabilité sur Android}
 \section{Introduction}
 \textnormal{La première partie du travail a était d'ajouter le répertoire android à notre projet. Ensuite nous avons modifié le fichier qui permet de compiler notre programme pour android (android.mk). Puis modifié la variable YOUR\_SRC\_FILES qui correspond à nos fichier C utile à l'application android. Plutôt que de dupliquer ces fichiers nous avons simplement donner le chemin des fichiers utiliser pour la compilation standard.\\Ensuite il a fallut modifier et ajouter du code a nos fichiers comme par exemple pour la gestion des évènement sous SDL ou la lecture de fichier afin que la compilation se déroule sans erreur.}
