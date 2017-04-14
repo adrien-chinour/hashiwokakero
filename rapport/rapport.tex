@@ -35,7 +35,7 @@ typedef struct node_s {
 \begin{verbatim}
 typedef struct game_s {
   int nb_nodes;
-  node *nodes; 
+  node *nodes;
   int **bridges;
 } *game;
 \end{verbatim}
@@ -55,7 +55,7 @@ static void explore(cgame g, int node_num, bool connected[]){
       if(connected[get_neighbour_dir(g, node_num, i)] == false)
 	explore(g, get_neighbour_dir(g, node_num, i), connected);
     }
-  }   
+  }
 }
 \end{verbatim}
 \textnormal{En gros la fonction parcours un sommet (un noeud), l'ajout à la liste des noeuds visités, puis visite ses voisins non visité. La récursion s'arrète quand le sommet n'a plus de voisin à visiter. Il suffit donc ensuite de vérifier la liste pour savoir si tout les noeuds sont visités}
@@ -89,13 +89,13 @@ On a ajouté à la plupart des fonctions les variables nb\_max\_bridges (nombre 
 \begin{verbatim}
 typedef struct game_s {
   int nb_nodes;
-  node *nodes; 
+  node *nodes;
   int **bridges;
   int nb_dir;
   int nb_max_bridges;
 } *game;
 \end{verbatim}
-Il a fallut dans ce cas se servir de diff pour savoir où il fallait changer quelque chose. Les changements ont été fait dans des switch pour ajouter les directions NW; SW; SE; NE et traiter ces cas. Ainsi, la fonction d'affichage a dû être enlevée puisqu'elle ne traitait pas ces ajouts, donc elle a été refaite entièrement pour pouvoir traiter chaque cas, le précédent affichage étant trop sale. Cependant, l'implémentation des directions et des nouveaux ponts s'est fait assez rapidement, car les autres fonctions étaient déjà faites. Globalement, la plus grosse difficulté était de repérer où faire les changements.
+Il a fallut dans ce cas se servir de l'outil git diff pour savoir où il fallait changer quelque chose. Les changements ont été fait dans des switch pour ajouter les directions NW; SW; SE; NE et traiter ces cas. Ainsi, la fonction d'affichage a dû être enlevée puisqu'elle ne traitait pas ces ajouts, donc elle a été refaite entièrement pour pouvoir traiter chaque cas, le précédent affichage étant trop sale. Cependant, l'implémentation des directions et des nouveaux ponts s'est fait assez rapidement, car les autres fonctions étaient déjà faites. Globalement, la plus grosse difficulté était de repérer où faire les changements.
 
 
 \chapter{Solveur}
