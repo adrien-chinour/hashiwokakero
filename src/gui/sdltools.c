@@ -326,7 +326,7 @@ void make_connection(int node_num, SDL_Renderer * ren, Env * env){
           game_finish(env,ren);
           SDL_SetTextureBlendMode(env->save,SDL_BLENDMODE_NONE);
         }
-        else {
+        else {//supression des ponts
           while(get_degree_dir(env->g, node_num, i) != 0){
             env->island[get_neighbour_dir(env->g, node_num, i)] = env->islandnonselect;
             env->island[node_num]=env->islandnonselect;

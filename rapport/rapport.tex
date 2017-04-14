@@ -1,3 +1,4 @@
+
 \documentclass[12pt]{report}
 
 \usepackage[utf8]{inputenc}
@@ -131,7 +132,7 @@ La partie graphique est composé de 4 fonctions principale ayant des utilités d
 \end{itemize}
 
 \section{Capacités de l'application}
-On a réussi à avoir un jeu qui marche avec 4 ou 8 directions et de 2 à 4 ponts, avec d'autres fonctionnalités comme un affichage des ponts possible en passant le pointeur de la souris dessus, des boutons permettant de remettre la partie à 0, de tricher avec le solveur, de charger une partie générée aléatoirement et de sauvegarder.
+On a réussi à avoir un jeu qui marche avec 4 ou 8 directions et de 2 à 4 ponts, avec d'autres fonctionnalités comme un affichage des ponts possible en passant le pointeur de la souris dessus, des boutons permettant de remettre la partie à 0, de tricher avec le solveur, de charger une partie générée aléatoirement et de sauvegarder. Et si on augmente le nombre de ponts maximum il ne faut rien modifier dans l'affichage.
 
 \section{Problèmes de développement}
 La SDL comportant diverses fuites mémoire il a été très dur de déterminer d'où venaient les fuites mémoires avec Valgrind nous avons dû faire des efforts supplémentaires pour lire le code. Ce moment était celui où l'on avait le plus besoin de tous écrire dans le même fichier mais ce problème a été aisément réglé avec l'aide de GIT et sa fonctionnalités de fusion de fichiers, ça a été le moment où l'on a le plus eu besoin de cette fonctionnalités comme le montre le log de GIT.
@@ -160,6 +161,6 @@ Notre projet ressemble à ça:\\
 #endif
 \end{verbatim}
 \section{Lecture de fichier sur android}
-\textnormal{Après avoir compilé une première fois notre programme et testé ça sur un smartphone android l'application s'ouvrait et se fermait directement.\\Ce problème est dû au fait que les fonctions de lecture de fichier en particulier fopen ne fonctionne pas sur android, nous avons donc utilisé les fonctions de SDL qui corrige l'ouverture de fichier et nous a permis d'avoir une première version qui fonctionne sur android. Mais la fonction de sauvegarde qui fonctionnait avant sur ordinateur ne marche plus et ne fonctionne pas sur android non plus.}
+\textnormal{Après avoir compilé une première fois notre programme et testé ça sur un smartphone android l'application s'ouvrait et se fermait directement.\\Ce problème est dû au fait que les fonctions de lecture de fichier en particulier fopen ne fonctionne pas sur android, nous avons donc utilisé les fonctions de SDL qui corrige l'ouverture de fichier et nous a permis d'avoir une première version qui fonctionne sur android. Mais la fonction de sauvegarde qui fonctionnait avant sur ordinateur ne marche plus correctement pour les ponts et ne fonctionne pas sur android non plus.}
 
 \end{document}
